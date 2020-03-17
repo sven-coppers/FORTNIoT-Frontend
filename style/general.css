@@ -1,0 +1,50 @@
+html {
+    zoom: 125%;
+}
+
+body {
+    padding: 10px;
+}
+
+.use_cases {
+    display: table;
+    width: 100%;
+}
+
+.use_case {
+    display: table-row;
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.use_case:last-child {
+    border: none;
+}
+
+.look_and_feel {
+    border-right: 2px dashed darkgray;
+    display: table-cell;
+    margin-bottom: 20px;
+    vertical-align: top;
+    margin-right: 20px;
+    position: relative; /* For the limbo accept and reject buttons */
+    display: table-cell;
+}
+
+.look_and_feel:last-child {
+    border-right: none;
+    margin-right: 0px;
+}
+
+.use_cases p {
+    margin-bottom: 10px;
+}
+
+.use_case h2 {
+    margin-bottom: 10px;
+    margin-top: 25px;
+}
+
+.use_case table td {
+    padding: 5px;
+}

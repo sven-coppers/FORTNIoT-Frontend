@@ -1,0 +1,154 @@
+.logo_container {
+    position: relative;
+    float: right;
+    width: 210px;
+}
+
+.logo {
+    height: 50px;
+    position: absolute;
+    top: -1px;
+    right: 0px;
+}
+
+.landing {
+    border: 4px solid #000000;
+    padding: 20px;
+    margin-bottom: -2px;
+    font-family: Verdana;
+}
+
+.landing_container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
+    margin-top: 100px;
+}
+
+.landing_container h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #000000;
+    font-family: Verdana;
+}
+
+.landing_container .briefing {
+    line-height: 140%;
+    font-style: normal;
+    margin-bottom: 18px;
+}
+
+.start_test {
+    background-color: #006eb8;
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.start_test.disabled {
+    background-color: rgb(226, 226, 226);
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: not-allowed;
+}
+
+.case_ready {
+    background-color: #006eb8;
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.case_ready.disabled {
+    background-color: #dddddd;
+    cursor: default;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.instructions {
+    border-bottom: 2px solid black;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-family: Verdana;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+}
+
+.instructions.footer {
+    border-top: 2px solid black;
+    background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 100%);
+    border-bottom: none;
+}
+
+.instructions ul {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.instructions li {
+    margin-left: 20px;
+    list-style: inside;
+    line-height: 180%;
+}
+
+.instructions p {
+    margin-bottom: 15px;
+    line-height: 180%;
+    max-width: 960px;
+}
+
+.instructions p.generic {
+    color: #666666;
+    font-size: 14px;
+}
+
+.progress {
+    width: 100%;
+    background-color: #006eb8;
+    color: #ffffff;
+    text-align: right;
+    font-size: 12px;
+}
+
+.progress p {
+    font-family: Verdana;
+    padding: 3px;
+    padding-right: 5px;
+}
+
+.highlight {
+    color: #006eb8;
+    font-weight: bold;
+}
+
+.cancel_study {
+    color: #ac2118;
+    font-size: 14px;
+    margin-left: 15px;
+}
+
+.thanks {
+    background-color: #d0e8ae;
+    border-color: #649720;
+    color: #649720;
+    padding: 3px;
+    font-weight: bold;
+}
+
+.mobile p {
+    color: #006eb8;
+    font-style: italic;
+}
