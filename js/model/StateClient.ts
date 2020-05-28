@@ -22,22 +22,12 @@ class StateClient {
         this.loadStateFuture();
     }
 
-    setIoTState(hassioStates) {
-        let oThis = this;
-
-        $.each(oThis.mainController.devices, function(identifier: string, device: Device) {
-            if(hassioStates[identifier] != null) {
-                device.setState(hassioStates[identifier], null);
-            }
-        });
-    }
-
     private loadStateHistory() {
         let oThis = this;
         $("#reload").addClass("disabled");
 
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/states/history",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "states_history.json" : "states/history/"),
             type:           "GET",
         }).done(function (data) {
             oThis.stateHistory = data;
@@ -57,7 +47,7 @@ class StateClient {
         $("#reload").addClass("disabled");
 
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/states/future",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "states_future.json" : "states/future/"),
             type:           "GET",
         }).done(function (data) {
             oThis.stateFuture = data;

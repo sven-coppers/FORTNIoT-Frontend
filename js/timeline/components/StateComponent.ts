@@ -9,8 +9,8 @@ class StateComponent extends TimelineComponent {
             min: new Date(new Date().getTime() - 1000 * 60 * 60 * 4.5), // 4 hours before
             max: new Date(new Date().getTime() + 1000 * 60 * 60 * 24.5), // 1 days after
             stack: false, // Do not make the figure taller
-            start: new Date(new Date().getTime() - 1000 * 60 * 60 * 1), // 1 hour before
-            end: new Date(new Date().getTime() + 1000 * 60 * 60 * 5), // 5 hours ahead
+            start: new Date(new Date().getTime() - 1000 * 60 * 60 * 4.5), // 4 hours before
+            end: new Date(new Date().getTime() + 1000 * 60 * 60 * 24.5), //  1 days after
             // rollingMode: {follow: true, offset: 0.3},
             showMajorLabels: false,
             showMinorLabels: false ,

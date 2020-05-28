@@ -1,5 +1,6 @@
 declare var vis;
 
+
 $(document).ready(function() {
     new IoTController();
 });
@@ -11,20 +12,36 @@ class IoTController {
     ruleClient: RuleClient;
     deviceClient: DeviceClient;
     configClient: ConfigClient;
+    public API_URL: string;
 
     private rulesLoaded: boolean;
     private statesLoaded: boolean;
     private devicesLoaded: boolean;
     private configLoaded: boolean;
+    private remote: boolean;
 
     public devices: any = {};
 
     constructor() {
         let oThis = this;
+        this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1;
+
+        if(this.remote) {
+            this.API_URL = "https://research.edm.uhasselt.be/~scoppers/iot/cache/";
+        } else {
+            this.API_URL = "http://localhost:8080/intelligibleIoT/api/";
+        }
 
         this.rulesLoaded = true;
         this.statesLoaded = true;
         this.devicesLoaded = true;
+
+
+        let url = new URL(window.location.href);
+        let useCase = url.searchParams.get("c");
+
+        if(useCase != null) {
+        }
 
         this.initClients();
         this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient);
@@ -68,6 +85,10 @@ class IoTController {
         $("#events_without_changes").click(function() {
             $(".event_item.without_changes").toggleClass("hidden", !$(this).is(":checked"));
         });
+    }
+
+    isRemote(): boolean {
+        return this.remote;
     }
 
     initClients() {

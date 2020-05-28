@@ -1,31 +1,31 @@
 class ConfigClient {
     mainController: IoTController;
 
-    public connectedToHassio: boolean;
+  //  public connectedToHassio: boolean;
     public predictionEngineEnabled: boolean;
     public predictionInterval: number;
     public predictionWindow: number;
 
     constructor(mainController: IoTController) {
         this.mainController = mainController;
-        this.connectedToHassio = false;
+      //  this.connectedToHassio = false;
         this.predictionEngineEnabled = false;
     }
 
-    public isConnectedToHassio(): boolean {
-        return this.connectedToHassio;
-    }
+ //   public isConnectedToHassio(): boolean {
+ //       return this.connectedToHassio;
+ //   }
 
     public isPredictionEngineEnabled(): boolean {
         return this.predictionEngineEnabled;
     }
 
     public refresh() {
-        this.refreshConfig();
+      //  this.refreshConfig();
         this.refreshPredictionEngine();
     }
 
-    private refreshConfig() {
+  /*  private refreshConfig() {
         let oThis = this;
 
         $.ajax({
@@ -35,15 +35,15 @@ class ConfigClient {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION
             }
         }).done(function (data) {
-            oThis.connectedToHassio = data["connected_to_hassio"];
+        //    oThis.connectedToHassio = data["connected_to_hassio"];
         });
-    }
+    } */
 
     public refreshPredictionEngine() {
         let oThis = this;
 
         $.ajax({
-            url: "http://localhost:8080/intelligibleIoT/api/config/predictions",
+            url: this.mainController.API_URL + (this.mainController.isRemote() ? "settings.json" : "config/predictions"),
             type: "GET",
             headers: {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION
@@ -55,9 +55,13 @@ class ConfigClient {
             oThis.mainController.configClientCompleted();
 
             if(oThis.predictionEngineEnabled) {
-                $("#version").text("Version A");
+                $("#version").text("Version A - " + data["use_case"]);
             } else {
-                $("#version").text("Version B"); // Baseline
+                $("#version").text("Version B - " + data["use_case"]); // Baseline
+            }
+
+            if(data["question"] != null) {
+                $("#question").text(" - " + data["question"]);
             }
         });
     }

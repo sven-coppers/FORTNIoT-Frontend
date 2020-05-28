@@ -46,7 +46,7 @@ abstract class TimelineComponent {
         html += '   <div class="timeline_label" id="' + htmlPrefix + '_' + property + '_label">';
 
         if(icon != null) {
-            html += '       <img title="' + label + '" src="img/' + icon + '" />';
+            html += '       <img title="' + label + '" src="img/devices/' + icon + '" />';
         }
 
         html += '       <div class="label_wrapper"><h2 title="' + label + '"> ' + shorthandLabel + '</h2></div>';

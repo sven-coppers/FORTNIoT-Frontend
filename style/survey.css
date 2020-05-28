@@ -9,6 +9,7 @@
     position: absolute;
     top: -1px;
     right: 0px;
+    margin-bottom: 30px;
 }
 
 .landing {
@@ -22,7 +23,7 @@
     margin-left: auto;
     margin-right: auto;
     width: 900px;
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .landing_container h1 {
@@ -151,4 +152,12 @@ h2 {
 .mobile p {
     color: #006eb8;
     font-style: italic;
+}
+
+.emph {
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
 }

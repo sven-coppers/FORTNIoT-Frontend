@@ -16,7 +16,7 @@ class DeviceClient {
         let oThis = this;
 
         $.ajax({
-            url: "http://localhost:8080/intelligibleIoT/api/bram/devices",
+            url: this.mainController.API_URL + (this.mainController.isRemote() ? "devices.json" : "bram/devices"),
             type: "GET",
             headers: {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION
@@ -28,7 +28,7 @@ class DeviceClient {
 
     public loadDevices(timeline: Timeline) {
         $.ajax({
-            url: "http://localhost:8080/intelligibleIoT/api/bram/devices",
+            url: this.mainController.API_URL + (this.mainController.isRemote() ? "devices.json" : "bram/devices"),
             type: "GET",
             headers: {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION

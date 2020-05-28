@@ -31,7 +31,7 @@ class RuleClient {
         $("#reload").addClass("disabled");
 
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/rules/history/",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "rules_history.json" : "rules/history/"),
             type:           "GET",
         }).done(function (data) {
             oThis.executionHistory = data;
@@ -45,7 +45,7 @@ class RuleClient {
         $("#reload").addClass("disabled");
 
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/rules/future/",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "rules_future.json" : "rules/future/"),
             type:           "GET",
         }).done(function (data) {
             oThis.executionFuture = data;
@@ -58,7 +58,7 @@ class RuleClient {
         let oThis = this;
 
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/rules/",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "rules.json" : "rules/"),
             type:           "GET",
             headers: {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION
@@ -79,7 +79,7 @@ class RuleClient {
 
     public loadRules(timeline: Timeline) {
         $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/rules/",
+            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "rules.json" : "rules/"),
             type:           "GET",
             headers: {
                 Accept: "application/json; charset=utf-8" // FORCE THE JSON VERSION

@@ -13,6 +13,6 @@ class WeatherStateComponent extends StateComponent {
 
         label = label.replace("_", " ");
 
-        return '<img class="thumbnail" src="img/weather/' + icon + '.png" /> ' + capitalizeFirstLetter(label);
+        return '<img class="thumbnail" src="img/devices/weather/' + icon + '.png" /> ' + capitalizeFirstLetter(label);
     }
 }

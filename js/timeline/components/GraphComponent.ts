@@ -9,8 +9,8 @@ abstract class GraphComponent extends TimelineComponent {
         return {
             min: new Date(new Date().getTime() - 1000 * 60 * 60 * 4.5), // 4 hours before
             max: new Date(new Date().getTime() + 1000 * 60 * 60 * 24.5), // 1 day after
-            start: new Date(new Date().getTime() - 1000 * 60 * 60 * 1), // 1 hour before
-            end: new Date(new Date().getTime() + 1000 * 60 * 60 * 5), // 5 hours ahead
+            start: new Date(new Date().getTime() - 1000 * 60 * 60 * 4.5), // 1 hour before
+            end: new Date(new Date().getTime() + 1000 * 60 * 60 * 24.5), // 5 hours ahead
             height: '100%',
             drawPoints: false,
 
