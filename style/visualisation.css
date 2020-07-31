@@ -206,8 +206,8 @@ body {
     width: 210px;
     float: left;
     vertical-align: middle;
-  /*  background-color: pink; */
     display: inline-table;
+    height: 100%;
 }
 
 #iot .timeline_label .label_wrapper {
@@ -220,7 +220,7 @@ body {
 }
 
 #iot .timeline_label h2 {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: normal;
 
     line-height: 1.2;
@@ -246,7 +246,7 @@ body {
 #iot .timeline_timeline {
     width: auto;
     height: 43px;
-    margin-left: 175px;
+    margin-left: 210px;
 }
 
 #iot .timeline_attribute {
@@ -518,14 +518,27 @@ body {
 
 #iot .timeline_device_attributes h2 {
     width: 170px;
-    text-align: right;
+    text-align: left;
     color: #666666;
-    font-size: 15px;
     font-weight: normal;
+    padding-top: 7px;
+    padding-left: 10px;
 }
 
+#iot .timeline_device_attribute h2 input {
+    vertical-align: bottom;
+    position: relative;
+    top: 3px;
+}
+
+#iot .timeline_device_attribute h2 label {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+}
 #iot .timeline_device_attribute {
     height: 39px;
+    clear: both;
 }
 
 #iot .state_item_wrapper.new:not(.unfinished) {

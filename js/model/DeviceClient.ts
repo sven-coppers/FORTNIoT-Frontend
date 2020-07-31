@@ -1,9 +1,6 @@
 class DeviceClient {
     mainController: IoTController;
 
-    historyLoaded: boolean;
-    futureLoaded: boolean;
-
     constructor(mainController: IoTController) {
         this.mainController = mainController;
     }

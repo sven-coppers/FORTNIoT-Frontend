@@ -30,7 +30,7 @@ class Timeline {
         this.deviceClient.loadDevices(this);
         this.redrawing = false;
 
-        $(".timeline_state_label").click(function () {
+        $(".timeline_device_main_attribute .timeline_label").click(function () {
             $(this).closest(".timeline_device").find(".timeline_device_attributes").toggle();
         });
     }
@@ -44,19 +44,7 @@ class Timeline {
         // User rules
         for (let ruleID in rules) {
             if(ruleID.indexOf("system_rule") == -1) {
-                let description = "IF " + rules[ruleID]["description"];
-
-                for(let i = 0; i < rules[ruleID]["actions"].length; i++) {
-                    if(i == 0) {
-                        description += " THEN " + rules[ruleID]["actions"][i]["description"];
-                    } else if(i == rules[ruleID]["actions"].length - 1) {
-                        description += ", and " + rules[ruleID]["actions"][i]["description"];
-                    } else {
-                        description += ", " + rules[ruleID]["actions"][i]["description"];
-                    }
-                }
-
-                this.ruleAdapters[ruleID] = new RuleTimeline(ruleID, description, this);
+                this.ruleAdapters[ruleID] = new RuleTimeline(ruleID, rules[ruleID]["description"], this, rules[ruleID]["actions"]);
             }
         }
 
@@ -71,7 +59,6 @@ class Timeline {
         this.axisTimeline = new AxisTimeline(this);
         this.mainController.refresh();
     }
-
 
     /**
      * First, initialise the devices

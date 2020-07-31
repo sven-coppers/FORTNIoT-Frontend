@@ -1,10 +1,33 @@
 class RuleTimeline extends DeviceTimeline {
-    constructor(deviceID: string, label: string, containerTimeline: Timeline) {
+    triggerDescription: string;
+    fullDescription: string;
+
+    constructor(deviceID: string, label: string, containerTimeline: Timeline, actions: any[]) {
         super(containerTimeline, deviceID);
 
+        this.triggerDescription = "IF " + label;
+        this.fullDescription = this.triggerDescription;
+
+        for(let i = 0; i < actions.length; i++) {
+            if(i == 0) {
+                this.fullDescription += " THEN " + actions[i]["description"];
+            } else if(i == actions[i].length - 1) {
+                this.fullDescription += ", and " + actions[i]["description"];
+            } else {
+                this.fullDescription += ", " + actions[i]["description"];
+            }
+        }
+
         this.components = [];
-        this.components.push(new EventComponent(this, this.getMainAttributeContainer(), label, "user_rule.png"));
-        // Disabled for experiment 1: <input type="checkbox" class="rule_enabled" name="enabled" value=" ' + this.getHTMLPrefix() + '" id="' + this.getHTMLPrefix() + '_enabled">
+        this.components.push(new TriggerComponent(this, this.getMainAttributeContainer(), this.triggerDescription, "user_rule.png"));
+
+        for(let i = 0; i < actions.length; i++) {
+            this.components.push(new ActionComponent(this, this.getOtherAttributesContainer(), null, actions[i], ));
+        }
+
+
+
+        // Disabled for experiment 1:
 
         let oThis = this;
 

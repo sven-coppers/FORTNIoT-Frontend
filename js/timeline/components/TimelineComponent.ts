@@ -37,10 +37,6 @@ abstract class TimelineComponent {
     initHTML(parentElement: any, htmlPrefix: string, label: string, property: string, icon: string) {
         let shorthandLabel = label;
 
-        if(label.length > 66) {
-          //  shorthandLabel = shorthandLabel.substr(0, 66) + "...";
-        }
-
         let html = "";
         html += '<div class="timeline_device_attribute" id="' + htmlPrefix + '_' + property + '">';
         html += '   <div class="timeline_label" id="' + htmlPrefix + '_' + property + '_label">';

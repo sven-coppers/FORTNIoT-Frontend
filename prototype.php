@@ -39,9 +39,9 @@
             </div> -->
         <div class="clearfix"></div>
     </div>
-    <div class="rule_tooltip">
+  <!--  <div class="rule_tooltip">
         <label><input type="checkbox" name="rule_enabled" value="rule_enabled" id="rule_enabled" checked> Rule name</label>
-    </div>
+    </div> -->
     </body>
     <!-- Libraries -->
     <script type="text/javascript" src="//unpkg.com/vis-timeline@7.1.0/dist/vis-timeline-graph2d.min.js"></script>
@@ -84,6 +84,8 @@
     <script src="js/timeline/components/devicecomponents/CoordinateComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/ThermostatComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/WindComponent.js"></script>
+    <script src="js/timeline/components/devicecomponents/ActionComponent.js"></script>
+    <script src="js/timeline/components/devicecomponents/TriggerComponent.js"></script>
 
     <script src="js/timeline/devices/AxisTimeline.js"></script>
     <script src="js/timeline/devices/BusStopTimeline.js"></script>

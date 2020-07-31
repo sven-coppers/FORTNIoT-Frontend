@@ -35,14 +35,16 @@ abstract class DeviceTimeline {
         return $("#" + this.getHTMLPrefix() + '_main_attribute');
     }
 
-    getOtherAttributesContainer() {
+    getOtherAttributesContainer() : JQuery<HTMLElement> {
         return $("#" + this.getHTMLPrefix() + '_attributes');
     }
 
     public initBehavior() {
-        // $("#" + oThis.device.getHTMLID() + "_timeline_state_label").click(function() {
-        //      $("#" + oThis.device.getHTMLID() + "_attributes").toggle();
-        //  });
+        let oThis = this;
+
+        this.getMainAttributeContainer().find(".timeline_label").click(function() {
+             oThis.getOtherAttributesContainer().toggle();
+         });
     }
 
     public redrawVisualisation(deviceChanges, feedforward: boolean) {
@@ -131,6 +133,18 @@ abstract class DeviceTimeline {
     clearHighlights() {
         for(let componentIndex in this.components) {
             this.components[componentIndex].clearHighlights();
+        }
+    }
+
+    public addComponent(component: any) {
+        this.components.push(component);
+    }
+
+    public setCollapsed(collapsed: boolean) {
+        if(collapsed) {
+            this.getOtherAttributesContainer().hide();
+        } else {
+            this.getOtherAttributesContainer().show();
         }
     }
 }
