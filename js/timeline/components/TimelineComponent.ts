@@ -102,4 +102,7 @@ abstract class TimelineComponent {
     abstract selectExecution(identifier: string);
 
     abstract clearHighlights();
+
+    // Show that a future state will be in conflict
+    abstract highlightConflictingState(conflictingState: any);
 }

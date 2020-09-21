@@ -17,7 +17,7 @@ abstract class GraphComponent extends TimelineComponent {
             showMajorLabels: false,// No horizontal axis
             showMinorLabels: false, // No horizontal axis
             moment: function (date) {
-                return vis.moment(date).utcOffset('+01:00');
+                return vis.moment(date).utcOffset('+02:00');
             },
             defaultGroup: 'ungrouped'
         };
@@ -77,6 +77,8 @@ abstract class GraphComponent extends TimelineComponent {
         let items = this.items.get({
             fields: ['id', 'x', 'group']    // output the specified fields only
         });
+
+        if(items.length == 0) return null;
 
         let closestDatapointID = items[0].id;
         let closestDatapointDeltaTime = Math.abs(items[0].x["_d"].getTime() - date.getTime());
@@ -184,5 +186,10 @@ abstract class GraphComponent extends TimelineComponent {
         });
 
         this.visualisation.itemsData.remove(items);
+    }
+
+    public highlightConflictingState(conflictingState: any) {
+        // TODO: draw in graphs
+        console.log(conflictingState);
     }
 }

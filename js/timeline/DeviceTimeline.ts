@@ -1,4 +1,5 @@
 abstract class DeviceTimeline {
+
     public containerTimeline: Timeline;
     public deviceName: string;
     protected hasCustomTime: boolean;
@@ -6,6 +7,8 @@ abstract class DeviceTimeline {
     protected components: TimelineComponent[];
     protected visible: boolean;
     protected available: boolean;
+    private changeCoolDown: Number;
+    private redundancyBad: boolean;
 
     protected constructor(containerTimeline: Timeline, deviceName: string) {
         this.containerTimeline = containerTimeline;
@@ -51,6 +54,22 @@ abstract class DeviceTimeline {
         for(let componentIndex in this.components) {
             this.components[componentIndex].redraw(deviceChanges, feedforward);
         }
+    }
+
+    public setRedundancyBad(redundancyBad: boolean){
+        this.redundancyBad = redundancyBad;
+    }
+
+    public isRedundancyBad() {
+        return this.redundancyBad;
+    }
+
+    public setChangeCoolDown(changeCoolDown: number) {
+        this.changeCoolDown = changeCoolDown;
+    }
+
+    public getChangeCoolDown() {
+        return this.changeCoolDown;
     }
 
     public reAlign(range) {
@@ -145,6 +164,12 @@ abstract class DeviceTimeline {
             this.getOtherAttributesContainer().hide();
         } else {
             this.getOtherAttributesContainer().show();
+        }
+    }
+
+    public highlightConflictingState(conflictingState: any) {
+        for(let componentIndex in this.components) {
+            this.components[componentIndex].highlightConflictingState(conflictingState);
         }
     }
 }

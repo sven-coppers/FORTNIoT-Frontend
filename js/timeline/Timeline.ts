@@ -66,76 +66,86 @@ class Timeline {
      * @param devices
      */
     public initializeDevices(devices) {
-        // Sort alphabetically
-        devices.sort(function(a, b): number {
-            return a["friendly_name"].localeCompare(b["friendly_name"]);
-        });
+        let deviceNames = [];
 
-        for (let device of devices) {
-            if(device["id"].indexOf("light.") == 0) {
-                this.deviceAdapters[device["id"]] = new HueTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("lock.") == 0) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "lock.png", this);
-            } else if(device["id"].indexOf("sirene.") == 0) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "sirene.png", this);
-            } else if(device["id"].indexOf("sun.") == 0) {
-                this.deviceAdapters[device["id"]] = new SunTimeline(device["id"], this);
-            } else if(device["id"].indexOf("switch.outlet") == 0) {
-                this.deviceAdapters[device["id"]] = new OutletTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("screen.") == 0) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "screen.png", this);
-            } else if(device["id"].indexOf("weather.dark_sky") == 0) {
-                this.deviceAdapters[device["id"]] = new WeatherTimeline(device["id"], this);
-            } else if(device["id"].indexOf("calendar.") == 0) {
-                this.deviceAdapters[device["id"]] = new CalendarTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("agoralaan_diepenbeek") != -1) {
-                this.deviceAdapters[device["id"]] = new BusStopTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("sensor.moon") != -1) {
-                this.deviceAdapters[device["id"]] = new MoonTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("sensor.people_home_counter") != -1) {
-                this.deviceAdapters[device["id"]] = new PersonCounterTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("routine.") != -1) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "routine.png", this);
-            } else if(device["id"].indexOf("binary_sensor.") != -1) {
-                if(device["id"].indexOf("_contact") != -1) {
-                    this.deviceAdapters[device["id"]] = new ContactTimeline(device["id"], device["friendly_name"], this);
-                } else if(device["id"].indexOf("_acceleration") != -1) {
-                    this.deviceAdapters[device["id"]] = new AccelerationTimeline(device["id"], device["friendly_name"], this);
-                } else if(device["id"].indexOf("sensor_motion") != -1) {
-                    this.deviceAdapters[device["id"]] = new MotionTimeline(device["id"], device["friendly_name"], this);
-                } else if(device["id"].indexOf(".remote_ui") != -1) {
+        for(let deviceName in devices) {
+            deviceNames.push(deviceName);
+        }
+
+        deviceNames.sort();
+
+        for (let deviceName of deviceNames) {
+            let device = devices[deviceName];
+
+            if(deviceName.indexOf("light.") == 0) {
+                this.deviceAdapters[deviceName] = new HueTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("lock.") == 0) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "lock.png", this);
+            } else if(deviceName.indexOf("sirene.") == 0) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "sirene.png", this);
+            } else if(deviceName.indexOf("sun.") == 0) {
+                this.deviceAdapters[deviceName] = new SunTimeline(deviceName, this);
+            } else if(deviceName.indexOf("switch.outlet") == 0) {
+                this.deviceAdapters[deviceName] = new OutletTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("screen.") == 0) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "screen.png", this);
+            } else if(deviceName.indexOf("weather.dark_sky") == 0) {
+                this.deviceAdapters[deviceName] = new WeatherTimeline(deviceName, this);
+            } else if(deviceName.indexOf("calendar.") == 0) {
+                this.deviceAdapters[deviceName] = new CalendarTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("agoralaan_diepenbeek") != -1) {
+                this.deviceAdapters[deviceName] = new BusStopTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("sensor.moon") != -1) {
+                this.deviceAdapters[deviceName] = new MoonTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("sensor.people_home_counter") != -1) {
+                this.deviceAdapters[deviceName] = new PersonCounterTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("routine.") != -1) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "routine.png", this);
+            } else if(deviceName.indexOf("binary_sensor.") != -1) {
+                if(deviceName.indexOf("_contact") != -1) {
+                    this.deviceAdapters[deviceName] = new ContactTimeline(deviceName, device["friendly_name"], this);
+                } else if(deviceName.indexOf("_acceleration") != -1) {
+                    this.deviceAdapters[deviceName] = new AccelerationTimeline(deviceName, device["friendly_name"], this);
+                } else if(deviceName.indexOf("sensor_motion") != -1) {
+                    this.deviceAdapters[deviceName] = new MotionTimeline(deviceName, device["friendly_name"], this);
+                } else if(deviceName.indexOf(".remote_ui") != -1) {
                     // Ignore
                 } else {
-                    console.log("TODO: show timeline for " + device["id"]);
+                    console.log("TODO: show timeline for " + deviceName);
                 }
-            } else if(device["id"].indexOf("battery") != -1) {
-                this.deviceAdapters[device["id"]] = new BatteryTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("smoke") != -1) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "smoke.png", this);
-            } else if(device["id"].indexOf("thermostat.") != -1) {
-                    this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "thermostat.png", this);
-                //    this.deviceAdapters[device["id"]] = new ThermostatTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("_temperature") != -1) {
-                this.deviceAdapters[device["id"]] = new TemperatureTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("wind_speed") != -1) {
-                this.deviceAdapters[device["id"]] = new WindTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("_coordinate") != -1) {
+            } else if(deviceName.indexOf("battery") != -1) {
+                this.deviceAdapters[deviceName] = new BatteryTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("smoke") != -1) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "smoke.png", this);
+            } else if(deviceName.indexOf("thermostat.") != -1) {
+                    this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "thermostat.png", this);
+                //    this.deviceAdapters[deviceName] = new ThermostatTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("_temperature") != -1) {
+                this.deviceAdapters[deviceName] = new TemperatureTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("wind_speed") != -1) {
+                this.deviceAdapters[deviceName] = new WindTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("_coordinate") != -1) {
                 // Decreases performance a lot
-                this.deviceAdapters[device["id"]] = new CoordinateTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("device_tracker.") != -1) {
-                this.deviceAdapters[device["id"]] = new DeviceTrackerTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("heater.") != -1) {
-                this.deviceAdapters[device["id"]] = new HeaterTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf("cooler.") != -1) {
-                this.deviceAdapters[device["id"]] = new AircoTimeline(device["id"], device["friendly_name"], this);
-            } else if(device["id"].indexOf(".roomba") != -1) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"],"roomba.png", this);
-            } else if(device["id"].indexOf("blinds.") != -1) {
-                this.deviceAdapters[device["id"]] = new GenericDeviceTimeline(device["id"], device["friendly_name"], "blinds.png", this);
-            } else if(device["id"].indexOf("person.") != -1) {
-                this.deviceAdapters[device["id"]] = new PersonTimeline(device["id"], device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new CoordinateTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("device_tracker.") != -1) {
+                this.deviceAdapters[deviceName] = new DeviceTrackerTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("heater.") != -1) {
+                this.deviceAdapters[deviceName] = new HeaterTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf("cooler.") != -1) {
+                this.deviceAdapters[deviceName] = new AircoTimeline(deviceName, device["friendly_name"], this);
+            } else if(deviceName.indexOf(".roomba") != -1) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"],"roomba.png", this);
+            } else if(deviceName.indexOf("blinds.") != -1) {
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "blinds.png", this);
+            } else if(deviceName.indexOf("person.") != -1) {
+                this.deviceAdapters[deviceName] = new PersonTimeline(deviceName, device["friendly_name"], this);
             } else {
-                console.log("TODO: show timeline for " + device["id"]);
+                console.log("TODO: show timeline for " + deviceName);
+            }
+
+            if(this.deviceAdapters[deviceName] == null) {
+                this.deviceAdapters[deviceName].setRedundancyBad(device["redundancy_bad"]);
+                this.deviceAdapters[deviceName].setChangeCoolDown(device["change_cooldown"]);
             }
         }
 
@@ -173,13 +183,14 @@ class Timeline {
         }
     }
 
-    public redraw(states, executions, feedforward: boolean) {
+    public redraw(states, executions, conflicts, feedforward: boolean) {
         if(this.redrawing) return;
 
         this.redrawing = true;
 
         this.redrawStates(states, feedforward);
         this.redrawRules(executions);
+        this.redrawConflicts(conflicts);
 
         if(this.selectedExecutionID != null && !feedforward) {
             this.highlightExecution(this.selectedExecutionID);
@@ -204,6 +215,15 @@ class Timeline {
         for(let deviceName in deviceChangesMap) {
             if (typeof this.ruleAdapters[deviceName] !== "undefined") {
                 this.ruleAdapters[deviceName].redrawVisualisation(deviceChangesMap[deviceName]);
+            }
+        }
+    }
+
+    private redrawConflicts(conflicts: any) {
+        for(let conflict of conflicts){
+            console.log(conflict);
+            for(let conflictingState of conflict["conflicting_states"]) {
+                this.deviceAdapters[conflictingState["entity_id"]].highlightConflictingState(conflictingState);
             }
         }
     }
@@ -300,7 +320,7 @@ class Timeline {
         this.clearSelection(true);
 
         let causedByExecutions: string[] = this.ruleClient.getExecutionByAction(stateContextID);
-        let resultedInExecutions: string[] = this.ruleClient.getExecutionsByTrigger(stateContextID);
+        let resultedInExecutions: string[] = this.ruleClient.getExecutionsByCondition(stateContextID);
 
         console.log("\nState " + stateContextID);
 
@@ -427,16 +447,18 @@ class Timeline {
      * @param originalExecutions
      * @param alternativeExecutions
      */
-    showFeedforward(originalStates: any[], alternativeStates: any[], originalExecutions: any[], alternativeExecutions: any[]) {
+    showFeedforward(originalStates: any[], alternativeStates: any[], originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[]) {
         let mergedStates = this.mergeStates(originalStates, alternativeStates);
         let mergedExecutions = this.mergeExecutions(originalExecutions, alternativeExecutions);
+        // TODO: merge conflicts
+        let mergedConflicts = [];
 
         // Show stats:
         //console.log("ORIGINAL FUTURE: " + originalStates.length);
         // console.log("ALTERNATIVE FUTURE: " + alternativeStates.length);
         //this.showMergeStateStats(mergedStates);
 
-        this.redraw(mergedStates, mergedExecutions, true);
+        this.redraw(mergedStates, mergedExecutions, mergedConflicts, true);
     }
 
     mergeExecutions(originalExecutions: any[], alternativeExecutions: any[]) {

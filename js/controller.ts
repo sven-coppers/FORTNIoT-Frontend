@@ -12,12 +12,14 @@ class IoTController {
     ruleClient: RuleClient;
     deviceClient: DeviceClient;
     configClient: ConfigClient;
+    conflictClient: ConflictClient;
     public API_URL: string;
 
     private rulesLoaded: boolean;
     private statesLoaded: boolean;
     private devicesLoaded: boolean;
     private configLoaded: boolean;
+    private conflictsLoaded: boolean;
     private remote: boolean;
 
     public devices: any = {};
@@ -35,7 +37,7 @@ class IoTController {
         this.rulesLoaded = true;
         this.statesLoaded = true;
         this.devicesLoaded = true;
-
+        this.configLoaded = true;
 
         let url = new URL(window.location.href);
         let useCase = url.searchParams.get("c");
@@ -97,6 +99,7 @@ class IoTController {
         this.ruleClient = new RuleClient(this);
         this.deviceClient = new DeviceClient(this);
         this.configClient = new ConfigClient(this);
+        this.conflictClient = new ConflictClient(this);
 
         $(".timeline_device_attributes").toggle();
     }
@@ -113,11 +116,13 @@ class IoTController {
             this.statesLoaded = false;
             this.devicesLoaded = false;
             this.configLoaded = false;
+            this.conflictsLoaded = false;
 
             this.ruleClient.refresh();
             this.stateClient.refresh();
             this.deviceClient.refresh();
             this.configClient.refresh();
+            this.conflictClient.refresh();
         }
     }
 
@@ -136,15 +141,20 @@ class IoTController {
         this.checkLoadingCompleted();
     }
 
+    conflictClientCompleted() {
+        this.conflictsLoaded = true;
+        this.checkLoadingCompleted();
+    }
+
     checkLoadingCompleted() {
-        if(this.rulesLoaded && this.statesLoaded && this.configLoaded) {
+        if(this.rulesLoaded && this.statesLoaded && this.configLoaded && this.conflictsLoaded) {
             $(".devices_column").removeClass("hidden");
             $("#connection_error").remove();
             $("#reload").removeClass("disabled");
             $(".timeline_wrapper").removeClass("hidden");
 
             if(this.timeline != null) {
-                this.timeline.redraw(this.stateClient.getAllStates(), this.ruleClient.getAllExecutions(), false);
+                this.timeline.redraw(this.stateClient.getAllStates(), this.ruleClient.getAllExecutions(), this.conflictClient.getConflicts(), false);
             }
         } else if(!this.rulesLoaded) {
             //console.log("waiting for rules");
@@ -156,6 +166,7 @@ class IoTController {
     showFeedforward(alternativeFutureStates, alternativeFutureExecutions) {
         let originalStates = this.stateClient.getAllStates();
         let originalExecutions = this.ruleClient.getAllExecutions();
+        let originalConflicts = this.conflictClient.getConflicts();
 
         let alternativeStates = [];
         alternativeStates = alternativeStates.concat(this.stateClient.getStatesHistory());
@@ -165,7 +176,10 @@ class IoTController {
         alternativeExecutions = alternativeExecutions.concat(this.ruleClient.getExecutionsHistory());
         alternativeExecutions = alternativeExecutions.concat(alternativeFutureExecutions);
 
-        this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions);
+        let alternativeConflicts = [];
+        // TODO find alternative conflicts
+
+        this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions, originalConflicts, alternativeConflicts);
     }
 
     updateDevices(data) {

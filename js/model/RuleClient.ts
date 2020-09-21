@@ -111,9 +111,11 @@ class RuleClient {
         let result: string[] = [];
 
         for(let execution of this.executionMerged) {
-            for(let actionContext of execution["action_contexts"]) {
-                if(actionContext["id"] === actionContextID) {
-                    result.push(execution["execution_id"]);
+            for(let actionExecution of execution["action_executions"]) {
+                for(let actionContext of actionExecution["resulting_contexts"]) {
+                    if(actionContext["id"] === actionContextID) {
+                        result.push(execution["execution_id"]);
+                    }
                 }
             }
         }
@@ -125,12 +127,12 @@ class RuleClient {
      * Get the executions that were triggered by this state
      * @param triggerContextID
      */
-    public getExecutionsByTrigger(triggerContextID: string) {
+    public getExecutionsByCondition(conditionContextID: string) {
         let result: string[] = [];
 
         for(let execution of this.executionMerged) {
-            for(let triggerContext of execution["trigger_contexts"]) {
-                if(triggerContext["id"] === triggerContextID) {
+            for(let triggerContext of execution["condition_satisfying_contexts"]) {
+                if(triggerContext["id"] === conditionContextID) {
                     result.push(execution["execution_id"]);
                 }
             }
@@ -158,9 +160,7 @@ class RuleClient {
     public getTriggerContextIDsByExecution(execution: any) : string []  {
         let result: string[] = [];
 
-        for(let context of execution["trigger_contexts"]) {
-            result.push(context["id"]);
-        }
+        result.push(execution["trigger_context"]["id"]);
 
         return result;
     }
@@ -172,8 +172,10 @@ class RuleClient {
     public getActionContextIDsByExecution(execution: any) : string [] {
         let result: string[] = [];
 
-        for(let context of execution["action_contexts"]) {
-            result.push(context["id"]);
+        for(let actionExecution of execution["action_executions"]) {
+            for(let actionContext of actionExecution["resulting_contexts"]) {
+                result.push(actionContext["id"]);
+            }
         }
 
         return result;

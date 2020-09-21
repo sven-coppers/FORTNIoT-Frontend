@@ -15,7 +15,7 @@ class StateComponent extends TimelineComponent {
             showMajorLabels: false,
             showMinorLabels: false ,
             moment: function(date) {
-                return vis.moment(date).utcOffset('+01:00');
+                return vis.moment(date).utcOffset('+02:00');
             }
         };
     }
@@ -175,6 +175,7 @@ class StateComponent extends TimelineComponent {
         }
 
         let result = '<div class="state_item_wrapper' + additionalClasses + '">';
+        result += '    <div class="state_item_icon"><img src="img/warning.png" /></div>';
         result += '    <div class="state_item_arrow">&nbsp;</div>';
         result += '    <div class="state_item_content">' + content + '</div>';
 
@@ -189,5 +190,15 @@ class StateComponent extends TimelineComponent {
 
     clearHighlights() {
 
+    }
+
+    public highlightConflictingState(conflict: any) {
+        let item = this.visualisation.itemsData.get(conflict["context"]["id"]);
+
+        if(item != null) {
+            item["content"] = item["content"].split("trigger").join("").replace("state_item_wrapper", "state_item_wrapper conflict");
+            this.items.update(item);
+            this.parentDevice.setVisible(true);
+        }
     }
 }
