@@ -10,6 +10,8 @@ class EventComponent extends StateComponent {
 
         let options = this.getDefaultOptions();
 
+        options["editable"] = true;
+
         // Create a Timeline
         this.visualisation = new vis.Timeline(document.getElementById(DOMElementID));
         this.visualisation.setOptions(options);

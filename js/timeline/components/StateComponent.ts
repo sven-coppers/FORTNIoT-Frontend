@@ -13,7 +13,7 @@ class StateComponent extends TimelineComponent {
             end: new Date(new Date().getTime() + 1000 * 60 * 60 * 24.5), //  1 days after
             // rollingMode: {follow: true, offset: 0.3},
             showMajorLabels: false,
-            showMinorLabels: false ,
+            showMinorLabels: false,
             moment: function(date) {
                 return vis.moment(date).utcOffset('+02:00');
             }
