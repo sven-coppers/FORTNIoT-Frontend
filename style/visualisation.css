@@ -202,6 +202,12 @@ body {
     width: 100%;
 }
 
+#iot #all_rules_main_attribute .timeline_attribute,
+#iot #all_rules_main_attribute .timeline_device_attribute,
+#iot #all_rules_main_attribute .timeline_timeline {
+    height: auto;
+}
+
 #iot .timeline_label {
     width: 210px;
     float: left;
@@ -293,7 +299,6 @@ body {
 #iot .timeline_device:last-child {
     border: none;
     margin-bottom: 0px;
-    height: 75px;
 }
 
 #iot .color_timeline .colored {

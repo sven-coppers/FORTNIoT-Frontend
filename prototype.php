@@ -88,6 +88,7 @@
     <script src="js/timeline/components/devicecomponents/WindComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/ActionComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/TriggerComponent.js"></script>
+    <script src="js/timeline/components/devicecomponents/RulesComponent.js"></script>
 
     <script src="js/timeline/devices/AxisTimeline.js"></script>
     <script src="js/timeline/devices/BusStopTimeline.js"></script>
@@ -115,6 +116,7 @@
     <script src="js/timeline/devices/GenericDeviceTimeline.js"></script>
     <script src="js/timeline/devices/ThermostatTimeline.js"></script>
     <script src="js/timeline/devices/WindTimeline.js"></script>
+    <script src="js/timeline/devices/RulesTimeline.js"></script>
 
     <script src="js/timeline/Timeline.js"></script>
     <script src="js/controller.js"></script>

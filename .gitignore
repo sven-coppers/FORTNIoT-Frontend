@@ -1,5 +1,6 @@
 node_modules/
 *.map
-.idea/
 *.js
 cache/
+.idea/httpRequests/
+.idea/libraries/

@@ -7,6 +7,7 @@ class Timeline {
 
     private deviceAdapters: {};
     private ruleAdapters: {};
+    private rulesAdapter: RulesTimeline;
     private axisTimeline: AxisTimeline;
 
     private hasCustomTime: boolean;
@@ -26,6 +27,7 @@ class Timeline {
         this.showingOnlyContext = true;
         this.ruleAdapters = {};
         this.deviceAdapters = {};
+        this.rulesAdapter = null;
 
         this.deviceClient.loadDevices(this);
         this.redrawing = false;
@@ -44,19 +46,20 @@ class Timeline {
         // User rules
         for (let ruleID in rules) {
             if(ruleID.indexOf("system_rule") == -1) {
-                this.ruleAdapters[ruleID] = new RuleTimeline(ruleID, rules[ruleID]["description"], this, rules[ruleID]["actions"]);
+       //         this.ruleAdapters[ruleID] = new RuleTimeline(ruleID, rules[ruleID]["description"], this, rules[ruleID]["actions"]);
             }
         }
 
         // System rules
         for (let ruleID in rules) {
             if(ruleID.indexOf("system_rule") != -1) {
-                this.ruleAdapters[ruleID] = new ImplicitRuleTimeline(ruleID, rules[ruleID]["description"], this);
+        //        this.ruleAdapters[ruleID] = new ImplicitRuleTimeline(ruleID, rules[ruleID]["description"], this);
             }
         }
 
         // Finally render the axis and load actual data
-        this.axisTimeline = new AxisTimeline(this);
+    //    this.axisTimeline = new AxisTimeline(this);
+        this.rulesAdapter = new RulesTimeline(this);
         this.mainController.refresh();
     }
 
@@ -164,7 +167,9 @@ class Timeline {
             adapter.reAlign(range);
         });
 
-        this.axisTimeline.reAlign(range);
+      //  this.axisTimeline.reAlign(range);
+
+        this.rulesAdapter.reAlign(range);
     }
 
     public updateDevices(devices) {
@@ -271,7 +276,7 @@ class Timeline {
             adapter.drawCustomTime(date);
         });
 
-        this.axisTimeline.drawCustomTime(date);
+      //  this.axisTimeline.drawCustomTime(date);
 
         this.hasCustomTime = true;
     }
@@ -424,7 +429,7 @@ class Timeline {
                 adapter.clearCustomTime();
             });
 
-            this.axisTimeline.clearCustomTime();
+          //  this.axisTimeline.clearCustomTime();
         }
     }
 
