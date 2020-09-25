@@ -59,7 +59,8 @@ class Timeline {
 
         // Finally render the axis and load actual data
     //    this.axisTimeline = new AxisTimeline(this);
-        this.rulesAdapter = new RulesTimeline(this);
+
+        this.rulesAdapter = new RulesTimeline(this, rules);
         this.mainController.refresh();
     }
 
@@ -194,8 +195,8 @@ class Timeline {
         this.redrawing = true;
 
         this.redrawStates(states, feedforward);
-        this.redrawRules(executions);
-        this.redrawConflicts(conflicts);
+        this.redrawRules(executions, feedforward);
+        //this.redrawConflicts(conflicts);
 
         if(this.selectedExecutionID != null && !feedforward) {
             this.highlightExecution(this.selectedExecutionID);
@@ -214,14 +215,16 @@ class Timeline {
         }
     }
 
-    private redrawRules(executionEvents) {
-        let deviceChangesMap = this.groupChangesByRule(executionEvents);
+    private redrawRules(executionEvents, feedforward: boolean) {
+        this.rulesAdapter.redrawVisualisation(executionEvents, feedforward);
+
+     /*   let deviceChangesMap = this.groupChangesByRule(executionEvents);
 
         for(let deviceName in deviceChangesMap) {
             if (typeof this.ruleAdapters[deviceName] !== "undefined") {
                 this.ruleAdapters[deviceName].redrawVisualisation(deviceChangesMap[deviceName]);
             }
-        }
+        } */
     }
 
     private redrawConflicts(conflicts: any) {

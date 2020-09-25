@@ -28,10 +28,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style/general.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/general.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/style/visualisation.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/visualisation.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -277,7 +281,7 @@
       <workItem from="1600935594433" duration="6000" />
       <workItem from="1600935636904" duration="32000" />
       <workItem from="1600952404351" duration="266000" />
-      <workItem from="1600952692349" duration="5608000" />
+      <workItem from="1600952692349" duration="20263000" />
     </task>
     <servers />
   </component>
@@ -482,10 +486,10 @@
     </state>
     <state width="2517" height="344" key="GridCell.Tab.6.right/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600935258978" />
     <state width="1877" height="344" key="GridCell.Tab.6.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600862016435" />
-    <state x="267" y="-1254" key="SettingsEditor" timestamp="1600958970487">
+    <state x="267" y="-1254" key="SettingsEditor" timestamp="1601032612150">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600958970487" />
+    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1601032612150" />
     <state x="440" y="-1046" key="SettingsEditor/0.0.1920.1040/0.-1200.1920.1160@0.-1200.1920.1160" timestamp="1600182449729" />
     <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1600692435582">
       <screen x="-320" y="-1440" width="2560" height="1400" />

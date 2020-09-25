@@ -162,11 +162,26 @@ body {
 
 #iot .vis-labelset .vis-label .vis-inner {
     height: 28px;
+    font-size: 13px;
+    padding-left: 0px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 #iot .vis-labelset .vis-label {
     padding-top: 5px;
+
 }
+
+#iot .vis-labelset .vis-group-level-1.vis-label {
+    padding-top: 0px;
+}
+
+#iot .vis-labelset .vis-group-level-1.vis-label .vis-inner {
+     padding-top: 0px;
+ }
 
 #iot .vis-panel.vis-left  {
     width: 40px;
@@ -206,6 +221,7 @@ body {
 #iot #all_rules_main_attribute .timeline_device_attribute,
 #iot #all_rules_main_attribute .timeline_timeline {
     height: auto;
+    margin-left: 0px;
 }
 
 #iot .timeline_label {
@@ -240,13 +256,18 @@ body {
     margin: 0px;
 }
 
-#iot .timeline_label img {
+#iot .timeline_label img,
+#iot .vis-inner img {
     /*background-color: yellow; */
     height: 15px;
     vertical-align: middle;
     display: inline-block;
     margin-bottom: 13px;
     margin-top: 12px;
+}
+
+#iot .vis-inner img {
+    margin-right: 5px;
 }
 
 #iot .timeline_timeline {
@@ -614,4 +635,34 @@ body {
 #iot #timeline_axis_axis {
     position: relative;
    /* top: -31px; */
+}
+
+#iot #all_rules_main_attribute .vis-panel.vis-left {
+    width: 250px;
+}
+
+#iot #all_rules_main_attribute .timeline_label {
+    display: none;
+}
+
+.vis-label.vis-nesting-group:before {
+    float: right;
+    margin-top: 7px;
+}
+
+#iot #all_rules_main_attribute .vis-label.vis-nested-group.vis-group-level-1,
+#iot #all_rules_main_attribute .vis-label.vis-nested-group.vis-group-level-2 {
+    background-color: white;
+}
+
+#iot #all_rules_main_attribute .vis-label.vis-nested-group.vis-group-level-2 .vis-inner {
+    margin-left: 15px;
+}
+
+#iot #all_rules_main_attribute .vis-label.vis-nesting-group.collapsed:before {
+  /*  content: "+" */
+}
+
+#iot #all_rules_main_attribute .vis-label.vis-nesting-group.expanded:before {
+   /* content: "-" */
 }

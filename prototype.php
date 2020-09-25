@@ -7,9 +7,9 @@
         <!-- General Styling -->
         <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
         <link type="text/css" rel="stylesheet" href="style/reset.css">
-        <link type="text/css" rel="stylesheet" href="style/frame.css">
-        <link type="text/css" rel="stylesheet" href="style/general.css">
-        <link type="text/css" rel="stylesheet" href="style/visualisation.css">
+       <link type="text/css" rel="stylesheet" href="style/frame.css">
+           <link type="text/css" rel="stylesheet" href="style/general.css">
+          <link type="text/css" rel="stylesheet" href="style/visualisation.css">
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     </head>
     <body>
@@ -46,9 +46,10 @@
     </body>
     <!-- Libraries -->
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--  <script type="text/javascript" src="https://unpkg.com/moment@2.29.0/min/moment.min.js"></script>-->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!-- Helpers -->
+      <!-- Helpers -->
     <script src="js/helpers/array.js"></script>
     <script src="js/helpers/string.js"></script>
     <script src="js/helpers/logger.js"></script>
