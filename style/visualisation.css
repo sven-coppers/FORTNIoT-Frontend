@@ -313,6 +313,15 @@ body {
     padding: 0px;
 }
 
+#iot .vis-item-content input[type=checkbox] {
+    margin-left: -7px;
+}
+
+#iot .vis-item.conflict {
+    background-color: #ffddd559;
+    color: #ac2118;
+}
+
 #iot .timeline_device {
     border-bottom: 1px solid #bfbfbf;
 }
@@ -363,8 +372,9 @@ body {
 }
 
 .vis-item .state_item_wrapper.conflict {
-    border: 1px solid orange;
-    background-color: #fff2dc;
+    /*border: 1px solid orange;
+    background-color: #fff2dc; */
+    color: #ac2118;
 }
 
 .vis-item .state_item_wrapper.trigger,
@@ -665,4 +675,58 @@ body {
 
 #iot #all_rules_main_attribute .vis-label.vis-nesting-group.expanded:before {
    /* content: "-" */
+}
+
+#iot .checkbox {
+    border: 1px solid #1ea9f4;
+    border-radius: 3px;
+    background: white;
+    margin-left: -7px;
+    color: white;
+    padding: 0px 1px 0px 1px;
+    font-size: 15px;
+    transition: background 0.15s ease, border 0.15s ease, color 0.20s ease;
+}
+
+#iot .checkbox.conflict {
+    border: 1px solid #ac2118;
+}
+
+#iot .checkbox.feedforward_checked {
+    border: 1px solid #1ea9f4;
+    background: #e0f3ff;
+    color: #1ea9f4;
+    cursor: pointer;
+    /*border-radius: 8px; */
+}
+
+#iot .checkbox.conflict.feedforward_checked {
+    border: 1px solid #ac2118;
+    background: #ffddd5;
+    color: #ac2118;
+    cursor: pointer;
+}
+
+#iot .checkbox.checked {
+    border: 1px solid #1ea9f4;
+    background-color: #1ea9f4;
+    color: white;
+}
+
+#iot .checkbox.conflict.checked {
+    border: 1px solid #ac2118;
+    background-color: #ac2118;
+    color: white;
+}
+
+#iot .checkbox.checked.feedforward_unchecked {
+    border: 1px solid #404040;
+    background: #f2f2f2;
+    color: #f2f2f2;
+    cursor: pointer;
+}
+
+
+#iot .vis-item.vis-point.vis-selected {
+    background-color: transparent;
 }

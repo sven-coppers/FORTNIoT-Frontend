@@ -1,8 +1,8 @@
-class RulesComponent extends StateComponent {
+class RulesComponent extends EventComponent {
     rules: any;
 
     constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any) {
-        super(parentDevice, parentElement, null, null, null);
+        super(parentDevice, parentElement, null, null);
         this.rules = rules;
 
         this.initRules()
@@ -15,6 +15,7 @@ class RulesComponent extends StateComponent {
         this.options = this.getDefaultOptions();
         this.options["showMajorLabels"] = true;
         this.options["showMinorLabels"] = true;
+        this.options["stack"] = true;
 
         this.visualisation = new vis.Timeline(document.getElementById(DOMElementID));
         this.visualisation.setOptions(this.options);
@@ -58,54 +59,107 @@ class RulesComponent extends StateComponent {
         }
     }
 
-    redraw(ruleExecutions: any, feedforward) {
-        let startDay = vis.moment().startOf("month").startOf("week").isoWeekday(1);
+    redraw(ruleExecutions: any) {
+        this.items.clear();
 
-        var now = vis.moment().minutes(0).seconds(0).milliseconds(0);
-        var itemCount = 60;
+        for(let i = 0; i < ruleExecutions.length; i++) {
+            let ruleExecution = ruleExecutions[i];
+            let hasEffects: boolean = false;
 
-        let startDate = new Date();
-        var endDate = new Date(startDate.getTime() + 60 * 60 * 24 * 1000);
+            for(let actionExecutionIndex in ruleExecution["action_executions"]) {
+                let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
 
+                let actionEvent = {
+                    id: actionExecution["action_execution_id"],
+                    group: actionExecution["action_id"],
+                    content: this.createCheckbox(actionExecution["action_execution_id"], actionExecution["snoozed"]),
+                    start: ruleExecution["datetime"],
+                    type: 'point'
+                };
+                this.items.add(actionEvent);
+            }
 
-        var groupIds = this.groups.getIds();
-        var types = ['box', 'point', 'range', 'background']
-        for (var i = 0; i < itemCount; i++) {
-            var rInt = this.randomIntFromInterval(1, 30);
-            var start = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-            var end = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-
-
-
-
-            var randomGroupId = groupIds[this.randomIntFromInterval(1, groupIds.length)];
-            var type = types[this.randomIntFromInterval(0, 3)]
-
-
-            let item = {
-                id: i,
-                group: randomGroupId,
-                content: 'item ' + i + ' ' + rInt,
-                start: start,
-                end: end,
-                type: type
+            let RuleEvent = {
+                id: ruleExecution["execution_id"],
+                group: ruleExecution["id"],
+                content: this.createHTML(ruleExecution["execution_id"]),
+                start: ruleExecution["datetime"],
+                type: 'point'
             };
 
-            this.items.add(item);
+            this.items.add(RuleEvent);
         }
     }
 
-    randomIntFromInterval(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    reAlign(range) {
-        super.reAlign(range);
-        this.visualisation.redraw();
-        //this.setItems();
-    }
-
     itemClicked(properties) {
+        if(properties["item"] != null) {
+            let checkbox = $(properties.event.path[0]).closest(".checkbox");
+
+            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
+        }
+
         return false;
+    }
+
+    createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
+        let result : string = "";
+        let classNames: string = "checkbox";
+
+        if(!snoozed) {
+            classNames += " checked";
+        }
+
+        if(Math.random() >= 0.5) {
+            classNames += " conflict";
+        }
+
+        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
+
+        return result;
+    }
+
+    redrawConflictsBackgrounds(conflicts: any) {
+        for(let conflictIndex in conflicts) {
+            let conflict = conflicts[conflictIndex];
+
+            let conflictStart = new Date(conflict["conflicting_states"][0]["last_changed"]);
+            let conflictEnd = new Date(conflict["conflicting_states"][0]["last_changed"]);
+
+            for(let conflictingActionIndex in conflict["conflicting_states"]) {
+                let conflictingAction = conflict["conflicting_states"][conflictingActionIndex];
+                let conflictingActionDate = new Date(conflictingAction["last_changed"]);
+
+                conflictStart = new Date(Math.min(conflictStart.getTime(), conflictingActionDate.getTime()));
+                conflictEnd = new Date(Math.max(conflictEnd.getTime(), conflictingActionDate.getTime()));
+            }
+
+            let conflictEvent = {
+                id: "conflict_" + conflictIndex,
+                className: 'conflict',
+                content: conflict["conflict_type"],
+                start: conflictStart,
+                end: conflictEnd,
+                type: 'background'
+            };
+
+            this.items.add(conflictEvent);
+        }
+
+        $(".checkbox").on("click", function() {
+            $(this).toggleClass("checked");
+            $(this).removeClass("feedforward_checked");
+            $(this).removeClass("feedforward_unchecked");
+        })
+
+        $(".checkbox").hover(function() {
+            if($(this).hasClass("checked")) {
+                $(this).addClass("feedforward_unchecked");
+            } else {
+                $(this).addClass("feedforward_checked");
+            }
+        }, function () {
+            $(this).removeClass("feedforward_checked");
+            $(this).removeClass("feedforward_unchecked");
+        });
     }
 }

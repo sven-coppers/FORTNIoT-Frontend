@@ -46,7 +46,7 @@ class IoTController {
         }
 
         this.initClients();
-        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient);
+        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient,this.conflictClient);
 
         $("#reload").click(function() {
             oThis.refresh();

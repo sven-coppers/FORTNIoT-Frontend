@@ -1,3 +1,0 @@
-class TriggerComponent extends EventComponent {
-
-}

@@ -60,11 +60,11 @@ class EventComponent extends StateComponent {
     createHTML(executionID: string) : string {
         let result : string = "";
 
-        if(this.parentDevice.containerTimeline.anyActionsVisible(executionID)) {
+    //    if(this.parentDevice.containerTimeline.anyActionsVisible(executionID)) {
             result += '<div class="event_item">&nbsp;</div>';
-        } else {
+    /*    } else {
             result += '<div class="event_item without_changes">&nbsp;</div>';
-        }
+        }*/
 
         return result;
     }

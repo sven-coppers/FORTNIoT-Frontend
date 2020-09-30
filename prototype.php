@@ -87,8 +87,6 @@
     <script src="js/timeline/components/devicecomponents/CoordinateComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/ThermostatComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/WindComponent.js"></script>
-    <script src="js/timeline/components/devicecomponents/ActionComponent.js"></script>
-    <script src="js/timeline/components/devicecomponents/TriggerComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/RulesComponent.js"></script>
 
     <script src="js/timeline/devices/AxisTimeline.js"></script>

@@ -4,11 +4,11 @@ class Timeline {
     private stateClient: StateClient;
     private deviceClient: DeviceClient;
     private configClient: ConfigClient;
+    private conflictsClient: ConflictClient;
 
     private deviceAdapters: {};
     private ruleAdapters: {};
     private rulesAdapter: RulesTimeline;
-    private axisTimeline: AxisTimeline;
 
     private hasCustomTime: boolean;
 
@@ -16,12 +16,13 @@ class Timeline {
     private showingOnlyContext: boolean;
     private redrawing: boolean;
 
-    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient) {
+    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient) {
         this.mainController = mainController;
         this.ruleClient = ruleClient;
         this.stateClient = stateClient;
         this.deviceClient = deviceClient;
         this.configClient = configClient;
+        this.conflictsClient = conflictsClient;
         this.hasCustomTime = false;
         this.selectedExecutionID = null;
         this.showingOnlyContext = true;
@@ -168,8 +169,6 @@ class Timeline {
             adapter.reAlign(range);
         });
 
-      //  this.axisTimeline.reAlign(range);
-
         this.rulesAdapter.reAlign(range);
     }
 
@@ -196,7 +195,7 @@ class Timeline {
 
         this.redrawStates(states, feedforward);
         this.redrawRules(executions, feedforward);
-        //this.redrawConflicts(conflicts);
+        this.redrawConflicts(conflicts);
 
         if(this.selectedExecutionID != null && !feedforward) {
             this.highlightExecution(this.selectedExecutionID);
@@ -228,12 +227,13 @@ class Timeline {
     }
 
     private redrawConflicts(conflicts: any) {
-        for(let conflict of conflicts){
-            console.log(conflict);
+        for(let conflict of conflicts) {
             for(let conflictingState of conflict["conflicting_states"]) {
                 this.deviceAdapters[conflictingState["entity_id"]].highlightConflictingState(conflictingState);
             }
         }
+
+        this.rulesAdapter.redrawConflicts(conflicts);
     }
 
     groupChangesByRule(changes) {
@@ -324,10 +324,40 @@ class Timeline {
         }
     }
 
+    actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
+      //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
+
+        // Get trigger entity ID and execution time by using the actionExecutionID
+        let ruleExecution = this.ruleClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+        let actionExecution = this.ruleClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+      //  console.log(ruleExecution);
+
+        if(newEnabled) {
+            // Now enabled -> remove snooze
+            this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
+        } else {
+            // // Now snoozed -> add snooze
+            let snoozedAction = {};
+            snoozedAction["action_id"] = actionID;
+            snoozedAction["conflict_time_window"] = 20000;
+            snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
+            snoozedAction["conflict_time"] = ruleExecution["datetime"];
+
+
+            this.ruleClient.commitNewSnoozedAction(snoozedAction);
+        }
+    }
+
     stateHighlighted(stateContextID: string) {
         this.clearSelection(true);
 
         let causedByExecutions: string[] = this.ruleClient.getExecutionByAction(stateContextID);
+        let relatedConflicts: any [] = this.conflictsClient.getRelatedConflict(stateContextID);
+
+   //     this.rulesAdapter.redrawConflicts(relatedConflicts);
+
+
+
         let resultedInExecutions: string[] = this.ruleClient.getExecutionsByCondition(stateContextID);
 
         console.log("\nState " + stateContextID);
@@ -345,13 +375,10 @@ class Timeline {
         } else {
             console.log("\tCause unknown");
             this.clearSelection(false);
-     /*       console.log("\tResulted in:");
-            for(let executionID of resultedInExecutions) {
-                console.log("\t - Execution " + executionID);
-                this.highlightExecution(executionID);
-            }*/
         }
     }
+
+
 
     anyActionsVisible(executionID: string ): boolean {
         let execution = this.ruleClient.getExecutionByID(executionID);

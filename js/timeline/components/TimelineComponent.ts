@@ -70,6 +70,37 @@ abstract class TimelineComponent {
         });
     }
 
+    initDummyData(itemCount: number) {
+        let startDate = new Date();
+        var endDate = new Date(startDate.getTime() + 60 * 60 * 24 * 1000);
+        var groupIds = this.groups.getIds();
+        var types = ['box', 'point', 'range', 'background']
+        for (var i = 0; i < itemCount; i++) {
+            var rInt = this.randomIntFromInterval(1, 30);
+            var start = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+            var end = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+
+
+            var randomGroupId = groupIds[this.randomIntFromInterval(1, groupIds.length)];
+            var type = types[this.randomIntFromInterval(0, 3)]
+
+            let item = {
+                id: i,
+                group: randomGroupId,
+                content: 'item ' + i + ' ' + rInt,
+                start: start,
+                end: end,
+                type: type
+            };
+
+            this.items.add(item);
+        }
+    }
+
+    private randomIntFromInterval(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
     abstract itemClicked(properties);
 
     reAlign(range) {

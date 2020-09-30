@@ -103,6 +103,29 @@ class RuleClient {
         });
     }
 
+    public commitNewSnoozedAction(snoozedAction) {
+        let oThis = this;
+        $.ajax({
+            url:            "http://localhost:8080/intelligibleIoT/api/overrides/snoozed_actions",
+            type:           "POST",
+            data: JSON.stringify(snoozedAction),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function (data) {
+            oThis.mainController.refresh();
+        });
+    }
+
+    public commitRemoveSnoozedAction(snoozedActionID) {
+        let oThis = this;
+        $.ajax({
+            url:            "http://localhost:8080/intelligibleIoT/api/overrides/snoozed_actions/" + snoozedActionID,
+            type:           "DELETE"
+        }).done(function (data) {
+            oThis.mainController.refresh();
+        });
+    }
+
     /**
      * Get the execution that resulted in this state
      * @param actionContextID
@@ -121,6 +144,22 @@ class RuleClient {
         }
 
         return result;
+    }
+
+    /**
+     * Get the ruleExecution that contains this actionExecution
+     * @param actionExecutionID
+     */
+    public getRuleExecutionByActionExecutionID(actionExecutionID: string) {
+        for(let execution of this.executionMerged) {
+            for(let actionExecution of execution["action_executions"]) {
+                if(actionExecution["action_execution_id"] == actionExecutionID) {
+                    return execution;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -181,6 +220,8 @@ class RuleClient {
         return result;
     }
 
+
+
     private checkLoadingCompleted() {
         if(this.historyLoaded && this.futureLoaded) {
             this.executionMerged = [];
@@ -201,5 +242,15 @@ class RuleClient {
 
     getExecutionsHistory() {
         return this.executionHistory;
+    }
+
+    getActionExecutionByActionExecutionID(ruleExecution: any, actionExecutionID: string) {
+        for(let actionExecution of ruleExecution["action_executions"]) {
+            if(actionExecution["action_execution_id"] == actionExecutionID) {
+                return actionExecution;
+            }
+        }
+
+        return null;
     }
 }

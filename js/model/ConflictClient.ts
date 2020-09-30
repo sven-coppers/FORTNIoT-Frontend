@@ -1,6 +1,6 @@
 class ConflictClient {
     mainController: IoTController;
-    futureConflicts: [];
+    futureConflicts: any [];
 
     constructor(mainController: IoTController) {
         this.mainController = mainController;
@@ -19,12 +19,29 @@ class ConflictClient {
             type: "GET",
         }).done(function (data) {
             oThis.futureConflicts = data;
-            console.log(data);
             oThis.mainController.conflictClientCompleted();
         });
     }
 
     getConflicts() {
         return this.futureConflicts;
+    }
+
+    getRelatedConflict(stateContextID: string)  {
+        let result = [];
+
+        for(let conflictIndex in this.futureConflicts) {
+            let conflict = this.futureConflicts[conflictIndex];
+
+            for(let conflictingActionIndex in conflict["conflicting_states"]) {
+                let conflictingActionState = conflict["conflicting_states"][conflictingActionIndex];
+
+                if(conflictingActionState["context"]["id"] == stateContextID) {
+                    result.push(conflict);
+                }
+            }
+        }
+
+        return result;
     }
 }

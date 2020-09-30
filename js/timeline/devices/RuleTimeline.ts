@@ -19,10 +19,10 @@ class RuleTimeline extends DeviceTimeline {
         }
 
         this.components = [];
-        this.components.push(new TriggerComponent(this, this.getMainAttributeContainer(), this.triggerDescription, "user_rule.png"));
+      //  this.components.push(new TriggerComponent(this, this.getMainAttributeContainer(), this.triggerDescription, "user_rule.png"));
 
         for(let i = 0; i < actions.length; i++) {
-            this.components.push(new ActionComponent(this, this.getOtherAttributesContainer(), null, actions[i], ));
+     //       this.components.push(new ActionComponent(this, this.getOtherAttributesContainer(), null, actions[i], ));
         }
 
 
