@@ -379,6 +379,7 @@ body {
 }
 
 .vis-item .state_item_wrapper.trigger,
+.vis-item .state_item_wrapper.condition,
 .vis-item .state_item_wrapper.action {
     border: 1px solid #ffe000;
     background-color: #f8ffdc;
@@ -390,7 +391,9 @@ body {
     height: 100%;
 }
 
-.vis-item .state_item_wrapper.trigger .state_item_arrow {
+
+.vis-item .state_item_wrapper.trigger .state_item_arrow,
+.vis-item .state_item_wrapper.condition .state_item_arrow {
     content: "";
     position: absolute;
     top: 50%;
@@ -419,12 +422,13 @@ body {
     margin-left: 1px;
     left: 0px;
     z-index: 1;
-    transition: 0.3s;
 }
 
+.vis-item .state_item_wrapper.trigger .state_item_icon,
 .vis-item .state_item_wrapper.conflict .state_item_icon  {
     display: inline;
 }
+
 
 .vis-item .state_item_icon {
     float: left;
@@ -434,12 +438,14 @@ body {
 
 .vis-item .state_item_icon img {
     height: 14px;
+    margin-left: 14px;
+    padding-top: 1px;
 }
 
 .vis-item .state_item_content {
     vertical-align: middle;
     padding-top: 4px;
-    margin-left: 16px;
+    margin-left: 30px;
     position: relative;
     z-index: 1;
     font-size: 13px;
@@ -543,13 +549,15 @@ body {
     width: 30px;
 }
 
-#iot .state_item_wrapper.unfinished.trigger .state_item_mask {
+#iot .state_item_wrapper.unfinished.trigger .state_item_mask,
+#iot .state_item_wrapper.unfinished.condition .state_item_mask {
     left: 15px;
     width: 15px;
     height: 21px;
 }
 
 #iot .state_item_wrapper.unfinished.action .state_item_mask,
+#iot .state_item_wrapper.unfinished.condition .state_item_mask,
 #iot .state_item_wrapper.unfinished.trigger .state_item_mask {
     background-image: linear-gradient(to right, rgb(248, 255, 220), rgba(255,255,255,1));
     border: 1px solid #ffe000;

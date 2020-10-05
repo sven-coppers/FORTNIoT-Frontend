@@ -150,10 +150,10 @@ class StateComponent extends TimelineComponent {
         if(endTime != null) {
             item["end"] = endTime;
             item["type"] = 'range';
-            item["content"] = this.createHTML(label, true, json["future"]);
+            item["content"] = this.createHTML(id, label, true, json["future"]);
         } else {
             item["type"] = 'point';
-            item["content"] = this.createHTML(label, false, json["future"]);
+            item["content"] = this.createHTML(id, label, false, json["future"]);
         }
 
         return item;
@@ -163,7 +163,7 @@ class StateComponent extends TimelineComponent {
         return capitalizeFirstLetter(json["state"].replace("_", " "));
     }
 
-    createHTML(content: string, hasEnd: boolean, future: string) : string {
+    createHTML(id: string, content: string, hasEnd: boolean, future: string) : string {
         let additionalClasses: string = "";
 
         if(!hasEnd) {
@@ -174,8 +174,8 @@ class StateComponent extends TimelineComponent {
             additionalClasses += " " + future.toLowerCase();
         }
 
-        let result = '<div class="state_item_wrapper' + additionalClasses + '">';
-        result += '    <div class="state_item_icon"><img src="img/warning.png" /></div>';
+        let result = '<div class="state_item_wrapper' + additionalClasses + '" id="' + id + '">';
+        result += '    <div class="state_item_icon"><img src="img/warning.png" title="This state will be involved in a conflict" /></div>';
         result += '    <div class="state_item_arrow">&nbsp;</div>';
         result += '    <div class="state_item_content">' + content + '</div>';
 

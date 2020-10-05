@@ -313,27 +313,18 @@ class Timeline {
             this.selectedExecutionID = executionID;
             $("#back_button").removeClass("hidden");
 
-            console.log("\t\tTriggered by:");
-            this.highlightTriggers(this.ruleClient.getTriggerContextIDsByExecution(execution));
+            console.log("\t\tTriggered  by:");
+            this.selectTrigger(execution["trigger_context"]["id"]);
+
+            console.log("\t\tCondition satisfied by:");
+            this.highlightConditions(this.ruleClient.getTriggerContextIDsByExecution(execution));
 
             console.log("\t\tCaused the actions");
             this.highlightActions(this.ruleClient.getActionContextIDsByExecution(execution));
         }
     }
 
-    highlightActions(actionContextIDs: string[]) {
-        for(let actionContextID of actionContextIDs) {
-            console.log("\t\t - State " + actionContextID);
-            this.selectAction(actionContextID);
-        }
-    }
 
-    highlightTriggers(triggerContextIDs: string[]) {
-        for(let triggerContextID of triggerContextIDs) {
-            console.log("\t\t - State " + triggerContextID);
-            this.selectTrigger(triggerContextID);
-        }
-    }
 
     actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
       //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
@@ -369,7 +360,7 @@ class Timeline {
 
         if(relatedConflict != null) {
             this.rulesAdapter.redrawConflict(relatedConflict);
-        } else {
+        } else if(causedByActionExecution != null) {
             this.rulesAdapter.highlightActionExecution(causedByActionExecution["action_execution_id"]);
         }
 
@@ -434,20 +425,11 @@ class Timeline {
         });
     }
 
-    selectTrigger(stateContext: string) {
-        $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
-            adapter.selectTrigger(stateContext);
-        });
-    }
 
-    selectAction(stateContext: string) {
-        $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
-            adapter.selectAction(stateContext);
-        });
-    }
 
     clearSelection(nextSelectionExpected: boolean) {
-        $(".state_item_wrapper").removeClass("trigger action");
+        $(".state_item_wrapper .trigger img").attr("src", "img/warning.png").attr("title", "This state will be involved in conflict");
+        $(".state_item_wrapper").removeClass("trigger action condition");
         $(".vis-point").removeClass("vis-selected");
         $(".event_item").removeClass("selected");
        // $("#back_button").addClass("hidden");
@@ -624,5 +606,32 @@ class Timeline {
         console.log("CHANGED: ~" + changedCounter);
         console.log("UNCHANGED: =" + unchangedCounter);
         console.log(mergedStates);
+    }
+
+    highlightActions(actionContextIDs: string[]) {
+        for(let actionContextID of actionContextIDs) {
+            console.log("\t\t - State " + actionContextID);
+            this.selectAction(actionContextID);
+        }
+    }
+
+    highlightConditions(triggerContextIDs: string[]) {
+        for(let triggerContextID of triggerContextIDs) {
+            console.log("\t\t - State " + triggerContextID);
+            this.selectCondition(triggerContextID);
+        }
+    }
+
+    selectTrigger(stateContextID: string) {
+        $("#" + stateContextID).addClass("trigger");
+        $("#" + stateContextID).find("img").attr("src", "img/trigger.png").attr("title", "This state will be the trigger");
+    }
+
+    selectCondition(stateContextID: string) {
+        $("#" + stateContextID).addClass("condition");
+    }
+
+    selectAction(stateContextID: string) {
+        $("#" + stateContextID).addClass("action");
     }
 }

@@ -29,14 +29,8 @@
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/ConflictClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/ConflictClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/DeviceClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/DeviceClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/RuleClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/RuleClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/DeviceTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/DeviceTimeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/style/visualisation.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/visualisation.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,6 +72,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="12.18.4" />
@@ -289,7 +284,7 @@
       <workItem from="1600952692349" duration="25715000" />
       <workItem from="1601276939393" duration="182000" />
       <workItem from="1601277157190" duration="331000" />
-      <workItem from="1601277501531" duration="38422000" />
+      <workItem from="1601277501531" duration="41247000" />
     </task>
     <servers />
   </component>
