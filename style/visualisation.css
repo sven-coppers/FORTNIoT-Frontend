@@ -347,6 +347,7 @@ body {
 
 #iot .vis-custom-time  {
     background-color: #ffe000;
+    z-index: 0;
 }
 
 .vis-item {
@@ -692,6 +693,10 @@ body {
     border: 1px solid #ac2118;
 }
 
+#iot .checkbox.highlighted {
+    border: 1px solid #ffe000;
+}
+
 #iot .checkbox.feedforward_checked {
     border: 1px solid #1ea9f4;
     background: #e0f3ff;
@@ -707,6 +712,13 @@ body {
     cursor: pointer;
 }
 
+#iot .checkbox.highlighted.feedforward_checked {
+    border: 1px solid #ffe000;
+    background: #f8ffdc;
+    color: #ffe000;
+    cursor: pointer;
+}
+
 #iot .checkbox.checked {
     border: 1px solid #1ea9f4;
     background-color: #1ea9f4;
@@ -716,6 +728,12 @@ body {
 #iot .checkbox.conflict.checked {
     border: 1px solid #ac2118;
     background-color: #ac2118;
+    color: white;
+}
+
+#iot .checkbox.highlighted.checked {
+    border: 1px solid #ffe000;
+    background-color: #ffe000;
     color: white;
 }
 
@@ -729,4 +747,10 @@ body {
 
 #iot .vis-item.vis-point.vis-selected {
     background-color: transparent;
+}
+
+#iot .vis-item.vis-background .vis-item-content {
+    position: absolute;
+    top: 4px;
+    left: 4px;
 }

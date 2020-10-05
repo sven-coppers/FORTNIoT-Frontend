@@ -1,11 +1,14 @@
 class RulesComponent extends EventComponent {
-    rules: any;
+    highlightedConflict: any;
+    rulesClient: RuleClient;
 
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any) {
+    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, rulesClient: RuleClient) {
         super(parentDevice, parentElement, null, null);
-        this.rules = rules;
 
-        this.initRules()
+        this.highlightedConflict = null;
+        this.rulesClient = rulesClient;
+
+        this.initRules(rules)
     }
 
     initVisualisation(DOMElementID: string) {
@@ -23,9 +26,9 @@ class RulesComponent extends EventComponent {
         this.visualisation.setItems(this.items);
     }
 
-    initRules() {
-        for(let ruleID in this.rules) {
-            let rule = this.rules[ruleID];
+    initRules(rules: any) {
+        for(let ruleID in rules) {
+            let rule = rules[ruleID];
 
             if(!rule["available"]) continue;
             if(ruleID.indexOf("implicit_behavior") == 0) continue;
@@ -59,6 +62,10 @@ class RulesComponent extends EventComponent {
         }
     }
 
+    /** Draw the action executions
+     *
+     * @param ruleExecutions
+     */
     redraw(ruleExecutions: any) {
         this.items.clear();
 
@@ -89,61 +96,6 @@ class RulesComponent extends EventComponent {
 
             this.items.add(RuleEvent);
         }
-    }
-
-    itemClicked(properties) {
-        if(properties["item"] != null) {
-            let checkbox = $(properties.event.path[0]).closest(".checkbox");
-
-            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
-        }
-
-        return false;
-    }
-
-    createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
-        let result : string = "";
-        let classNames: string = "checkbox";
-
-        if(!snoozed) {
-            classNames += " checked";
-        }
-
-        if(Math.random() >= 0.5) {
-            classNames += " conflict";
-        }
-
-        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
-
-        return result;
-    }
-
-    redrawConflictsBackgrounds(conflicts: any) {
-        for(let conflictIndex in conflicts) {
-            let conflict = conflicts[conflictIndex];
-
-            let conflictStart = new Date(conflict["conflicting_states"][0]["last_changed"]);
-            let conflictEnd = new Date(conflict["conflicting_states"][0]["last_changed"]);
-
-            for(let conflictingActionIndex in conflict["conflicting_states"]) {
-                let conflictingAction = conflict["conflicting_states"][conflictingActionIndex];
-                let conflictingActionDate = new Date(conflictingAction["last_changed"]);
-
-                conflictStart = new Date(Math.min(conflictStart.getTime(), conflictingActionDate.getTime()));
-                conflictEnd = new Date(Math.max(conflictEnd.getTime(), conflictingActionDate.getTime()));
-            }
-
-            let conflictEvent = {
-                id: "conflict_" + conflictIndex,
-                className: 'conflict',
-                content: conflict["conflict_type"],
-                start: conflictStart,
-                end: conflictEnd,
-                type: 'background'
-            };
-
-            this.items.add(conflictEvent);
-        }
 
         $(".checkbox").on("click", function() {
             $(this).toggleClass("checked");
@@ -161,5 +113,109 @@ class RulesComponent extends EventComponent {
             $(this).removeClass("feedforward_checked");
             $(this).removeClass("feedforward_unchecked");
         });
+    }
+
+    itemClicked(properties) {
+        if(properties["item"] != null) {
+            // If checkbox
+            let checkbox = $(properties.event.path[0]).closest(".checkbox");
+
+            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
+            this.parentDevice.containerTimeline.clearSelection(false);
+        } else if(properties["what"] === "background") {
+            let conflictRange = this.findConflictRange(this.highlightedConflict);
+
+            if(properties.time.getTime() > conflictRange.start && properties.time.getTime() < conflictRange.end) {
+                // The conflict
+
+                let conflictLength = conflictRange.end.getTime() - conflictRange.start.getTime();
+
+                // 25% aan iedere kant
+                let newWindow = {
+                    start: new Date(conflictRange.start.getTime() - conflictLength / 2),
+                    end: new Date(conflictRange.end.getTime() + conflictLength / 2)
+                }
+
+                this.parentDevice.containerTimeline.setWindow(newWindow);
+            } else {
+                this.parentDevice.containerTimeline.clearSelection(false);
+            }
+        }
+
+        return false;
+    }
+
+    createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
+        let result : string = "";
+        let classNames: string = "checkbox";
+
+        if(!snoozed) {
+            classNames += " checked";
+        }
+
+        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
+
+        return result;
+    }
+
+    highlightConflict(conflict: any) {
+        this.clearConflict();
+
+        for(let conflictingStateIndex in conflict["conflicting_states"]) {
+            // find the responsible action execution for this state
+            let conflictingState = conflict["conflicting_states"][conflictingStateIndex];
+            let conflictingAction = this.rulesClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"]);
+
+            if(conflictingAction != null) {
+                $("#" + conflictingAction["action_execution_id"]).addClass("conflict");
+            }
+        }
+
+        let conflictRange = this.findConflictRange(conflict);
+
+        let conflictEvent = {
+            id: "conflict",
+            className: 'conflict',
+            content: conflict["conflict_type"],
+            start: conflictRange.start,
+            end: conflictRange.end,
+            type: 'background'
+        };
+
+        this.items.add(conflictEvent);
+        this.highlightedConflict = conflict;
+    }
+
+    findConflictRange(conflict: any) {
+        let conflictStart = new Date(conflict["conflicting_states"][0]["last_changed"]);
+        let conflictEnd = new Date(conflict["conflicting_states"][0]["last_changed"]);
+
+        for(let conflictingActionIndex in conflict["conflicting_states"]) {
+            let conflictingAction = conflict["conflicting_states"][conflictingActionIndex];
+            let conflictingActionDate = new Date(conflictingAction["last_changed"]);
+
+            conflictStart = new Date(Math.min(conflictStart.getTime(), conflictingActionDate.getTime()));
+            conflictEnd = new Date(Math.max(conflictEnd.getTime(), conflictingActionDate.getTime()));
+
+            $("#" + conflictingAction["action_execution_id"]).addClass("conflict");
+        }
+
+        if(conflictStart.getTime() === conflictEnd.getTime()) {
+            conflictStart = new Date(conflictStart.getTime() - 30000);
+            conflictEnd = new Date(conflictEnd.getTime() + 30000);
+        }
+
+        return {start: conflictStart, end: conflictEnd};
+    }
+
+    highlightActionExecution(actionExecutionID: string) {
+        $("#" + actionExecutionID).addClass("highlighted");
+    }
+
+    clearConflict() {
+        this.items.remove("conflict");
+        $(".checkbox.conflict").removeClass("conflict");
+        $(".checkbox.highlighted").removeClass("highlighted");
+        this.highlightedConflict = null;
     }
 }

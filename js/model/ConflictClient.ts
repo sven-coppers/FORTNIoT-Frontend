@@ -28,8 +28,6 @@ class ConflictClient {
     }
 
     getRelatedConflict(stateContextID: string)  {
-        let result = [];
-
         for(let conflictIndex in this.futureConflicts) {
             let conflict = this.futureConflicts[conflictIndex];
 
@@ -37,11 +35,11 @@ class ConflictClient {
                 let conflictingActionState = conflict["conflicting_states"][conflictingActionIndex];
 
                 if(conflictingActionState["context"]["id"] == stateContextID) {
-                    result.push(conflict);
+                    return conflict;
                 }
             }
         }
 
-        return result;
+        return null;
     }
 }

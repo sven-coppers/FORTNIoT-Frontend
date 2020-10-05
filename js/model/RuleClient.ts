@@ -130,7 +130,7 @@ class RuleClient {
      * Get the execution that resulted in this state
      * @param actionContextID
      */
-    public getExecutionByAction(actionContextID: string) {
+    public getRuleExecutionByActionContextID(actionContextID: string) {
         let result: string[] = [];
 
         for(let execution of this.executionMerged) {
@@ -248,6 +248,20 @@ class RuleClient {
         for(let actionExecution of ruleExecution["action_executions"]) {
             if(actionExecution["action_execution_id"] == actionExecutionID) {
                 return actionExecution;
+            }
+        }
+
+        return null;
+    }
+
+    getActionExecutionByResultingContextID(conflictedStateContextID: any) {
+        for(let ruleExecution of this.executionMerged) {
+            for(let actionExecution of ruleExecution["action_executions"]) {
+                for (let resultingContext of actionExecution["resulting_contexts"]) {
+                    if (resultingContext["id"] == conflictedStateContextID) {
+                        return actionExecution;
+                    }
+                }
             }
         }
 

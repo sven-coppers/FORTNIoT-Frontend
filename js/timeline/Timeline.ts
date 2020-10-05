@@ -61,7 +61,7 @@ class Timeline {
         // Finally render the axis and load actual data
     //    this.axisTimeline = new AxisTimeline(this);
 
-        this.rulesAdapter = new RulesTimeline(this, rules);
+        this.rulesAdapter = new RulesTimeline(this, rules, this.ruleClient);
         this.mainController.refresh();
     }
 
@@ -172,6 +172,19 @@ class Timeline {
         this.rulesAdapter.reAlign(range);
     }
 
+    public setWindow(range) {
+        $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
+            adapter.setWindow(range);
+        });
+
+        $.each(this.ruleAdapters, function(identifier: string, adapter: DeviceTimeline) {
+            adapter.setWindow(range);
+        });
+
+        this.rulesAdapter.setWindow(range);
+    }
+
+
     public updateDevices(devices) {
         for (let device of devices) {
             if(device["id"] in this.deviceAdapters) {
@@ -195,7 +208,7 @@ class Timeline {
 
         this.redrawStates(states, feedforward);
         this.redrawRules(executions, feedforward);
-        this.redrawConflicts(conflicts);
+        this.highlightConflictingStates(conflicts);
 
         if(this.selectedExecutionID != null && !feedforward) {
             this.highlightExecution(this.selectedExecutionID);
@@ -226,14 +239,12 @@ class Timeline {
         } */
     }
 
-    private redrawConflicts(conflicts: any) {
+    private highlightConflictingStates(conflicts: any) {
         for(let conflict of conflicts) {
             for(let conflictingState of conflict["conflicting_states"]) {
                 this.deviceAdapters[conflictingState["entity_id"]].highlightConflictingState(conflictingState);
             }
         }
-
-        this.rulesAdapter.redrawConflicts(conflicts);
     }
 
     groupChangesByRule(changes) {
@@ -279,7 +290,7 @@ class Timeline {
             adapter.drawCustomTime(date);
         });
 
-      //  this.axisTimeline.drawCustomTime(date);
+        this.rulesAdapter.drawCustomTime(date);
 
         this.hasCustomTime = true;
     }
@@ -288,7 +299,7 @@ class Timeline {
         this.clearSelection(true);
 
         if(executionID != null) {
-            this.highlightExecution(executionID);
+         //   this.highlightExecution(executionID);
         }
     }
 
@@ -351,12 +362,16 @@ class Timeline {
     stateHighlighted(stateContextID: string) {
         this.clearSelection(true);
 
-        let causedByExecutions: string[] = this.ruleClient.getExecutionByAction(stateContextID);
-        let relatedConflicts: any [] = this.conflictsClient.getRelatedConflict(stateContextID);
+        let causedByExecutions: string[] = this.ruleClient.getRuleExecutionByActionContextID(stateContextID);
+        let causedByActionExecution = this.ruleClient.getActionExecutionByResultingContextID(stateContextID);
 
-   //     this.rulesAdapter.redrawConflicts(relatedConflicts);
+        let relatedConflict: any = this.conflictsClient.getRelatedConflict(stateContextID);
 
-
+        if(relatedConflict != null) {
+            this.rulesAdapter.redrawConflict(relatedConflict);
+        } else {
+            this.rulesAdapter.highlightActionExecution(causedByActionExecution["action_execution_id"]);
+        }
 
         let resultedInExecutions: string[] = this.ruleClient.getExecutionsByCondition(stateContextID);
 
@@ -444,6 +459,7 @@ class Timeline {
 
         this.selectedExecutionID = null;
         this.clearCustomTime();
+        this.rulesAdapter.clearConflict();
     }
 
     clearCustomTime() {
@@ -459,7 +475,7 @@ class Timeline {
                 adapter.clearCustomTime();
             });
 
-          //  this.axisTimeline.clearCustomTime();
+            this.rulesAdapter.clearCustomTime();
         }
     }
 

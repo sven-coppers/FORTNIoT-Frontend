@@ -80,6 +80,14 @@ abstract class DeviceTimeline {
         }
     }
 
+    setWindow(range: any) {
+        if(!this.available) return;
+
+        for(let componentIndex in this.components) {
+            this.components[componentIndex].setWindow(range);
+        }
+    }
+
     public propagateReAlign(range) {
         this.containerTimeline.reAlign(range, this.deviceName);
     }

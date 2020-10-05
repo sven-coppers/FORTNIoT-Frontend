@@ -124,6 +124,11 @@ abstract class TimelineComponent {
         return false;
     }
 
+    setWindow(range) {
+        this.visualisation.setWindow({start: range.start,  end: range.end, duration: 750});
+        this.visibleRange = range;
+    }
+
     abstract redraw(deviceChanges: any, feedforward: boolean);
 
     abstract selectAction(identifier: string);
