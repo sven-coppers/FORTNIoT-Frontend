@@ -101,4 +101,24 @@ class StateClient {
             oThis.mainController.showFeedforward(data["states"], data["executions"]);
         });
     }
+
+    public findState(deviceID: string, date: Date) {
+        for(let haystackState of this.getAllStates()) {
+            if(haystackState.entity_id == deviceID && new Date(haystackState.last_updated).getTime() == date.getTime()) {
+                return haystackState;
+            }
+        }
+
+        return null;
+    }
+
+    getStateByContextID(stateContextID: string) {
+        for(let haystackState of this.getAllStates()) {
+            if(haystackState.context.id == stateContextID) {
+                return haystackState;
+            }
+        }
+
+        return null;
+    }
 }

@@ -131,19 +131,17 @@ class RuleClient {
      * @param actionContextID
      */
     public getRuleExecutionByActionContextID(actionContextID: string) {
-        let result: string[] = [];
-
         for(let execution of this.executionMerged) {
             for(let actionExecution of execution["action_executions"]) {
                 for(let actionContext of actionExecution["resulting_contexts"]) {
                     if(actionContext["id"] === actionContextID) {
-                        result.push(execution["execution_id"]);
+                        return execution;
                     }
                 }
             }
         }
 
-        return result;
+        return null;
     }
 
     /**

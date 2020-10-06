@@ -121,7 +121,7 @@ class RulesComponent extends EventComponent {
             let checkbox = $(properties.event.path[0]).closest(".checkbox");
 
             this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
-            this.parentDevice.containerTimeline.clearSelection(false);
+          //  this.parentDevice.containerTimeline.clearSelection(false);
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
 
