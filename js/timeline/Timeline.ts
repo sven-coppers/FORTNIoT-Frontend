@@ -360,6 +360,10 @@ class Timeline {
 
         if(relatedConflict != null) {
             this.rulesAdapter.redrawConflict(relatedConflict);
+
+            for(let conflictedState of relatedConflict["conflicting_states"]) {
+                $("#" + conflictedState["context"]["id"]).addClass("conflict_related");
+            }
         } else if(causedByActionExecution != null) {
             this.rulesAdapter.highlightActionExecution(causedByActionExecution["action_execution_id"]);
         }
@@ -425,11 +429,9 @@ class Timeline {
         });
     }
 
-
-
     clearSelection(nextSelectionExpected: boolean) {
         $(".state_item_wrapper .trigger img").attr("src", "img/warning.png").attr("title", "This state will be involved in conflict");
-        $(".state_item_wrapper").removeClass("trigger action condition");
+        $(".state_item_wrapper").removeClass("trigger action condition conflict_related");
         $(".vis-point").removeClass("vis-selected");
         $(".event_item").removeClass("selected");
        // $("#back_button").addClass("hidden");

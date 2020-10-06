@@ -122,10 +122,12 @@ class RulesComponent extends EventComponent {
 
             this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
             this.parentDevice.containerTimeline.clearSelection(false);
-        } else if(properties["what"] === "background") {
+        } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
 
-            if(properties.time.getTime() > conflictRange.start && properties.time.getTime() < conflictRange.end) {
+            //if(properties.time.getTime() > conflictRange.start && properties.time.getTime() < conflictRange.end) {
+
+            if(properties.event.target.closest(".vis-item.vis-background") != null) {
                 // The conflict
 
                 let conflictLength = conflictRange.end.getTime() - conflictRange.start.getTime();

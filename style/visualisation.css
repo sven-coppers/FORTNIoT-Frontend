@@ -378,6 +378,12 @@ body {
     color: #ac2118;
 }
 
+.vis-item .state_item_wrapper.conflict_related {
+    border: 1px solid #ac2118;
+    background-color: #fff2ef;
+    color: #ac2118;
+}
+
 .vis-item .state_item_wrapper.trigger,
 .vis-item .state_item_wrapper.condition,
 .vis-item .state_item_wrapper.action {
@@ -457,6 +463,11 @@ body {
     height: 0px;
     border-color: transparent;
     background-color: transparent;
+}
+
+.vis-item.conflict .vis-item-overflow {
+    overflow: visible;
+    cursor: pointer;
 }
 
 .vis-point .vis_item_content {
