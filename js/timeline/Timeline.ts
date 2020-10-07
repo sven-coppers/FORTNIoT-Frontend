@@ -86,6 +86,8 @@ class Timeline {
         for (let deviceName of deviceNames) {
             let device = devices[deviceName];
 
+            if(!device["available"]) continue;
+
             if(deviceName.indexOf("light.") == 0) {
                 this.deviceAdapters[deviceName] = new HueTimeline(deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("lock.") == 0) {
@@ -220,6 +222,8 @@ class Timeline {
 
             if(selectedState != null) {
                 this.stateHighlighted(selectedState["context"]["id"]);
+            } else {
+                this.clearSelection(false);
             }
         }
 

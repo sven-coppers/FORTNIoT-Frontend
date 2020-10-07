@@ -29,10 +29,9 @@
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/RuleClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/RuleClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style/visualisation.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/visualisation.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -285,7 +284,7 @@
       <workItem from="1600952692349" duration="25715000" />
       <workItem from="1601276939393" duration="182000" />
       <workItem from="1601277157190" duration="331000" />
-      <workItem from="1601277501531" duration="50524000" />
+      <workItem from="1601277501531" duration="55059000" />
     </task>
     <servers />
   </component>

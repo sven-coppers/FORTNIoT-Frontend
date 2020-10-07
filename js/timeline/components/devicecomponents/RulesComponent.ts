@@ -1,12 +1,14 @@
 class RulesComponent extends EventComponent {
     highlightedConflict: any;
     rulesClient: RuleClient;
+    redrawing: boolean;
 
     constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, rulesClient: RuleClient) {
         super(parentDevice, parentElement, null, null);
 
         this.highlightedConflict = null;
         this.rulesClient = rulesClient;
+        this.redrawing = false;
 
         this.initRules(rules)
     }
@@ -71,7 +73,6 @@ class RulesComponent extends EventComponent {
 
         for(let i = 0; i < ruleExecutions.length; i++) {
             let ruleExecution = ruleExecutions[i];
-            let hasEffects: boolean = false;
 
             for(let actionExecutionIndex in ruleExecution["action_executions"]) {
                 let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
@@ -97,22 +98,28 @@ class RulesComponent extends EventComponent {
             this.items.add(RuleEvent);
         }
 
-        $(".checkbox").on("click", function() {
-            $(this).toggleClass("checked");
-            $(this).removeClass("feedforward_checked");
-            $(this).removeClass("feedforward_unchecked");
-        })
 
-        $(".checkbox").hover(function() {
-            if($(this).hasClass("checked")) {
-                $(this).addClass("feedforward_unchecked");
-            } else {
-                $(this).addClass("feedforward_checked");
-            }
-        }, function () {
-            $(this).removeClass("feedforward_checked");
-            $(this).removeClass("feedforward_unchecked");
-        });
+        // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
+        setTimeout(function() {
+            $(".checkbox").on("click", function () {
+                $(this).toggleClass("checked");
+                $(this).removeClass("feedforward_checked");
+                $(this).removeClass("feedforward_unchecked");
+            })
+
+            $(".checkbox").mouseenter(function (event) {
+                if ($(this).hasClass("checked")) {
+                    $(this).addClass("feedforward_unchecked");
+                } else {
+                    $(this).addClass("feedforward_checked");
+                }
+            });
+
+            $(".checkbox").mouseleave(function () {
+                $(this).removeClass("feedforward_checked");
+                $(this).removeClass("feedforward_unchecked");
+            });
+        }, 10);
     }
 
     itemClicked(properties) {

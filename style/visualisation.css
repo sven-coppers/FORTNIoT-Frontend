@@ -380,7 +380,7 @@ body {
 
 .vis-item .state_item_wrapper.conflict_related {
     border: 1px solid #ac2118;
-    background-color: #fff2ef;
+  /*  background-color: #fff2ef; */
     color: #ac2118;
 }
 
