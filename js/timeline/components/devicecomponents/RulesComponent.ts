@@ -1,13 +1,13 @@
 class RulesComponent extends EventComponent {
     highlightedConflict: any;
-    rulesClient: RuleClient;
+    futureClient: FutureClient;
     redrawing: boolean;
 
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, rulesClient: RuleClient) {
+    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, futureClient: FutureClient) {
         super(parentDevice, parentElement, null, null);
 
         this.highlightedConflict = null;
-        this.rulesClient = rulesClient;
+        this.futureClient = futureClient;
         this.redrawing = false;
 
         this.initRules(rules)
@@ -127,7 +127,7 @@ class RulesComponent extends EventComponent {
             // If checkbox
             let checkbox = $(properties.event.path[0]).closest(".checkbox");
 
-            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], checkbox.hasClass("checked"));
+            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
           //  this.parentDevice.containerTimeline.clearSelection(false);
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
@@ -173,7 +173,7 @@ class RulesComponent extends EventComponent {
         for(let conflictingStateIndex in conflict["conflicting_states"]) {
             // find the responsible action execution for this state
             let conflictingState = conflict["conflicting_states"][conflictingStateIndex];
-            let conflictingAction = this.rulesClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"]);
+            let conflictingAction = this.futureClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"]);
 
             if(conflictingAction != null) {
                 $("#" + conflictingAction["action_execution_id"]).addClass("conflict");

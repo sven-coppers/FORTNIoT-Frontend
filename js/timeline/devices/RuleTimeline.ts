@@ -46,7 +46,7 @@ class RuleTimeline extends DeviceTimeline {
             oThis.containerTimeline.getStateClient().simulateFuture(deviceID, futureEnabled);
         }, function () {
             // REVERT THE OLD STATE
-            oThis.containerTimeline.getMainController().refresh();
+            oThis.containerTimeline.getMainController().refreshContext();
         });
     }
 }

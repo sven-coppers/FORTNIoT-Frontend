@@ -13,13 +13,9 @@ class IoTController {
     deviceClient: DeviceClient;
     configClient: ConfigClient;
     conflictClient: ConflictClient;
+    futureClient: FutureClient;
     public API_URL: string;
 
-    private rulesLoaded: boolean;
-    private statesLoaded: boolean;
-    private devicesLoaded: boolean;
-    private configLoaded: boolean;
-    private conflictsLoaded: boolean;
     private remote: boolean;
 
     public devices: any = {};
@@ -34,11 +30,6 @@ class IoTController {
             this.API_URL = "http://localhost:8080/intelligibleIoT/api/";
         }
 
-        this.rulesLoaded = true;
-        this.statesLoaded = true;
-        this.devicesLoaded = true;
-        this.configLoaded = true;
-
         let url = new URL(window.location.href);
         let useCase = url.searchParams.get("c");
 
@@ -46,10 +37,10 @@ class IoTController {
         }
 
         this.initClients();
-        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient,this.conflictClient);
+        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient,this.conflictClient,this.futureClient);
 
         $("#reload").click(function() {
-            oThis.refresh();
+            oThis.refreshContext();
             return false;
         });
 
@@ -66,8 +57,11 @@ class IoTController {
 
         let source = new EventSource("http://localhost:8080/intelligibleIoT/api/states/stream");
         source.onmessage = function(event) {
-        //    document.getElementById("hassio_events").innerHTML = event.data;
-            oThis.refresh();
+            if(event.data == "Scenario Changed") {
+                oThis.timeline.refreshSetup();
+            } else {
+                oThis.refreshContext();
+            }
         };
 
         $("#rules_checkbox").click(function() {
@@ -100,72 +94,50 @@ class IoTController {
         this.deviceClient = new DeviceClient(this);
         this.configClient = new ConfigClient(this);
         this.conflictClient = new ConflictClient(this);
+        this.futureClient = new FutureClient(this);
 
         $(".timeline_device_attributes").toggle();
     }
 
-    refresh() {
-        if (this.statesLoaded && this.rulesLoaded) {
-           //  Loading has completed before
 
-            $("#reload").addClass("disabled");
-            $(".history").empty();
-            $(".future").empty();
 
-            this.rulesLoaded = false;
-            this.statesLoaded = false;
-            this.devicesLoaded = false;
-            this.configLoaded = false;
-            this.conflictsLoaded = false;
 
-            this.ruleClient.refresh();
-            this.stateClient.refresh();
-            this.deviceClient.refresh();
-            this.configClient.refresh();
-            this.conflictClient.refresh();
-        }
+    // Small refresh: states, rule executions, conflicts
+    refreshContext() {
+        $("#reload").addClass("disabled");
+        $(".history").empty();
+        $(".future").empty();
+        this.stateClient.loadStateHistory();
+
+          //  this.stateClient.refresh();
+         //   this.configClient.refresh();
+         //   this.conflictClient.refresh();
+          //  this.futureClient.refresh();
     }
 
-    ruleClientCompleted() {
-        this.rulesLoaded = true;
-        this.checkLoadingCompleted();
+    pastStatesLoaded() {
+        this.futureClient.refresh();
     }
 
-    stateClientCompleted() {
-        this.statesLoaded = true;
-        this.checkLoadingCompleted();
-    }
+    futureLoaded(future: any) {
+        let allStates = [];
 
-    configClientCompleted() {
-        this.configLoaded = true;
-        this.checkLoadingCompleted();
-    }
+        allStates = allStates.concat(this.stateClient.stateHistory);
+        allStates = allStates.concat(future.futureStates);
 
-    conflictClientCompleted() {
-        this.conflictsLoaded = true;
-        this.checkLoadingCompleted();
-    }
+        $(".devices_column").removeClass("hidden");
+        $("#connection_error").remove();
+        $("#reload").removeClass("disabled");
+        $(".timeline_wrapper").removeClass("hidden");
 
-    checkLoadingCompleted() {
-        if(this.rulesLoaded && this.statesLoaded && this.configLoaded && this.conflictsLoaded) {
-            $(".devices_column").removeClass("hidden");
-            $("#connection_error").remove();
-            $("#reload").removeClass("disabled");
-            $(".timeline_wrapper").removeClass("hidden");
-
-            if(this.timeline != null) {
-                this.timeline.redraw(this.stateClient.getAllStates(), this.ruleClient.getAllExecutions(), this.conflictClient.getConflicts(), false);
-            }
-        } else if(!this.rulesLoaded) {
-            //console.log("waiting for rules");
-        } else if(!this.statesLoaded) {
-            //console.log("waiting for states");
+        if(this.timeline != null) {
+            this.timeline.redraw(allStates, future.executions, future.conflicts, false);
         }
     }
 
     showFeedforward(alternativeFutureStates, alternativeFutureExecutions) {
-        let originalStates = this.stateClient.getAllStates();
-        let originalExecutions = this.ruleClient.getAllExecutions();
+      //  let originalStates = this.stateClient.getAllStates(); // TODO
+        let originalExecutions = this.futureClient.getFuture().executions();
         let originalConflicts = this.conflictClient.getConflicts();
 
         let alternativeStates = [];
@@ -179,7 +151,7 @@ class IoTController {
         let alternativeConflicts = [];
         // TODO find alternative conflicts
 
-        this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions, originalConflicts, alternativeConflicts);
+     //   this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions, originalConflicts, alternativeConflicts);
     }
 
     updateDevices(data) {

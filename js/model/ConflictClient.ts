@@ -19,7 +19,7 @@ class ConflictClient {
             type: "GET",
         }).done(function (data) {
             oThis.futureConflicts = data;
-            oThis.mainController.conflictClientCompleted();
+          //  oThis.mainController.conflictClientCompleted();
         });
     }
 
@@ -27,19 +27,5 @@ class ConflictClient {
         return this.futureConflicts;
     }
 
-    getRelatedConflict(stateContextID: string)  {
-        for(let conflictIndex in this.futureConflicts) {
-            let conflict = this.futureConflicts[conflictIndex];
 
-            for(let conflictingActionIndex in conflict["conflicting_states"]) {
-                let conflictingActionState = conflict["conflicting_states"][conflictingActionIndex];
-
-                if(conflictingActionState["context"]["id"] == stateContextID) {
-                    return conflict;
-                }
-            }
-        }
-
-        return null;
-    }
 }

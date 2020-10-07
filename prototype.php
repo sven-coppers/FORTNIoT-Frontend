@@ -64,6 +64,7 @@
     <script src="js/model/DeviceClient.js"></script>
     <script src="js/model/ConfigClient.js"></script>
     <script src="js/model/ConflictClient.js"></script>
+    <script src="js/model/FutureClient.js"></script>
 
     <script src="js/timeline/components/TimelineComponent.js"></script>
     <script src="js/timeline/components/StateComponent.js"></script>

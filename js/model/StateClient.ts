@@ -1,28 +1,14 @@
 class StateClient {
     mainController: IoTController;
-    stateFuture: [];
     stateHistory: [];
-    private historyLoaded: boolean;
-    private futureLoaded: boolean;
-
     constructor(mainController: IoTController) {
         this.mainController = mainController;
-        this.stateFuture = [];
         this.stateHistory = [];
-
-        this.historyLoaded = false;
-        this.futureLoaded = false;
     }
 
-    public refresh() {
-        this.historyLoaded = false;
-        this.futureLoaded = false;
 
-        this.loadStateHistory();
-        this.loadStateFuture();
-    }
 
-    private loadStateHistory() {
+    public loadStateHistory() {
         let oThis = this;
         $("#reload").addClass("disabled");
 
@@ -31,8 +17,7 @@ class StateClient {
             type:           "GET",
         }).done(function (data) {
             oThis.stateHistory = data;
-            oThis.historyLoaded = true;
-            oThis.checkLoadingCompleted();
+            oThis.mainController.pastStatesLoaded();
         });
     }
 
@@ -42,7 +27,7 @@ class StateClient {
         }
     }
 
-    private loadStateFuture() {
+  /*  private loadStateFuture() {
         let oThis = this;
         $("#reload").addClass("disabled");
 
@@ -54,31 +39,12 @@ class StateClient {
             oThis.futureLoaded = true;
             oThis.checkLoadingCompleted();
         });
-    }
+    } */
 
     drawStateChangeFuture(changes) {
         for(let i = changes.length - 1; i >= 0; i--) {
             this.mainController.devices[changes[i]["entity_id"]].addStateFutureItem(changes[i]);
         }
-    }
-
-    private checkLoadingCompleted() {
-        if(this.historyLoaded && this.futureLoaded) {
-            this.mainController.stateClientCompleted();
-        } else if(!this.historyLoaded) {
-            //console.log("waiting for history states");
-        } else if(!this.futureLoaded) {
-            //console.log("waiting for future states");
-        }
-    }
-
-    getAllStates() {
-        let timeData = [];
-
-        timeData = timeData.concat(this.stateHistory);
-        timeData = timeData.concat(this.stateFuture);
-
-        return timeData;
     }
 
     getStatesHistory() {
@@ -100,25 +66,5 @@ class StateClient {
         }).done(function (data) {
             oThis.mainController.showFeedforward(data["states"], data["executions"]);
         });
-    }
-
-    public findState(deviceID: string, date: Date) {
-        for(let haystackState of this.getAllStates()) {
-            if(haystackState.entity_id == deviceID && new Date(haystackState.last_updated).getTime() == date.getTime()) {
-                return haystackState;
-            }
-        }
-
-        return null;
-    }
-
-    getStateByContextID(stateContextID: string) {
-        for(let haystackState of this.getAllStates()) {
-            if(haystackState.context.id == stateContextID) {
-                return haystackState;
-            }
-        }
-
-        return null;
     }
 }

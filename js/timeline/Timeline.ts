@@ -5,6 +5,7 @@ class Timeline {
     private deviceClient: DeviceClient;
     private configClient: ConfigClient;
     private conflictsClient: ConflictClient;
+    private futureClient: FutureClient;
 
     private deviceAdapters: {};
     private ruleAdapters: {};
@@ -19,13 +20,14 @@ class Timeline {
     private selectedEntity: string;
     private selectedTime: Date;
 
-    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient) {
+    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient, futureClient: FutureClient) {
         this.mainController = mainController;
         this.ruleClient = ruleClient;
         this.stateClient = stateClient;
         this.deviceClient = deviceClient;
         this.configClient = configClient;
         this.conflictsClient = conflictsClient;
+        this.futureClient = futureClient;
         this.hasCustomTime = false;
         this.selectedEntity = null;
         this.selectedTime = null;
@@ -33,13 +35,22 @@ class Timeline {
         this.ruleAdapters = {};
         this.deviceAdapters = {};
         this.rulesAdapter = null;
-
-        this.deviceClient.loadDevices(this);
         this.redrawing = false;
+
+        this.refreshSetup();
 
         $(".timeline_device_main_attribute .timeline_label").click(function () {
             $(this).closest(".timeline_device").find(".timeline_device_attributes").toggle();
         });
+    }
+
+    public refreshSetup() {
+        $(".timeline_wrapper").empty();
+
+        // First load the devices
+        this.deviceClient.loadDevices(this);
+
+        // The callback will start to load the rules
     }
 
     /**
@@ -65,8 +76,8 @@ class Timeline {
         // Finally render the axis and load actual data
     //    this.axisTimeline = new AxisTimeline(this);
 
-        this.rulesAdapter = new RulesTimeline(this, rules, this.ruleClient);
-        this.mainController.refresh();
+        this.rulesAdapter = new RulesTimeline(this, rules, this.futureClient);
+        this.mainController.refreshContext();
     }
 
     /**
@@ -218,7 +229,7 @@ class Timeline {
 
         if(this.selectedEntity != null && !feedforward) {
             // Should work across states
-            let selectedState = this.stateClient.findState(this.selectedEntity, this.selectedTime);
+            let selectedState = this.futureClient.findState(this.selectedEntity, this.selectedTime);
 
             if(selectedState != null) {
                 this.stateHighlighted(selectedState["context"]["id"]);
@@ -320,10 +331,10 @@ class Timeline {
             this.selectTrigger(execution["trigger_context"]["id"]);
 
             console.log("\t\tCondition satisfied by:");
-            this.highlightConditions(this.ruleClient.getTriggerContextIDsByExecution(execution));
+            this.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(execution));
 
             console.log("\t\tCaused the actions");
-            this.highlightActions(this.ruleClient.getActionContextIDsByExecution(execution));
+            this.highlightActions(this.futureClient.getActionContextIDsByExecution(execution));
         }
     }
 
@@ -333,8 +344,8 @@ class Timeline {
       //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
 
         // Get trigger entity ID and execution time by using the actionExecutionID
-        let ruleExecution = this.ruleClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-        let actionExecution = this.ruleClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+        let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
       //  console.log(ruleExecution);
 
         if(newEnabled) {
@@ -355,15 +366,15 @@ class Timeline {
     stateHighlighted(stateContextID: string) {
         this.clearSelection(true);
 
-        let highlightedState = this.stateClient.getStateByContextID(stateContextID);
+        let highlightedState = this.futureClient.getStateByContextID(stateContextID);
         this.selectedTime = new Date(highlightedState["last_changed"]);
         this.selectedEntity = highlightedState["entity_id"];
 
 
-        let causedByExecution = this.ruleClient.getRuleExecutionByActionContextID(stateContextID);
-        let causedByActionExecution = this.ruleClient.getActionExecutionByResultingContextID(stateContextID);
+        let causedByExecution = this.futureClient.getRuleExecutionByActionContextID(stateContextID);
+        let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID);
 
-        let relatedConflict: any = this.conflictsClient.getRelatedConflict(stateContextID);
+        let relatedConflict: any = this.futureClient.getRelatedConflict(stateContextID);
 
         if(relatedConflict != null) {
             this.rulesAdapter.redrawConflict(relatedConflict);
@@ -375,7 +386,7 @@ class Timeline {
             this.rulesAdapter.highlightActionExecution(causedByActionExecution["action_execution_id"]);
         }
 
-        let resultedInExecutions: string[] = this.ruleClient.getExecutionsByCondition(stateContextID);
+        let resultedInExecutions: string[] = this.futureClient.getExecutionsByCondition(stateContextID);
 
         console.log("\nState " + stateContextID);
 
@@ -389,11 +400,11 @@ class Timeline {
     }
 
     anyActionsVisible(executionID: string ): boolean {
-        let execution = this.ruleClient.getExecutionByID(executionID);
+        let execution = this.futureClient.getExecutionByID(executionID);
 
         if(execution == null) return false;
 
-        let contextIDs: string[] = this.ruleClient.getActionContextIDsByExecution(execution);
+        let contextIDs: string[] = this.futureClient.getActionContextIDsByExecution(execution);
 
         for(let contextID of contextIDs) {
             for(let adapterName in this.deviceAdapters) {
