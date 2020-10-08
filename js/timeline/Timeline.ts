@@ -457,20 +457,16 @@ class Timeline {
     }
 
     clearCustomTime() {
-        if(this.hasCustomTime) {
-            this.hasCustomTime = false;
+        $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
+            adapter.clearCustomTime();
+            adapter.clearHighlights();
+        });
 
-            $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
-                adapter.clearCustomTime();
-                adapter.clearHighlights();
-            });
+        $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
+            adapter.clearCustomTime();
+        });
 
-            $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
-                adapter.clearCustomTime();
-            });
-
-            this.rulesAdapter.clearCustomTime();
-        }
+        this.rulesAdapter.clearCustomTime();
     }
 
     getRuleClient(): RuleClient {

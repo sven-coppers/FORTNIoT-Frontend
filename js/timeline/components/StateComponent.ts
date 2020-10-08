@@ -53,7 +53,7 @@ class StateComponent extends TimelineComponent {
 
         if(config.isPredictionEngineEnabled()) {
             let endDate: Date = new Date();
-            endDate.setTime(new Date().getTime() + (config.predictionWindow * 60 * 1000)); // Convert minutes to milliseconds
+            endDate.setTime(new Date().getTime() + (config.getPredictionWindow() * 60 * 1000)); // Convert minutes to milliseconds
 
             this.redrawWithPredictions(deviceChanges, feedforward, endDate)
         } else {

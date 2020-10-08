@@ -99,20 +99,16 @@ class IoTController {
         $(".timeline_device_attributes").toggle();
     }
 
-
-
-
     // Small refresh: states, rule executions, conflicts
     refreshContext() {
         $("#reload").addClass("disabled");
         $(".history").empty();
         $(".future").empty();
-        this.stateClient.loadStateHistory();
+        this.configClient.refresh(); // The callback will start the next request
+    }
 
-          //  this.stateClient.refresh();
-         //   this.configClient.refresh();
-         //   this.conflictClient.refresh();
-          //  this.futureClient.refresh();
+    configLoaded() {
+        this.stateClient.loadStateHistory(); // The callback will start the next request
     }
 
     pastStatesLoaded() {

@@ -28,17 +28,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/ConflictClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/ConflictClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/RuleClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/RuleClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/model/ConfigClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/ConfigClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RuleTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/RuleTimeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BusPassageComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BusPassageComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CalendarComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CalendarComponent.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

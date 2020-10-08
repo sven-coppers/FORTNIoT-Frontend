@@ -2,9 +2,9 @@ class ConfigClient {
     mainController: IoTController;
 
   //  public connectedToHassio: boolean;
-    public predictionEngineEnabled: boolean;
-    public predictionInterval: number;
-    public predictionWindow: number;
+    private predictionEngineEnabled: boolean;
+    private predictionInterval: number;
+    private predictionWindow: number;
 
     constructor(mainController: IoTController) {
         this.mainController = mainController;
@@ -15,6 +15,14 @@ class ConfigClient {
  //   public isConnectedToHassio(): boolean {
  //       return this.connectedToHassio;
  //   }
+
+    public getPredictionInterval(): number {
+        return this.predictionInterval;
+    }
+
+    public getPredictionWindow(): number {
+        return this.predictionWindow;
+    }
 
     public isPredictionEngineEnabled(): boolean {
         return this.predictionEngineEnabled;
@@ -52,7 +60,6 @@ class ConfigClient {
             oThis.predictionEngineEnabled = data["predictions"];
             oThis.predictionWindow = data["tick_window_minutes"];
             oThis.predictionInterval = data["tick_interval_minutes"];
-            oThis.mainController.configClientCompleted();
 
             if(oThis.predictionEngineEnabled) {
                 $("#version").text("Version A - " + data["use_case"]);
@@ -63,6 +70,8 @@ class ConfigClient {
             if(data["question"] != null) {
                 $("#question").text(" - " + data["question"]);
             }
+
+            oThis.mainController.configLoaded();
         });
     }
 }

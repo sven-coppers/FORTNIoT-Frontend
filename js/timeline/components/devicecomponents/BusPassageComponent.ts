@@ -7,7 +7,7 @@ class BusPassageComponent extends StateComponent {
         return {
             id: id,
             group: 1,
-            content: this.createHTML(json["state"], true, json["future"]),
+            content: this.createHTML(id, json["state"], true, json["future"]),
             start: startTime,
             end: new Date(new Date(startTime).getTime() + 30000),
             type: 'range'

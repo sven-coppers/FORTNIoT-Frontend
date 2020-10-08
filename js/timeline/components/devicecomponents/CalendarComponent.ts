@@ -22,7 +22,7 @@ class CalendarComponent extends StateComponent {
         return {
             id: json["context"]["id"],
             group: 1,
-            content: this.createHTML(json["attributes"]["message"], true, ""),
+            content: this.createHTML(json["context"]["id"], json["attributes"]["message"], true, ""),
             start: startTime,
             end: endTime,
             type: 'range'

@@ -11,6 +11,7 @@ abstract class TimelineComponent {
     protected property: string;
     protected icon: string;
     protected visibleRange: any;
+    protected hasCustomTime: boolean;
 
     protected constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
         this.parentDevice = parentDevice;
@@ -18,6 +19,7 @@ abstract class TimelineComponent {
         this.label = label;
         this.property = property;
         this.icon = icon;
+        this.hasCustomTime = false;
 
         this.init();
     }
@@ -110,10 +112,14 @@ abstract class TimelineComponent {
 
     drawCustomTime(date: Date) {
         this.visualisation.addCustomTime(date, "explainer");
+        this.hasCustomTime = true;
     }
 
     clearCustomTime() {
-        this.visualisation.removeCustomTime("explainer");
+        if(this.hasCustomTime) {
+            this.visualisation.removeCustomTime("explainer");
+            this.hasCustomTime = false;
+        }
     }
 
     anyActionsVisible(actionContextID: string ): boolean {

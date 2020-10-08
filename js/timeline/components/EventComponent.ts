@@ -21,7 +21,8 @@ class EventComponent extends StateComponent {
 
     itemClicked(properties) {
         let executionID: string = properties.item;
-        this.parentDevice.containerTimeline.executionClicked(executionID);
+        // DEPRECATED? OR SHOULD BE RE IMPLEMENTED
+        //this.parentDevice.containerTimeline.executionClicked(executionID);
     }
 
     redraw(deviceChanges: any) {
