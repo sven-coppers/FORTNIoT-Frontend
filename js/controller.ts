@@ -157,4 +157,8 @@ class IoTController {
     updateRules(data) {
         this.timeline.updateRules(data);
     }
+
+    alternativeFutureSimulationReady(alternativeFuture) {
+        this.timeline.alternativeFutureSimulationReady(alternativeFuture);
+    }
 }

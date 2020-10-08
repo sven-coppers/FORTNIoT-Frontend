@@ -338,30 +338,73 @@ class Timeline {
         }
     }
 
-
-
     actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
       //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
 
         // Get trigger entity ID and execution time by using the actionExecutionID
         let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-        let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-      //  console.log(ruleExecution);
 
-        if(newEnabled) {
-            // Now enabled -> remove snooze
-            this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
-        } else {
-            // // Now snoozed -> add snooze
-            let snoozedAction = {};
-            snoozedAction["action_id"] = actionID;
-            snoozedAction["conflict_time_window"] = 20000;
-            snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
-            snoozedAction["conflict_time"] = ruleExecution["datetime"];
+        if(ruleExecution != null) {
+            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
 
-            this.ruleClient.commitNewSnoozedAction(snoozedAction);
+            if(newEnabled) {
+                // Now enabled -> remove snooze
+                this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
+            } else {
+                // // Now snoozed -> add snooze
+                let snoozedAction = {};
+                snoozedAction["action_id"] = actionID;
+                snoozedAction["conflict_time_window"] = 20000;
+                snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
+                snoozedAction["conflict_time"] = ruleExecution["datetime"];
+
+                this.ruleClient.commitNewSnoozedAction(snoozedAction);
+            }
         }
     }
+
+    previewActionExecutionChange(actionExecutionID: string, newEnabled: boolean) {
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+
+        if(ruleExecution != null) {
+            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+
+            if(newEnabled) {
+                // Now enabled -> remove snooze
+                let reEnabledActions = [];
+                reEnabledActions.push(actionExecution["snoozed_by"]);
+
+              //  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
+            } else {
+                // // Now snoozed -> add snooze
+                let snoozedActions = [];
+
+                snoozedActions.push({
+                    action_id: actionExecution["action_id"],
+                    conflict_time_window: 20000,
+                    trigger_entity_id: ruleExecution["trigger_entity"],
+                    conflict_time: ruleExecution["datetime"]
+                });
+
+               // this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
+            }
+        }
+    }
+
+    alternativeFutureSimulationReady(alternativeFuture) {
+        let originalFuture = this.futureClient.future;
+        let originalStates = this.futureClient.getAllStates(this.stateClient, originalFuture);
+        let alternativeStates = this.futureClient.getAllStates(this.stateClient, alternativeFuture);
+
+        this.showFeedforward(originalStates, alternativeStates, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts)
+    }
+
+    cancelPreviewActionExecutionChange() {
+        let future = this.futureClient.future;
+
+        this.redraw(this.futureClient.getAllStates(this.stateClient, future), future.executions, future.conflicts, false);
+    }
+
 
     stateHighlighted(stateContextID: string) {
         this.clearSelection(true);

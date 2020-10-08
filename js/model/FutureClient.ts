@@ -20,25 +20,28 @@ class FutureClient {
             type:           "GET",
         }).done(function (future) {
             oThis.future = future;
-            console.log(future);
             oThis.mainController.futureLoaded(future);
         });
     }
 
-    public simulateFuture(deviceID: string, futureEnabled: boolean) {
+    public simulateAlternativeFuture(extraStates: any [], suppressedStateContexts: any [], snoozedActions: any [], reEnabledActions: any []) {
         let oThis = this;
 
-        let ruleSettings = {};
-        ruleSettings[deviceID] = futureEnabled;
+        let simulationRequest = {
+            extra_states: extraStates,
+            suppressed_state_contexts: suppressedStateContexts,
+            snoozed_actions: snoozedActions,
+            re_enabled_actions: reEnabledActions
+        };
 
         $.ajax({
             url:            "http://localhost:8080/intelligibleIoT/api/future/simulate",
             type:           "POST",
-            data: JSON.stringify({ states: [], rules: ruleSettings }),
+            data: JSON.stringify(simulationRequest),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-        }).done(function (data) {
-            oThis.mainController.showFeedforward(data["states"], data["executions"]);
+        }).done(function (alternativeFuture) {
+            oThis.mainController.alternativeFutureSimulationReady(alternativeFuture);
         });
     }
 
@@ -196,5 +199,19 @@ class FutureClient {
 
     getFuture() {
         return this.future;
+    }
+
+    /**
+     *
+     * @param stateClient
+     * @param future the (alternative) future to get the predicted states from
+     */
+    getAllStates(stateClient: StateClient, future: any) {
+        let allStates = [];
+
+        allStates = allStates.concat(stateClient.stateHistory);
+        allStates = allStates.concat(future.futureStates);
+
+        return allStates;
     }
 }

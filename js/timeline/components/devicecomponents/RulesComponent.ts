@@ -98,6 +98,8 @@ class RulesComponent extends EventComponent {
             this.items.add(RuleEvent);
         }
 
+        let oThis = this;
+
 
         // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
         setTimeout(function() {
@@ -113,11 +115,14 @@ class RulesComponent extends EventComponent {
                 } else {
                     $(this).addClass("feedforward_checked");
                 }
+
+                oThis.parentDevice.containerTimeline.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
             });
 
             $(".checkbox").mouseleave(function () {
                 $(this).removeClass("feedforward_checked");
                 $(this).removeClass("feedforward_unchecked");
+                oThis.parentDevice.containerTimeline.cancelPreviewActionExecutionChange();
             });
         }, 10);
     }
