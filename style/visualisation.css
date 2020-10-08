@@ -379,9 +379,14 @@ body {
 }
 
 .vis-item .state_item_wrapper.conflict_related {
-    border: 1px solid #ac2118;
-    background-color: #fff2ef;
+    border: 1px solid #ffe000;
+    background-color: #faffee;
     color: #ac2118;
+}
+
+#iot .vis-item .state_item_wrapper.conflict_related,
+#iot .vis-item .state_item_wrapper.action.conflict_related {
+    border: 1px solid #ac2118;
 }
 
 .vis-item .state_item_wrapper.trigger,
@@ -431,15 +436,16 @@ body {
 }
 
 .vis-item .state_item_wrapper.action.conflict_related  {
-    border: 1px solid #ac2118;
+    border: 1px solid #ffe000;
+    background-color: #f8ffdc;
     color: #ac2118;
 }
 
-.vis-item .state_item_wrapper.action.conflict_related  .state_item_arrow {
+/*.vis-item .state_item_wrapper.action.conflict_related  .state_item_arrow {
     border-left: 13px solid #ac2118;
     border-top: 13px solid transparent;
     border-bottom: 13px solid transparent;
-}
+} */
 
 .vis-item .state_item_wrapper.trigger .state_item_icon,
 .vis-item .state_item_wrapper.conflict .state_item_icon  {
