@@ -62,7 +62,7 @@ class EventComponent extends StateComponent {
         let result : string = "";
 
     //    if(this.parentDevice.containerTimeline.anyActionsVisible(executionID)) {
-            result += '<div class="event_item">&nbsp;</div>';
+            result += '<div class="event_item" id="' + executionID + '">&nbsp;</div>';
     /*    } else {
             result += '<div class="event_item without_changes">&nbsp;</div>';
         }*/

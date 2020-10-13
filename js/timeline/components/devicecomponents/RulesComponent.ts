@@ -89,7 +89,7 @@ class RulesComponent extends EventComponent {
 
             let RuleEvent = {
                 id: ruleExecution["execution_id"],
-                group: ruleExecution["id"],
+                group: ruleExecution["rule_id"],
                 content: this.createHTML(ruleExecution["execution_id"]),
                 start: ruleExecution["datetime"],
                 type: 'point'
@@ -129,10 +129,15 @@ class RulesComponent extends EventComponent {
 
     itemClicked(properties) {
         if(properties["item"] != null) {
-            // If checkbox
-            let checkbox = $(properties.event.path[0]).closest(".checkbox");
+            if(properties["item"].indexOf('rule_execution') !== -1) {
+                // It is a rule execution
+                this.parentDevice.containerTimeline.ruleExecutionSelected(properties["item"]);
+            } else {
+                // It is an action execution
+                let checkbox = $(properties.event.path[0]).closest(".checkbox");
 
-            this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
+                this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
+            }
           //  this.parentDevice.containerTimeline.clearSelection(false);
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
@@ -179,11 +184,18 @@ class RulesComponent extends EventComponent {
             // find the responsible action execution for this state
             let conflictingState = conflict["conflicting_states"][conflictingStateIndex];
             let conflictingAction = this.futureClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"]);
+            let conflictingRuleExecution = this.futureClient.getRuleExecutionByActionExecutionID(conflictingAction["action_execution_id"]);
 
             if(conflictingAction != null) {
                 $("#" + conflictingAction["action_execution_id"]).addClass("conflict");
             }
+
+            if(conflictingRuleExecution != null) {
+                $("#" + conflictingRuleExecution["execution_id"]).addClass("conflict");
+            }
         }
+
+     //   $("#" + conflict["execution_id"]).addClass("conflict");
 
         let conflictRange = this.findConflictRange(conflict);
 
@@ -228,6 +240,7 @@ class RulesComponent extends EventComponent {
 
     clearConflict() {
         this.items.remove("conflict");
+        $(".event_item.conflict").removeClass("conflict");
         $(".checkbox.conflict").removeClass("conflict");
         $(".checkbox.highlighted").removeClass("highlighted");
         this.highlightedConflict = null;

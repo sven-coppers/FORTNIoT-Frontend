@@ -14,6 +14,7 @@ class StateComponent extends TimelineComponent {
             // rollingMode: {follow: true, offset: 0.3},
             showMajorLabels: false,
             showMinorLabels: false,
+
             moment: function(date) {
                 return vis.moment(date).utcOffset('+02:00');
             }

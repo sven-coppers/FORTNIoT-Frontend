@@ -503,20 +503,27 @@ body {
 .vis-item .event_item {
     background-color: #1ea9f4;
     position: absolute;
-    left: -5px;
-    top: 7px;
-    border-radius: 6px;
+    left: -7px;
+    top: 3px;
+    border-radius: 7px;
     z-index: 1;
     border: 1px solid #1ea9f4;
-    width: 10px;
-    height: 10px;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
+.vis-item .event_item.conflict {
+    background-color: #ac2118;
+    border-color: #ac2118;
 }
 
 .vis-item .event_item.without_changes {
     background-color: #e0f3ff;
 }
 
-.vis-item .event_item.selected {
+.vis-item .event_item.selected,
+.vis-item .event_item.conflict.selected {
     background-color: #ffe000;
     border-color: #ffe000;
 }
@@ -788,5 +795,5 @@ body {
 #iot .vis-item.vis-background .vis-item-content {
     position: absolute;
     top: 4px;
-    left: 4px;
+    left: 8px;
 }

@@ -405,6 +405,21 @@ class Timeline {
         this.redraw(this.futureClient.getAllStates(this.stateClient, future), future.executions, future.conflicts, false);
     }
 
+    ruleExecutionSelected(ruleExecutionID: any) {
+        this.clearSelection(true);
+
+        let selectedRuleExecution = this.futureClient.getExecutionByID(ruleExecutionID);
+        console.log(selectedRuleExecution);
+
+       /* for(let actionExecution of selectedRuleExecution["action_executions"]) {
+            for(let resultingContext of actionExecution["resulting_contexts"]) {
+
+            }
+        } */
+
+        this.highlightExecution(selectedRuleExecution);
+    }
+
 
     stateHighlighted(stateContextID: string) {
         this.clearSelection(true);
@@ -476,9 +491,7 @@ class Timeline {
     }
 
     selectExecution(executionID: string) {
-        $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
-            adapter.selectExecution(executionID);
-        });
+        $("#" + executionID).addClass("selected");
     }
 
     clearSelection(nextSelectionExpected: boolean) {
@@ -685,4 +698,6 @@ class Timeline {
     selectAction(stateContextID: string) {
         $("#" + stateContextID).addClass("action");
     }
+
+
 }
