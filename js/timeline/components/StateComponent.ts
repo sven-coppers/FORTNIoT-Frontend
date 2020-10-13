@@ -40,7 +40,7 @@ class StateComponent extends TimelineComponent {
         $(".vis-point").removeClass("vis-selected");
 
         if(stateContextID != null) {
-            this.parentDevice.containerTimeline.stateHighlighted(stateContextID);
+            this.parentDevice.containerTimeline.selectState(stateContextID);
         } else {
             this.parentDevice.containerTimeline.clearSelection(true);
         }

@@ -797,3 +797,54 @@ body {
     top: 4px;
     left: 8px;
 }
+
+#iot .action_execution {
+    background-color: white;
+    color: #ffffff00;
+    position: absolute;
+    left: -7px;
+    top: 3px;
+    border-radius: 7px;
+    z-index: 1;
+    border: 1px solid #1ea9f4;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
+#iot .action_execution.no_effects {
+    background-color: #e0f3ff;
+    color: #e0f3ff00;
+}
+
+#iot .action_execution.has_effects {
+    background-color: #1ea9f4;
+    color: #1ea9f4;
+}
+
+#iot .action_execution.no_effects.conflict_related {
+    border: 1px solid #ac2118;
+    background: #ffddd5;
+}
+
+#iot .action_execution.has_effects.conflict_related {
+    border: 1px solid #ac2118;
+    background: #ac2118;
+    color: #ac2118;
+}
+
+#iot .action_execution.highlighted {
+    border: 1px solid #ffe000;
+    border-radius: 3px;
+    background: white;
+    color: white;
+    padding: 0px;
+}
+
+#iot .action_execution.highlighted.checked {
+    border: 1px solid #ffe000;
+    border-radius: 3px;
+    background: #ffe000;
+    color: white;
+    padding: 0px;
+}

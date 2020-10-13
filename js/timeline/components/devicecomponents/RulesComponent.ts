@@ -76,11 +76,12 @@ class RulesComponent extends EventComponent {
 
             for(let actionExecutionIndex in ruleExecution["action_executions"]) {
                 let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
+                let hasEffects = this.parentDevice.containerTimeline.hasEffects(actionExecution);
 
                 let actionEvent = {
                     id: actionExecution["action_execution_id"],
                     group: actionExecution["action_id"],
-                    content: this.createCheckbox(actionExecution["action_execution_id"], actionExecution["snoozed"]),
+                    content: this.createActionExecutionVisualisation(actionExecution["action_execution_id"], actionExecution["snoozed"], hasEffects),
                     start: ruleExecution["datetime"],
                     type: 'point'
                 };
@@ -95,7 +96,7 @@ class RulesComponent extends EventComponent {
                 type: 'point'
             };
 
-            this.items.add(RuleEvent);
+          //  this.items.add(RuleEvent);
         }
 
         let oThis = this;
@@ -103,7 +104,7 @@ class RulesComponent extends EventComponent {
 
         // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
         setTimeout(function() {
-            $(".checkbox").on("click", function () {
+            $(".action_execution.highlighted").on("click", function () {
                 $(this).toggleClass("checked");
                 $(this).removeClass("feedforward_checked");
                 $(this).removeClass("feedforward_unchecked");
@@ -128,16 +129,16 @@ class RulesComponent extends EventComponent {
     }
 
     itemClicked(properties) {
-        if(properties["item"] != null) {
-            if(properties["item"].indexOf('rule_execution') !== -1) {
-                // It is a rule execution
-                this.parentDevice.containerTimeline.ruleExecutionSelected(properties["item"]);
-            } else {
+        if(properties["item"] != null && properties["item"].indexOf('action_execution') !== -1) {
+            if($("#" + properties["item"]).hasClass("highlighted")) {
                 // It is an action execution
                 let checkbox = $(properties.event.path[0]).closest(".checkbox");
 
                 this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
+            } else {
+                this.parentDevice.containerTimeline.selectActionExecution(properties["item"]);
             }
+
           //  this.parentDevice.containerTimeline.clearSelection(false);
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
@@ -159,6 +160,8 @@ class RulesComponent extends EventComponent {
             } else {
                 this.parentDevice.containerTimeline.clearSelection(false);
             }
+        } else {
+            this.parentDevice.containerTimeline.clearSelection(false);
         }
 
         return false;
@@ -177,6 +180,25 @@ class RulesComponent extends EventComponent {
         return result;
     }
 
+    createActionExecutionVisualisation(actionExecutionID: string, snoozed: boolean, hasEffects: boolean) {
+        let result : string = "";
+        let classNames: string = "action_execution";
+
+        if(!snoozed) {
+            classNames += " checked";
+        }
+
+        if(hasEffects) {
+            classNames += " has_effects";
+        } else {
+            classNames += " no_effects";
+        }
+
+        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
+
+        return result;
+    }
+
     highlightConflict(conflict: any) {
         this.clearConflict();
 
@@ -187,7 +209,7 @@ class RulesComponent extends EventComponent {
             let conflictingRuleExecution = this.futureClient.getRuleExecutionByActionExecutionID(conflictingAction["action_execution_id"]);
 
             if(conflictingAction != null) {
-                $("#" + conflictingAction["action_execution_id"]).addClass("conflict");
+                $("#" + conflictingAction["action_execution_id"]).addClass("conflict_related");
             }
 
             if(conflictingRuleExecution != null) {

@@ -19,6 +19,8 @@ class Timeline {
 
     private selectedEntity: string;
     private selectedTime: Date;
+    private selectedTriggerEntity: string;
+    private selectedActionID: string;
 
     constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient, futureClient: FutureClient) {
         this.mainController = mainController;
@@ -59,23 +61,6 @@ class Timeline {
      * @param devices
      */
     public initializeRules(rules) {
-        // User rules
-        for (let ruleID in rules) {
-            if(ruleID.indexOf("system_rule") == -1) {
-       //         this.ruleAdapters[ruleID] = new RuleTimeline(ruleID, rules[ruleID]["description"], this, rules[ruleID]["actions"]);
-            }
-        }
-
-        // System rules
-        for (let ruleID in rules) {
-            if(ruleID.indexOf("system_rule") != -1) {
-        //        this.ruleAdapters[ruleID] = new ImplicitRuleTimeline(ruleID, rules[ruleID]["description"], this);
-            }
-        }
-
-        // Finally render the axis and load actual data
-    //    this.axisTimeline = new AxisTimeline(this);
-
         this.rulesAdapter = new RulesTimeline(this, rules, this.futureClient);
         this.mainController.refreshContext();
     }
@@ -201,7 +186,6 @@ class Timeline {
         this.rulesAdapter.setWindow(range);
     }
 
-
     public updateDevices(devices) {
         for (let device of devices) {
             if(device["id"] in this.deviceAdapters) {
@@ -232,7 +216,7 @@ class Timeline {
             let selectedState = this.futureClient.findState(this.selectedEntity, this.selectedTime);
 
             if(selectedState != null) {
-                this.stateHighlighted(selectedState["context"]["id"]);
+                this.selectState(selectedState["context"]["id"]);
             } else {
                 this.clearSelection(false);
             }
@@ -320,24 +304,6 @@ class Timeline {
         this.hasCustomTime = true;
     }
 
-    highlightExecution(execution: any) {
-        if(execution != null) {
-            this.hideAll();
-            this.drawCustomTime(execution["datetime"]);
-            this.selectExecution(execution["execution_id"]);
-            $("#back_button").removeClass("hidden");
-
-            console.log("\t\tTriggered  by: " + execution["trigger_context"]["id"]);
-            this.selectTrigger(execution["trigger_context"]["id"]);
-
-            console.log("\t\tCondition satisfied by:");
-            this.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(execution));
-
-            console.log("\t\tCaused the actions");
-            this.highlightActions(this.futureClient.getActionContextIDsByExecution(execution));
-        }
-    }
-
     actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
       //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
 
@@ -405,34 +371,22 @@ class Timeline {
         this.redraw(this.futureClient.getAllStates(this.stateClient, future), future.executions, future.conflicts, false);
     }
 
-    ruleExecutionSelected(ruleExecutionID: any) {
-        this.clearSelection(true);
-
-        let selectedRuleExecution = this.futureClient.getExecutionByID(ruleExecutionID);
-        console.log(selectedRuleExecution);
-
-       /* for(let actionExecution of selectedRuleExecution["action_executions"]) {
-            for(let resultingContext of actionExecution["resulting_contexts"]) {
-
-            }
-        } */
-
-        this.highlightExecution(selectedRuleExecution);
-    }
-
-
-    stateHighlighted(stateContextID: string) {
-        this.clearSelection(true);
-
-        let highlightedState = this.futureClient.getStateByContextID(stateContextID);
-        this.selectedTime = new Date(highlightedState["last_changed"]);
-        this.selectedEntity = highlightedState["entity_id"];
-
-
-        let causedByExecution = this.futureClient.getRuleExecutionByActionContextID(stateContextID);
+    selectState(stateContextID: string) {
         let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID);
 
-        let relatedConflict: any = this.futureClient.getRelatedConflict(stateContextID);
+        if(causedByActionExecution == null) {
+            console.log("No explanation available for this state");
+        } else {
+            this.selectActionExecution(causedByActionExecution["action_execution_id"]);
+        }
+    }
+
+    selectActionExecution(actionExecutionID: string) {
+        this.clearSelection(true);
+
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+        let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+        let relatedConflict = this.futureClient.getRelatedConflict(actionExecution["resulting_contexts"][0]["id"]);
 
         if(relatedConflict != null) {
             this.rulesAdapter.redrawConflict(relatedConflict);
@@ -440,9 +394,22 @@ class Timeline {
             for(let conflictedState of relatedConflict["conflicting_states"]) {
                 $("#" + conflictedState["context"]["id"]).addClass("conflict_related");
             }
-        } else if(causedByActionExecution != null) {
-            this.rulesAdapter.highlightActionExecution(causedByActionExecution["action_execution_id"]);
         }
+
+        this.highlightActionExecution(actionExecutionID);
+        this.drawCustomTime(ruleExecution["datetime"]);
+        this.highlightTrigger(ruleExecution["trigger_context"]["id"]);
+        this.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(ruleExecution));
+        this.highlightActions(actionExecution["resulting_contexts"]);
+
+
+
+        // Also highlight a conflict if needed
+
+
+      /*
+
+
 
         let resultedInExecutions: string[] = this.futureClient.getExecutionsByCondition(stateContextID);
 
@@ -454,28 +421,15 @@ class Timeline {
         } else {
             console.log("\tCaused by: " + causedByExecution["execution_id"]);
             this.highlightExecution(causedByExecution);
-        }
+        } */
     }
 
-    anyActionsVisible(executionID: string ): boolean {
-        let execution = this.futureClient.getExecutionByID(executionID);
-
-        if(execution == null) return false;
-
-        let contextIDs: string[] = this.futureClient.getActionContextIDsByExecution(execution);
-
-        for(let contextID of contextIDs) {
-            for(let adapterName in this.deviceAdapters) {
-                if(this.deviceAdapters[adapterName].anyActionsVisible(contextID)) return true;
-            }
+    hasEffects(actionExecution: any) : boolean {
+        for(let resultingContext of actionExecution["resulting_contexts"]) {
+            if($("#" + resultingContext["id"]).length > 0) return true;
         }
 
         return false;
-    }
-
-    hideAll() {
-        // this.setAllRulesVisible(false);
-      //  this.setAllDevicesVisible(false);
     }
 
     setAllRulesVisible(visible: boolean) {
@@ -499,6 +453,7 @@ class Timeline {
         $(".state_item_wrapper").removeClass("trigger action condition conflict_related");
         $(".vis-point").removeClass("vis-selected");
         $(".event_item").removeClass("selected");
+        $(".action_execution").removeClass("highlighted conflict_related");
        // $("#back_button").addClass("hidden");
 
         if(!nextSelectionExpected) {
@@ -672,32 +627,34 @@ class Timeline {
         console.log(mergedStates);
     }
 
-    highlightActions(actionContextIDs: string[]) {
-        for(let actionContextID of actionContextIDs) {
-            console.log("\t\t - State " + actionContextID);
-            this.selectAction(actionContextID);
+    highlightActions(actionContexts: string[]) {
+        for(let actionContext of actionContexts) {
+            console.log("\t\t - State " + actionContext["id"]);
+            this.highlightAction(actionContext["id"]);
         }
     }
 
     highlightConditions(triggerContextIDs: string[]) {
         for(let triggerContextID of triggerContextIDs) {
             console.log("\t\t - State " + triggerContextID);
-            this.selectCondition(triggerContextID);
+            this.highlightCondition(triggerContextID);
         }
     }
 
-    selectTrigger(stateContextID: string) {
+    highlightTrigger(stateContextID: string) {
         $("#" + stateContextID).addClass("trigger");
         $("#" + stateContextID).find("img").attr("src", "img/trigger.png").attr("title", "This state will be the trigger");
     }
 
-    selectCondition(stateContextID: string) {
+    highlightCondition(stateContextID: string) {
         $("#" + stateContextID).addClass("condition");
     }
 
-    selectAction(stateContextID: string) {
+    highlightAction(stateContextID: string) {
         $("#" + stateContextID).addClass("action");
     }
 
-
+    highlightActionExecution(actionExecutionID: string) {
+        $("#" + actionExecutionID).addClass("highlighted");
+    }
 }

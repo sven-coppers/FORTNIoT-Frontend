@@ -67,7 +67,7 @@ abstract class GraphComponent extends TimelineComponent {
         let stateContextID = this.getClosestItemID(date);
 
         if(stateContextID != null) {
-            this.parentDevice.containerTimeline.stateHighlighted(stateContextID);
+            this.parentDevice.containerTimeline.selectState(stateContextID);
         } else {
             this.parentDevice.containerTimeline.clearSelection(false);
         }
