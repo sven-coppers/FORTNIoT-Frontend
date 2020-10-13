@@ -810,6 +810,7 @@ body {
     width: 13px;
     height: 13px;
     cursor: pointer;
+    transition: background 0.25s ease, border 0.25s ease, color 0.15s ease;
 }
 
 #iot .action_execution.no_effects {
@@ -833,7 +834,8 @@ body {
     color: #ac2118;
 }
 
-#iot .action_execution.highlighted {
+#iot .action_execution.highlighted,
+#iot .action_execution.highlighted.conflict_related {
     border: 1px solid #ffe000;
     border-radius: 3px;
     background: white;
@@ -847,4 +849,18 @@ body {
     background: #ffe000;
     color: white;
     padding: 0px;
+}
+
+#iot .action_execution.highlighted.feedforward_checked {
+    border: 1px solid #ffe000;
+    background: #f8ffdc;
+    color: #ffe000;
+    cursor: pointer;
+}
+
+#iot .action_execution.highlighted.checked.feedforward_unchecked {
+    border: 1px solid #404040;
+    background: #f2f2f2;
+    color: #f2f2f2;
+    cursor: pointer;
 }

@@ -17,7 +17,6 @@ class Timeline {
     private showingOnlyContext: boolean;
     private redrawing: boolean;
 
-    private selectedEntity: string;
     private selectedTime: Date;
     private selectedTriggerEntity: string;
     private selectedActionID: string;
@@ -31,7 +30,8 @@ class Timeline {
         this.conflictsClient = conflictsClient;
         this.futureClient = futureClient;
         this.hasCustomTime = false;
-        this.selectedEntity = null;
+        this.selectedTriggerEntity = null;
+        this.selectedActionID = null;
         this.selectedTime = null;
         this.showingOnlyContext = true;
         this.ruleAdapters = {};
@@ -211,12 +211,11 @@ class Timeline {
         this.redrawRules(executions, feedforward);
         this.highlightConflictingStates(conflicts);
 
-        if(this.selectedEntity != null && !feedforward) {
-            // Should work across states
-            let selectedState = this.futureClient.findState(this.selectedEntity, this.selectedTime);
+        if(this.selectedTriggerEntity != null && !feedforward) {
+            let selectedActionExecution = this.futureClient.findActionExecution(this.selectedTriggerEntity, this.selectedActionID, this.selectedTime);
 
-            if(selectedState != null) {
-                this.selectState(selectedState["context"]["id"]);
+            if(selectedActionExecution != null) {
+                this.selectActionExecution(selectedActionExecution["action_execution_id"]);
             } else {
                 this.clearSelection(false);
             }
@@ -386,13 +385,16 @@ class Timeline {
 
         let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
         let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-        let relatedConflict = this.futureClient.getRelatedConflict(actionExecution["resulting_contexts"][0]["id"]);
 
-        if(relatedConflict != null) {
-            this.rulesAdapter.redrawConflict(relatedConflict);
+        if(actionExecution["resulting_contexts"].length > 0) {
+            let relatedConflict = this.futureClient.getRelatedConflict(actionExecution["resulting_contexts"][0]["id"]);
 
-            for(let conflictedState of relatedConflict["conflicting_states"]) {
-                $("#" + conflictedState["context"]["id"]).addClass("conflict_related");
+            if(relatedConflict != null) {
+                this.rulesAdapter.redrawConflict(relatedConflict);
+
+                for(let conflictedState of relatedConflict["conflicting_states"]) {
+                    $("#" + conflictedState["context"]["id"]).addClass("conflict_related");
+                }
             }
         }
 
@@ -402,26 +404,9 @@ class Timeline {
         this.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(ruleExecution));
         this.highlightActions(actionExecution["resulting_contexts"]);
 
-
-
-        // Also highlight a conflict if needed
-
-
-      /*
-
-
-
-        let resultedInExecutions: string[] = this.futureClient.getExecutionsByCondition(stateContextID);
-
-        console.log("\nState " + stateContextID);
-
-        if(causedByExecution == null) {
-            console.log("\tCause unknown");
-            this.clearSelection(false);
-        } else {
-            console.log("\tCaused by: " + causedByExecution["execution_id"]);
-            this.highlightExecution(causedByExecution);
-        } */
+        this.selectedTriggerEntity = ruleExecution["trigger_entity"];
+        this.selectedActionID = actionExecution["action_id"];
+        this.selectedTime = ruleExecution["datetime"];
     }
 
     hasEffects(actionExecution: any) : boolean {
@@ -461,7 +446,9 @@ class Timeline {
             this.setAllRulesVisible(true);
         }
 
-        this.selectedEntity = null;
+
+        this.selectedTriggerEntity = null;
+        this.selectedActionID = null;
         this.selectedTime = null;
         this.clearCustomTime();
         this.rulesAdapter.clearConflict();
@@ -629,14 +616,14 @@ class Timeline {
 
     highlightActions(actionContexts: string[]) {
         for(let actionContext of actionContexts) {
-            console.log("\t\t - State " + actionContext["id"]);
+            //console.log("\t\t - State " + actionContext["id"]);
             this.highlightAction(actionContext["id"]);
         }
     }
 
     highlightConditions(triggerContextIDs: string[]) {
         for(let triggerContextID of triggerContextIDs) {
-            console.log("\t\t - State " + triggerContextID);
+            //console.log("\t\t - State " + triggerContextID);
             this.highlightCondition(triggerContextID);
         }
     }
