@@ -110,7 +110,9 @@ class RulesComponent extends EventComponent {
                 $(this).removeClass("feedforward_unchecked");
             })
 
-            $(".checkbox").mouseenter(function (event) {
+            $(".action_execution").mouseenter(function (event) {
+                if (!$(this).hasClass("highlighted")) return;
+
                 if ($(this).hasClass("checked")) {
                     $(this).addClass("feedforward_unchecked");
                 } else {
@@ -120,20 +122,19 @@ class RulesComponent extends EventComponent {
                 oThis.parentDevice.containerTimeline.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
             });
 
-            $(".checkbox").mouseleave(function () {
+            $(".action_execution").mouseleave(function () {
                 $(this).removeClass("feedforward_checked");
                 $(this).removeClass("feedforward_unchecked");
-                oThis.parentDevice.containerTimeline.cancelPreviewActionExecutionChange();
+               // oThis.parentDevice.containerTimeline.cancelPreviewActionExecutionChange();
             });
         }, 10);
     }
 
     itemClicked(properties) {
         if(properties["item"] != null && properties["item"].indexOf('action_execution') !== -1) {
-            if($("#" + properties["item"]).hasClass("highlighted")) {
-                // It is an action execution
-                let checkbox = $(properties.event.path[0]).closest(".checkbox");
+            let checkbox = $("#" + properties["item"]);
 
+            if(checkbox.hasClass("highlighted")) {
                 this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
             } else {
                 this.parentDevice.containerTimeline.selectActionExecution(properties["item"]);
@@ -167,7 +168,7 @@ class RulesComponent extends EventComponent {
         return false;
     }
 
-    createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
+   /* createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
         let result : string = "";
         let classNames: string = "checkbox";
 
@@ -178,7 +179,7 @@ class RulesComponent extends EventComponent {
         result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
 
         return result;
-    }
+    } */
 
     createActionExecutionVisualisation(actionExecutionID: string, snoozed: boolean, hasEffects: boolean) {
         let result : string = "";
@@ -186,12 +187,12 @@ class RulesComponent extends EventComponent {
 
         if(!snoozed) {
             classNames += " checked";
-        }
 
-        if(hasEffects) {
-            classNames += " has_effects";
-        } else {
-            classNames += " no_effects";
+            if(hasEffects) {
+                classNames += " has_effects";
+            } else {
+                classNames += " no_effects";
+            }
         }
 
         result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';

@@ -55,6 +55,26 @@ class FutureClient {
         return null;
     }
 
+    /**
+     * Find an action execution with similar characteristics
+     * @param triggerEntity
+     * @param actionID
+     * @param date
+     */
+    findActionExecution(triggerEntity: string, actionID: string, date: Date) {
+        for(let ruleExecution of this.future.executions) {
+            if(ruleExecution.trigger_entity == triggerEntity && new Date(ruleExecution.datetime).getTime() == date.getTime()) {
+                for(let actionExecution of ruleExecution["action_executions"]) {
+                    if (actionExecution["action_id"] == actionID) {
+                        return actionExecution;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     getStateByContextID(stateContextID: string) {
         for(let haystackState of this.future.futureStates) {
             if(haystackState.context.id == stateContextID) {
@@ -214,4 +234,5 @@ class FutureClient {
 
         return allStates;
     }
+
 }

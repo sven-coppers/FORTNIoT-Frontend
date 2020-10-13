@@ -406,7 +406,7 @@ class Timeline {
 
         this.selectedTriggerEntity = ruleExecution["trigger_entity"];
         this.selectedActionID = actionExecution["action_id"];
-        this.selectedTime = ruleExecution["datetime"];
+        this.selectedTime = new Date(ruleExecution["datetime"]);
     }
 
     hasEffects(actionExecution: any) : boolean {
