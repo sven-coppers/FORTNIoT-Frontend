@@ -814,7 +814,7 @@ body {
 }
 
 #iot .action_execution.no_effects {
-    background-color: #e0f3ff;
+    background-color: #cff4ff;
     color: #e0f3ff00;
 }
 
@@ -866,7 +866,7 @@ body {
 }
 
 #iot span.state_option {
-
+    cursor: pointer;
 }
 
 #iot span.state_option.highlighted_state {

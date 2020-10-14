@@ -184,18 +184,22 @@ class RulesComponent extends EventComponent {
     createActionExecutionVisualisation(actionExecutionID: string, snoozed: boolean, hasEffects: boolean) {
         let result : string = "";
         let classNames: string = "action_execution";
+        let title = "This action is snoozed by the user";
 
         if(!snoozed) {
             classNames += " checked";
 
             if(hasEffects) {
                 classNames += " has_effects";
+                title = "This state has one or more effects";
+                title = ""
             } else {
                 classNames += " no_effects";
+                title = "This state has no effects";
             }
         }
 
-        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
+        result += '<div class="' + classNames + '" id="' + actionExecutionID + '" title="' + title + '">&#10004</div>';
 
         return result;
     }
