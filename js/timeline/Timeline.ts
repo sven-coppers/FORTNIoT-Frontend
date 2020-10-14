@@ -236,14 +236,6 @@ class Timeline {
 
     private redrawRules(executionEvents, feedforward: boolean) {
         this.rulesAdapter.redrawVisualisation(executionEvents, feedforward);
-
-     /*   let deviceChangesMap = this.groupChangesByRule(executionEvents);
-
-        for(let deviceName in deviceChangesMap) {
-            if (typeof this.ruleAdapters[deviceName] !== "undefined") {
-                this.ruleAdapters[deviceName].redrawVisualisation(deviceChangesMap[deviceName]);
-            }
-        } */
     }
 
     /** Add exclemation marks to all conflicted states */
@@ -253,22 +245,6 @@ class Timeline {
                 $("#" + conflictingState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict");
             }
         }
-    }
-
-    groupChangesByRule(changes) {
-        let groups = {};
-
-        for(let ruleID in this.ruleAdapters) {
-            groups[ruleID] = [];
-        }
-
-        for(let i = 0; i < changes.length; i++) {
-            if((changes[i]["entity_id"] in groups)) {
-                groups[changes[i]["entity_id"]].push(changes[i]);
-            }
-        }
-
-        return groups;
     }
 
     groupChangesByDevice(changes) {

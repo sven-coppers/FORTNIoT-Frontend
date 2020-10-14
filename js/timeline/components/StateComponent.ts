@@ -65,20 +65,36 @@ class StateComponent extends TimelineComponent {
     }
 
     private redrawWithPredictions(deviceChanges: any, feedforward: boolean, predictionEnd: Date) {
+        let jsonObjects = [];
+        let similarIndex = 0;
+
         for(let startIndex = 0; startIndex < deviceChanges.length ; ) {
+            jsonObjects.push(deviceChanges[startIndex]);
+
+            // Find states that happen at exactly the same time
+            for(similarIndex = startIndex + 1; similarIndex < deviceChanges.length; similarIndex++) {
+                if(deviceChanges[startIndex]["last_changed"] == deviceChanges[similarIndex]["last_changed"]) {
+                    jsonObjects.push(deviceChanges[similarIndex]);
+                } else {
+                    break;
+                }
+            }
+
             let found = false;
 
-            for(let endIndex = startIndex + 1; endIndex < deviceChanges.length; endIndex++) {
-                if(this.areDifferent(deviceChanges[startIndex], deviceChanges[endIndex])) {
-                    this.items.add(this.jsonToItem(deviceChanges[startIndex], deviceChanges[startIndex]["context"]["id"], deviceChanges[startIndex]["last_changed"], deviceChanges[endIndex]["last_changed"]));
+            for(let endIndex = similarIndex; endIndex < deviceChanges.length; endIndex++) {
+                if(jsonObjects.length > 1 || this.areDifferent(deviceChanges[startIndex], deviceChanges[endIndex])) {
+                    this.items.add(this.mergedJsonToItem(jsonObjects, deviceChanges[endIndex]["last_changed"]));
                     startIndex = endIndex;
                     found = true;
+                    jsonObjects = [];
                     break;
                 }
             }
 
             if(!found) { // THIS WAS THE LAST ELEMENT
-                this.items.add(this.jsonToItem(deviceChanges[startIndex], deviceChanges[startIndex]["context"]["id"], deviceChanges[startIndex]["last_changed"], predictionEnd));
+                this.items.add(this.mergedJsonToItem(jsonObjects, predictionEnd));
+                jsonObjects = [];
                 break;
             }
         }
@@ -113,32 +129,42 @@ class StateComponent extends TimelineComponent {
         }
     }
 
-    selectAction(identifier: string) {
-        let item = this.visualisation.itemsData.get(identifier);
-
-        if(item != null) {
-            item["content"] = item["content"].split("trigger").join("").replace("state_item_wrapper", "state_item_wrapper action");
-            this.items.update(item);
-            this.parentDevice.setVisible(true);
-        }
-    }
-
-    selectTrigger(identifier: string) {
-        let item = this.visualisation.itemsData.get(identifier);
-
-        if(item != null) {
-            item["content"] = item["content"].split("action").join("").replace("state_item_wrapper", "state_item_wrapper trigger");
-            this.items.update(item);
-            this.parentDevice.setVisible(true);
-        }
-    }
-
     selectExecution(identifier: string) {
         // Not supported for states
     }
 
     areDifferent(firstJson, secondJson): boolean {
         return firstJson["state"] !== secondJson["state"];// || firstJson["future"] !== secondJson["future"];
+    }
+
+    mergedJsonToItem(jsonObjects, endTime): any {
+        let ids = [];
+        let labels = [];
+
+        for(let index in jsonObjects) {
+            let jsonObject = jsonObjects[index];
+
+            ids.push(jsonObject["context"]["id"]);
+            labels.push(this.jsonToLabel(jsonObject));
+        }
+
+
+        let item = {
+            id: jsonObjects[0]["context"]["id"],
+            group: 1,
+            start: jsonObjects[0]["last_changed"]
+        };
+
+        if(endTime != null) {
+            item["end"] = endTime;
+            item["type"] = 'range';
+            item["content"] = this.createMergedHTML(ids, labels,true);
+        } else {
+            item["type"] = 'point';
+            item["content"] = this.createMergedHTML(ids, labels,false);
+        }
+
+        return item;
     }
 
     jsonToItem(json, id, startTime, endTime): any {
@@ -166,7 +192,7 @@ class StateComponent extends TimelineComponent {
         return capitalizeFirstLetter(json["state"].replace("_", " "));
     }
 
-    createMergedHTML(ids: string [], contents: string [], hasEnd: boolean, future: string ): string {
+    createMergedHTML(ids: string [], contents: string [], hasEnd: boolean): string {
         let mergedIds = ids[0];
         let mergedContents = '<span class="state_option" id="' + ids[0] + '">' + contents[0] + '</span>';
 
@@ -175,7 +201,7 @@ class StateComponent extends TimelineComponent {
             mergedContents += ' / <span class="state_option" id="' + ids[i] + '">' + contents[i] + '</span>';
         }
 
-        return this.createHTML(mergedIds, mergedContents, hasEnd, future);
+        return this.createHTML(mergedIds, mergedContents, hasEnd, "");
     }
 
     createHTML(id: string, content: string, hasEnd: boolean, future: string) : string {
@@ -215,5 +241,13 @@ class StateComponent extends TimelineComponent {
             this.items.update(item);
             this.parentDevice.setVisible(true);
         }
+    }
+
+    selectAction(identifier: string) {
+        // Do nothing
+    }
+
+    selectTrigger(identifier: string) {
+        // Do nothing
     }
 }
