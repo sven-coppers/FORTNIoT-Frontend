@@ -250,7 +250,7 @@ class Timeline {
     private highlightConflictingStates(conflicts: any) {
         for(let conflict of conflicts) {
             for(let conflictingState of conflict["conflicting_states"]) {
-                this.deviceAdapters[conflictingState["entity_id"]].highlightConflictingState(conflictingState);
+                $("#" + conflictingState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict");
             }
         }
     }
@@ -394,7 +394,7 @@ class Timeline {
                 this.rulesAdapter.redrawConflict(relatedConflict);
 
                 for(let conflictedState of relatedConflict["conflicting_states"]) {
-                    $("#" + conflictedState["context"]["id"]).addClass("conflict_related");
+                    $("#" + conflictedState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict_related");
                 }
             }
         }
@@ -435,6 +435,7 @@ class Timeline {
     }
 
     clearSelection(nextSelectionExpected: boolean) {
+        $("span.highlighted_state").removeClass("highlighted_state");
         $(".state_item_wrapper .trigger img").attr("src", "img/warning.png").attr("title", "This state will be involved in conflict");
         $(".state_item_wrapper").removeClass("trigger action condition conflict_related");
         $(".vis-point").removeClass("vis-selected");
@@ -447,7 +448,6 @@ class Timeline {
             this.setAllDevicesVisible(true);
             this.setAllRulesVisible(true);
         }
-
 
         this.selectedTriggerEntity = null;
         this.selectedActionID = null;
@@ -631,18 +631,19 @@ class Timeline {
     }
 
     highlightTrigger(stateContextID: string) {
-        $("#" + stateContextID).addClass("trigger");
-        $("#" + stateContextID).find("img").attr("src", "img/trigger.png").attr("title", "This state will be the trigger");
+        $("#" + stateContextID).closest(".state_item_wrapper").addClass("trigger");
+        $("#" + stateContextID).closest(".state_item_wrapper").find("img").attr("src", "img/trigger.png").attr("title", "This state will be the trigger");
     }
 
     highlightCondition(stateContextID: string) {
-        $("#" + stateContextID).addClass("condition");
-        $("#" + stateContextID).attr("title", "This state will be satisfy the condition");
+        $("#" + stateContextID).closest(".state_item_wrapper").addClass("condition");
+        $("#" + stateContextID).closest(".state_item_wrapper").attr("title", "This state will be satisfy the condition");
     }
 
     highlightAction(stateContextID: string) {
-        $("#" + stateContextID).addClass("action");
-        $("#" + stateContextID).attr("title", "This state will be result from executing the rule");
+        $("#" + stateContextID).addClass("highlighted_state");
+        $("#" + stateContextID).closest(".state_item_wrapper").addClass("action");
+        $("#" + stateContextID).closest(".state_item_wrapper").attr("title", "This state will be result from executing the rule");
     }
 
     highlightActionExecution(actionExecutionID: string) {

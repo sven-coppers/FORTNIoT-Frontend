@@ -33,11 +33,13 @@ class StateComponent extends TimelineComponent {
     }
 
     itemClicked(properties) {
-        let parent = $(properties.event.path[0]).closest(".state_item_wrapper");
-        let stateContextID = properties.item;
+        let clickedElement = $(properties.event.path[0]);
+        let stateContextID = clickedElement.closest(".state_item_wrapper").find(".state_option").first().attr("id");
 
-        $(".state_item_wrapper").removeClass("trigger action");
-        $(".vis-point").removeClass("vis-selected");
+        // If a sub state was selected
+        if(clickedElement.hasClass("state_option")) {
+            stateContextID = clickedElement.attr("id");
+        }
 
         if(stateContextID != null) {
             this.parentDevice.containerTimeline.selectState(stateContextID);
@@ -151,10 +153,10 @@ class StateComponent extends TimelineComponent {
         if(endTime != null) {
             item["end"] = endTime;
             item["type"] = 'range';
-            item["content"] = this.createHTML(id, label, true, json["future"]);
+            item["content"] = this.createHTML(id,  '<span class="state_option" id="' + id + '">' + label + '</span>', true, json["future"]);
         } else {
             item["type"] = 'point';
-            item["content"] = this.createHTML(id, label, false, json["future"]);
+            item["content"] = this.createHTML(id,  '<span class="state_option" id="' + id + '">' + label + '</span>', false, json["future"]);
         }
 
         return item;
@@ -162,6 +164,18 @@ class StateComponent extends TimelineComponent {
 
     jsonToLabel(json) {
         return capitalizeFirstLetter(json["state"].replace("_", " "));
+    }
+
+    createMergedHTML(ids: string [], contents: string [], hasEnd: boolean, future: string ): string {
+        let mergedIds = ids[0];
+        let mergedContents = '<span class="state_option" id="' + ids[0] + '">' + contents[0] + '</span>';
+
+        for(let i = 1; i < ids.length; ++i) {
+            mergedIds += " " + ids[i];
+            mergedContents += ' / <span class="state_option" id="' + ids[i] + '">' + contents[i] + '</span>';
+        }
+
+        return this.createHTML(mergedIds, mergedContents, hasEnd, future);
     }
 
     createHTML(id: string, content: string, hasEnd: boolean, future: string) : string {
@@ -175,7 +189,7 @@ class StateComponent extends TimelineComponent {
             additionalClasses += " " + future.toLowerCase();
         }
 
-        let result = '<div class="state_item_wrapper' + additionalClasses + '" id="' + id + '">';
+        let result = '<div class="state_item_wrapper' + additionalClasses + '">';
         result += '    <div class="state_item_icon"><img src="img/warning.png" title="This state will be involved in a conflict" /></div>';
         result += '    <div class="state_item_arrow">&nbsp;</div>';
         result += '    <div class="state_item_content">' + content + '</div>';

@@ -864,3 +864,7 @@ body {
     color: #f2f2f2;
     cursor: pointer;
 }
+
+#iot span.state_option.highlighted_state {
+    font-weight: bold;
+}
