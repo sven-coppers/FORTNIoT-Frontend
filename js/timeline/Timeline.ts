@@ -375,6 +375,7 @@ class Timeline {
 
         if(causedByActionExecution == null) {
             console.log("No explanation available for this state");
+            this.clearSelection(false);
         } else {
             this.selectActionExecution(causedByActionExecution["action_execution_id"]);
         }
@@ -439,6 +440,7 @@ class Timeline {
         $(".vis-point").removeClass("vis-selected");
         $(".event_item").removeClass("selected");
         $(".action_execution").removeClass("highlighted conflict_related");
+        $(".state_item_wrapper").attr("title", "");
        // $("#back_button").addClass("hidden");
 
         if(!nextSelectionExpected) {
@@ -635,10 +637,12 @@ class Timeline {
 
     highlightCondition(stateContextID: string) {
         $("#" + stateContextID).addClass("condition");
+        $("#" + stateContextID).attr("title", "This state will be satisfy the condition");
     }
 
     highlightAction(stateContextID: string) {
         $("#" + stateContextID).addClass("action");
+        $("#" + stateContextID).attr("title", "This state will be result from executing the rule");
     }
 
     highlightActionExecution(actionExecutionID: string) {
