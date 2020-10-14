@@ -83,7 +83,9 @@ class StateComponent extends TimelineComponent {
             let found = false;
 
             for(let endIndex = similarIndex; endIndex < deviceChanges.length; endIndex++) {
-                if(jsonObjects.length > 1 || this.areDifferent(deviceChanges[startIndex], deviceChanges[endIndex])) {
+                let laterStateInConflict = endIndex + 1 < deviceChanges.length && deviceChanges[endIndex]["last_changed"] == deviceChanges[endIndex + 1]["last_changed"];
+                
+                if(jsonObjects.length > 1 || laterStateInConflict || this.areDifferent(deviceChanges[startIndex], deviceChanges[endIndex])) {
                     this.items.add(this.mergedJsonToItem(jsonObjects, deviceChanges[endIndex]["last_changed"]));
                     startIndex = endIndex;
                     found = true;
