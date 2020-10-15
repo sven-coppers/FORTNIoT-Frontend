@@ -191,11 +191,11 @@ class RulesComponent extends EventComponent {
 
             if(hasEffects) {
                 classNames += " has_effects";
-                title = "This state has one or more effects";
+                title = "This action has one or more effects";
                 title = ""
             } else {
                 classNames += " no_effects";
-                title = "This state has no effects";
+                title = "This action has no effects";
             }
         }
 

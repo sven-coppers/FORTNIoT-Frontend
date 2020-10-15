@@ -46,7 +46,7 @@ class FutureClient {
     }
 
     public findState(deviceID: string, date: Date) {
-        for(let haystackState of this.future.futureStates) {
+        for(let haystackState of this.future.states) {
             if(haystackState.entity_id == deviceID && new Date(haystackState.last_updated).getTime() == date.getTime()) {
                 return haystackState;
             }
@@ -76,7 +76,7 @@ class FutureClient {
     }
 
     getStateByContextID(stateContextID: string) {
-        for(let haystackState of this.future.futureStates) {
+        for(let haystackState of this.future.states) {
             if(haystackState.context.id == stateContextID) {
                 return haystackState;
             }
@@ -220,19 +220,4 @@ class FutureClient {
     getFuture() {
         return this.future;
     }
-
-    /**
-     *
-     * @param stateClient
-     * @param future the (alternative) future to get the predicted states from
-     */
-    getAllStates(stateClient: StateClient, future: any) {
-        let allStates = [];
-
-        allStates = allStates.concat(stateClient.stateHistory);
-        allStates = allStates.concat(future.futureStates);
-
-        return allStates;
-    }
-
 }

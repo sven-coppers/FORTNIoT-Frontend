@@ -116,10 +116,7 @@ class IoTController {
     }
 
     futureLoaded(future: any) {
-        let allStates = [];
-
-        allStates = allStates.concat(this.stateClient.stateHistory);
-        allStates = allStates.concat(future.futureStates);
+        let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
 
         $(".devices_column").removeClass("hidden");
         $("#connection_error").remove();
@@ -152,10 +149,6 @@ class IoTController {
 
     updateDevices(data) {
         this.timeline.updateDevices(data);
-    }
-
-    updateRules(data) {
-        this.timeline.updateRules(data);
     }
 
     alternativeFutureSimulationReady(alternativeFuture) {

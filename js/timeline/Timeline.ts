@@ -8,7 +8,6 @@ class Timeline {
     private futureClient: FutureClient;
 
     private deviceAdapters: {};
-    private ruleAdapters: {};
     private rulesAdapter: RulesTimeline;
 
     private hasCustomTime: boolean;
@@ -34,7 +33,6 @@ class Timeline {
         this.selectedActionID = null;
         this.selectedTime = null;
         this.showingOnlyContext = true;
-        this.ruleAdapters = {};
         this.deviceAdapters = {};
         this.rulesAdapter = null;
         this.redrawing = false;
@@ -167,19 +165,11 @@ class Timeline {
             adapter.reAlign(range);
         });
 
-        $.each(this.ruleAdapters, function(identifier: string, adapter: DeviceTimeline) {
-            adapter.reAlign(range);
-        });
-
         this.rulesAdapter.reAlign(range);
     }
 
     public setWindow(range) {
         $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
-            adapter.setWindow(range);
-        });
-
-        $.each(this.ruleAdapters, function(identifier: string, adapter: DeviceTimeline) {
             adapter.setWindow(range);
         });
 
@@ -194,15 +184,7 @@ class Timeline {
         }
     }
 
-    public updateRules(rules) {
-        for (let ruleID in rules) {
-            if(ruleID in this.ruleAdapters) {
-                this.ruleAdapters[ruleID].setAvailable(rules[ruleID]["available"]);
-            }
-        }
-    }
-
-    public redraw(states, executions, conflicts, feedforward: boolean) {
+    public redraw(states: any, executions, conflicts, feedforward: boolean) {
         if(this.redrawing) return;
 
         this.redrawing = true;
@@ -224,9 +206,7 @@ class Timeline {
         this.redrawing = false;
     }
 
-    private redrawStates(timeData, feedforward: boolean) {
-        let deviceChangesMap = this.groupChangesByDevice(timeData);
-
+    private redrawStates(deviceChangesMap, feedforward: boolean) {
         for(let deviceName in deviceChangesMap) {
             if (typeof this.deviceAdapters[deviceName] !== "undefined") {
                 this.deviceAdapters[deviceName].redrawVisualisation(deviceChangesMap[deviceName], feedforward);
@@ -247,22 +227,6 @@ class Timeline {
         }
     }
 
-    groupChangesByDevice(changes) {
-        let groups = {};
-
-        for(let deviceID in this.deviceAdapters) {
-            groups[deviceID] = [];
-        }
-
-        for(let i = 0; i < changes.length; i++) {
-            if((changes[i]["entity_id"] in groups)) {
-                groups[changes[i]["entity_id"]].push(changes[i]);
-            }
-        }
-
-        return groups;
-    }
-
     drawCustomTime(date) {
         this.clearCustomTime();
 
@@ -270,12 +234,7 @@ class Timeline {
             adapter.drawCustomTime(date);
         });
 
-        $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
-            adapter.drawCustomTime(date);
-        });
-
         this.rulesAdapter.drawCustomTime(date);
-
         this.hasCustomTime = true;
     }
 
@@ -334,16 +293,18 @@ class Timeline {
 
     alternativeFutureSimulationReady(alternativeFuture) {
         let originalFuture = this.futureClient.future;
-        let originalStates = this.futureClient.getAllStates(this.stateClient, originalFuture);
-        let alternativeStates = this.futureClient.getAllStates(this.stateClient, alternativeFuture);
+
+        let originalStates = this.stateClient.combineStateHistoryAndFuture(originalFuture.states);
+        let alternativeStates = this.stateClient.combineStateHistoryAndFuture(alternativeFuture.states);
 
         this.showFeedforward(originalStates, alternativeStates, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts)
     }
 
     cancelPreviewActionExecutionChange() {
         let future = this.futureClient.future;
+        let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
 
-        this.redraw(this.futureClient.getAllStates(this.stateClient, future), future.executions, future.conflicts, false);
+        this.redraw(allStates, future.executions, future.conflicts, false);
     }
 
     selectState(stateContextID: string) {
@@ -395,13 +356,11 @@ class Timeline {
     }
 
     setAllRulesVisible(visible: boolean) {
-        $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
-            adapter.setVisible(visible);
-        });
+        // Can eventueel nog iets anders doen
     }
 
     setAllDevicesVisible(visible: boolean) {
-        $.each(this.deviceAdapters, function(identifier: string, adapter: RuleTimeline) {
+        $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
             adapter.setVisible(visible);
         });
     }
@@ -438,10 +397,6 @@ class Timeline {
             adapter.clearHighlights();
         });
 
-        $.each(this.ruleAdapters, function(identifier: string, adapter: RuleTimeline) {
-            adapter.clearCustomTime();
-        });
-
         this.rulesAdapter.clearCustomTime();
     }
 
@@ -464,7 +419,7 @@ class Timeline {
      * @param originalExecutions
      * @param alternativeExecutions
      */
-    showFeedforward(originalStates: any[], alternativeStates: any[], originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[]) {
+    showFeedforward(originalStates: any, alternativeStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[]) {
         let mergedStates = this.mergeStates(originalStates, alternativeStates);
         let mergedExecutions = this.mergeExecutions(originalExecutions, alternativeExecutions);
         // TODO: merge conflicts
@@ -594,14 +549,12 @@ class Timeline {
 
     highlightActions(actionContexts: string[]) {
         for(let actionContext of actionContexts) {
-            //console.log("\t\t - State " + actionContext["id"]);
             this.highlightAction(actionContext["id"]);
         }
     }
 
     highlightConditions(triggerContextIDs: string[]) {
         for(let triggerContextID of triggerContextIDs) {
-            //console.log("\t\t - State " + triggerContextID);
             this.highlightCondition(triggerContextID);
         }
     }

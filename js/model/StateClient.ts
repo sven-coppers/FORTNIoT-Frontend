@@ -1,12 +1,11 @@
 class StateClient {
-    mainController: IoTController;
-    stateHistory: [];
+    private mainController: IoTController;
+    private stateHistory: [];
+
     constructor(mainController: IoTController) {
         this.mainController = mainController;
         this.stateHistory = [];
     }
-
-
 
     public loadStateHistory() {
         let oThis = this;
@@ -27,20 +26,6 @@ class StateClient {
         }
     }
 
-  /*  private loadStateFuture() {
-        let oThis = this;
-        $("#reload").addClass("disabled");
-
-        $.ajax({
-            url:            this.mainController.API_URL + (this.mainController.isRemote() ? "states_future.json" : "states/future/"),
-            type:           "GET",
-        }).done(function (data) {
-            oThis.stateFuture = data;
-            oThis.futureLoaded = true;
-            oThis.checkLoadingCompleted();
-        });
-    } */
-
     drawStateChangeFuture(changes) {
         for(let i = changes.length - 1; i >= 0; i--) {
             this.mainController.devices[changes[i]["entity_id"]].addStateFutureItem(changes[i]);
@@ -51,7 +36,7 @@ class StateClient {
         return this.stateHistory;
     }
 
-    public simulateFuture(deviceID: string, futureEnabled: boolean) {
+  /*  public simulateFuture(deviceID: string, futureEnabled: boolean) {
         let oThis = this;
 
         let ruleSettings = {};
@@ -66,5 +51,17 @@ class StateClient {
         }).done(function (data) {
             oThis.mainController.showFeedforward(data["states"], data["executions"]);
         });
+    } */
+
+    combineStateHistoryAndFuture(stateFuture): {} {
+        let combinedStates: any = {};
+
+        for(let deviceID in this.stateHistory) {
+            combinedStates[deviceID] = [];
+            combinedStates[deviceID] = combinedStates[deviceID].concat(this.stateHistory[deviceID]);
+            combinedStates[deviceID] = combinedStates[deviceID].concat(stateFuture[deviceID]);
+        }
+
+        return combinedStates;
     }
 }

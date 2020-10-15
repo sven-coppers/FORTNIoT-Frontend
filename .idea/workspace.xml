@@ -29,9 +29,13 @@
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style/visualisation.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/visualisation.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RuleTimeline.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,9 +55,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="dummy://restClient/response5.json" root0="SKIP_INSPECTION" />
   </component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
@@ -310,6 +311,7 @@
       <workItem from="1601277157190" duration="331000" />
       <workItem from="1601277501531" duration="56240000" />
       <workItem from="1602075157830" duration="6859000" />
+      <workItem from="1602672955995" duration="5673000" />
     </task>
     <servers />
   </component>
@@ -339,6 +341,10 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="762" y="-888" key="#Configure_Path_Variables/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1601277568285" />
+    <state x="715" y="-916" key="#Notifications" timestamp="1602673071279">
+      <screen x="-320" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="715" y="-916" key="#Notifications/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602673071279" />
     <state x="752" y="-882" key="#Scopes" timestamp="1602081055678">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
@@ -375,18 +381,18 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="482" y="-1440" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600692208900" />
-    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1601394165960">
+    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1602745128400">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1601394165960" />
+    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602745128400" />
     <state width="473" height="466" key="DebuggerActiveHint" timestamp="1600273398697">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state width="473" height="466" key="DebuggerActiveHint/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600273398697" />
-    <state x="665" y="-1053" key="FileChooserDialogImpl" timestamp="1602081166551">
+    <state x="665" y="-1053" key="FileChooserDialogImpl" timestamp="1602673086902">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="665" y="-1053" key="FileChooserDialogImpl/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602081166551" />
+    <state x="665" y="-1053" key="FileChooserDialogImpl/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602673086902" />
     <state x="739" y="-879" key="FileChooserDialogImpl/0.0.1920.1040/0.-1200.1920.1160@0.-1200.1920.1160" timestamp="1600182889849" />
     <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1600952258635">
       <screen x="-320" y="-1440" width="2560" height="1400" />
@@ -532,15 +538,15 @@
     </state>
     <state width="2517" height="344" key="GridCell.Tab.6.right/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600935258978" />
     <state width="1877" height="344" key="GridCell.Tab.6.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600862016435" />
-    <state x="267" y="-1254" key="SettingsEditor" timestamp="1602081174346">
+    <state x="267" y="-1254" key="SettingsEditor" timestamp="1602673089646">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602081174346" />
+    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602673089646" />
     <state x="440" y="-1046" key="SettingsEditor/0.0.1920.1040/0.-1200.1920.1160@0.-1200.1920.1160" timestamp="1600182449729" />
-    <state x="667" y="-1141" width="585" height="801" key="find.popup" timestamp="1602086330595">
+    <state x="667" y="-1141" width="585" height="801" key="find.popup" timestamp="1602746884117">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="667" y="-1141" width="585" height="801" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602086330595" />
+    <state x="667" y="-1141" width="585" height="801" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602746884117" />
     <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1602591509518">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>

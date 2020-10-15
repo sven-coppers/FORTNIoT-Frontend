@@ -21,7 +21,7 @@
         </h1>
         <p id="connection_error">Connecting to the IoT Server.</p>
         <div class="devices_column hidden">
-            <img src="img/back.png" id="back_button" class="hidden" />
+            <img src="img/back.png" id="back_button" class="hidden" alt="Go back"/>
             <div class="filters">
                 Show:
                 <label><input type="checkbox" name="show" value="rules" id="rules_checkbox" checked> Rules</label>
@@ -96,7 +96,6 @@
     <script src="js/timeline/devices/HueTimeline.js"></script>
     <script src="js/timeline/devices/BusStopTimeline.js"></script>
     <script src="js/timeline/devices/IoTButtonTimeline.js"></script>
-    <script src="js/timeline/devices/RuleTimeline.js"></script>
     <script src="js/timeline/devices/ImplicitRuleTimeline.js"></script>
     <script src="js/timeline/devices/SunTimeline.js"></script>
     <script src="js/timeline/devices/WeatherTimeline.js"></script>
