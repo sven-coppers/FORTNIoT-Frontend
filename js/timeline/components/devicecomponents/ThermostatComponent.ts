@@ -1,6 +1,6 @@
 class ThermostatComponent extends ContinuousGraphComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
-        super(parentDevice, parentElement, label, null, "thermostat.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
+        super(mainController, parentDevice, parentElement, label, null, "thermostat.png");
     }
 
     getDefaultOptions() {

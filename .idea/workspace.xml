@@ -30,11 +30,53 @@
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/DeviceTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/DeviceTimeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/GraphComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/GraphComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/TimelineComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BatteryComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BatteryComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BusPassageComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/BusPassageComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CalendarComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CalendarComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/ContactComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/ContactComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CoordinateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/CoordinateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/DeviceTrackerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/DeviceTrackerComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RuleTimeline.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/SunStateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/SunStateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/TemperatureComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/TemperatureComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/ThermostatComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/ThermostatComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/WeatherStateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/WeatherStateComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/WindComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/WindComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/subcomponents/AxisComponent.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/subcomponents/ColorComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/subcomponents/ColorComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/subcomponents/ContinuousGraphComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/subcomponents/ContinuousGraphComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/subcomponents/DiscreteGraphComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/subcomponents/DiscreteGraphComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/subcomponents/MotionComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/subcomponents/MotionComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/AccelerationTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/AccelerationTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/AircoTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/AircoTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/AxisTimeline.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/BatteryTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/BatteryTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/BusStopTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/BusStopTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/CalendarTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/CalendarTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/ContactTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/ContactTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/CoordinateTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/CoordinateTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/DeviceTrackerTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/DeviceTrackerTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/GenericDeviceTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/GenericDeviceTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/HeaterTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/HeaterTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/HueTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/HueTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/ImplicitRuleTimeline.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/MoonTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/MoonTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/MotionTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/MotionTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/OutletTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/OutletTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/PersonCounterTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/PersonCounterTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/PersonTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/PersonTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/RulesTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/TemperatureTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/TemperatureTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/ThermostatTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/ThermostatTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/WeatherTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/WeatherTimeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/WindTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/WindTimeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +134,7 @@
     <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.3" />
-    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
     <property name="ts.external.directory.path" value="C:\Users\scoppers\AppData\Local\JetBrains\Toolbox\apps\PhpStorm\ch-0\202.6948.87\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -311,7 +353,7 @@
       <workItem from="1601277157190" duration="331000" />
       <workItem from="1601277501531" duration="56240000" />
       <workItem from="1602075157830" duration="6859000" />
-      <workItem from="1602672955995" duration="5673000" />
+      <workItem from="1602672955995" duration="8408000" />
     </task>
     <servers />
   </component>
@@ -381,10 +423,10 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="482" y="-1440" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600692208900" />
-    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1602745128400">
+    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1602750912362">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602745128400" />
+    <state x="690" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602750912362" />
     <state width="473" height="466" key="DebuggerActiveHint" timestamp="1600273398697">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
@@ -538,19 +580,19 @@
     </state>
     <state width="2517" height="344" key="GridCell.Tab.6.right/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1600935258978" />
     <state width="1877" height="344" key="GridCell.Tab.6.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600862016435" />
-    <state x="267" y="-1254" key="SettingsEditor" timestamp="1602673089646">
+    <state x="267" y="-1254" key="SettingsEditor" timestamp="1602750237367">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602673089646" />
+    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602750237367" />
     <state x="440" y="-1046" key="SettingsEditor/0.0.1920.1040/0.-1200.1920.1160@0.-1200.1920.1160" timestamp="1600182449729" />
     <state x="667" y="-1141" width="585" height="801" key="find.popup" timestamp="1602746884117">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="667" y="-1141" width="585" height="801" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602746884117" />
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1602591509518">
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1602749927389">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602591509518" />
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602749927389" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

@@ -1,6 +1,6 @@
 class DiscreteGraphComponent extends GraphComponent {
-    protected constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
-        super(parentDevice, parentElement, label, property, icon);
+    protected constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+        super(mainController, parentDevice, parentElement, label, property, icon);
     }
 
     initVisualisation(DOMElementID: string) {

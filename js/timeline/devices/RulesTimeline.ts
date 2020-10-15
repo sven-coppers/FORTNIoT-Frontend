@@ -1,9 +1,9 @@
 class RulesTimeline extends DeviceTimeline {
     rulesComponent: RulesComponent;
 
-    constructor(containerTimeline: Timeline, rules: any, futureClient: FutureClient) {
+    constructor(mainController: IoTController, containerTimeline: Timeline, rules: any, futureClient: FutureClient) {
         super(containerTimeline, "all_rules");
-        this.rulesComponent = new RulesComponent(this, this.getMainAttributeContainer(), rules, futureClient);
+        this.rulesComponent = new RulesComponent(mainController, this, this.getMainAttributeContainer(), rules, futureClient);
         this.components = [];
         this.components.push(this.rulesComponent);
     }

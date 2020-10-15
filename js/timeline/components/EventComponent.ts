@@ -1,6 +1,6 @@
 class EventComponent extends StateComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, icon: string) {
-        super(parentDevice, parentElement, label, "events", icon);
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, icon: string) {
+        super(mainController, parentDevice, parentElement, label, "events", icon);
     }
 
     initVisualisation(DOMElementID: string) {

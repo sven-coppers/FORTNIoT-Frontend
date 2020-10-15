@@ -71,7 +71,6 @@
     <script src="js/timeline/components/EventComponent.js"></script>
     <script src="js/timeline/components/GraphComponent.js"></script>
 
-    <script src="js/timeline/components/subcomponents/AxisComponent.js"></script>
     <script src="js/timeline/components/subcomponents/ColorComponent.js"></script>
     <script src="js/timeline/components/subcomponents/ContinuousGraphComponent.js"></script>
     <script src="js/timeline/components/subcomponents/DiscreteGraphComponent.js"></script>
@@ -90,13 +89,11 @@
     <script src="js/timeline/components/devicecomponents/WindComponent.js"></script>
     <script src="js/timeline/components/devicecomponents/RulesComponent.js"></script>
 
-    <script src="js/timeline/devices/AxisTimeline.js"></script>
     <script src="js/timeline/devices/BusStopTimeline.js"></script>
     <script src="js/timeline/devices/CalendarTimeline.js"></script>
     <script src="js/timeline/devices/HueTimeline.js"></script>
     <script src="js/timeline/devices/BusStopTimeline.js"></script>
     <script src="js/timeline/devices/IoTButtonTimeline.js"></script>
-    <script src="js/timeline/devices/ImplicitRuleTimeline.js"></script>
     <script src="js/timeline/devices/SunTimeline.js"></script>
     <script src="js/timeline/devices/WeatherTimeline.js"></script>
     <script src="js/timeline/devices/MotionTimeline.js"></script>

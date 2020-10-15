@@ -1,6 +1,6 @@
 class StateComponent extends TimelineComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
-        super(parentDevice, parentElement, label, property, icon);
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+        super(mainController, parentDevice, parentElement, label, property, icon);
     }
 
     getDefaultOptions() {
@@ -42,14 +42,14 @@ class StateComponent extends TimelineComponent {
         }
 
         if(stateContextID != null) {
-            this.parentDevice.containerTimeline.selectState(stateContextID);
+            this.mainController.selectState(stateContextID);
         } else {
-            this.parentDevice.containerTimeline.clearSelection(true);
+            this.mainController.clearSelection(true);
         }
     }
 
     redraw(deviceChanges: any, feedforward: boolean) {
-        let config: ConfigClient = this.parentDevice.containerTimeline.getConfigClient();
+        let config: ConfigClient = this.mainController.getConfigClient();
 
         this.items.clear();
         if(deviceChanges.length == 0) return;

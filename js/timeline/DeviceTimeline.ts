@@ -1,6 +1,5 @@
 abstract class DeviceTimeline {
-
-    public containerTimeline: Timeline;
+    private containerTimeline: Timeline;
     public deviceName: string;
     protected hasCustomTime: boolean;
 
@@ -86,10 +85,6 @@ abstract class DeviceTimeline {
         for(let componentIndex in this.components) {
             this.components[componentIndex].setWindow(range);
         }
-    }
-
-    public propagateReAlign(range) {
-        this.containerTimeline.reAlign(range, this.deviceName);
     }
 
     public anyActionsVisible(actionContextID: string ): boolean {

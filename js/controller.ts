@@ -14,6 +14,11 @@ class IoTController {
     configClient: ConfigClient;
     conflictClient: ConflictClient;
     futureClient: FutureClient;
+
+    private selectedTime: Date;
+    private selectedTriggerEntity: string;
+    private selectedActionID: string;
+
     public API_URL: string;
 
     private remote: boolean;
@@ -21,6 +26,10 @@ class IoTController {
     public devices: any = {};
 
     constructor() {
+        this.selectedTriggerEntity = null;
+        this.selectedActionID = null;
+        this.selectedTime = null;
+
         let oThis = this;
         this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1;
 
@@ -74,7 +83,7 @@ class IoTController {
         });
 
         $("#back_button").click(function() {
-            oThis.timeline.clearSelection(false);
+            oThis.clearSelection(false);
             $(this).addClass("hidden");
         });
 
@@ -107,6 +116,14 @@ class IoTController {
         this.configClient.refresh(); // The callback will start the next request
     }
 
+    public reAlign(range) {
+        this.timeline.reAlign(range);
+    }
+
+    public setWindow(newRange: { start: Date; end: Date }) {
+        this.timeline.setWindow(newRange);
+    }
+
     configLoaded() {
         this.stateClient.loadStateHistory(); // The callback will start the next request
     }
@@ -118,13 +135,9 @@ class IoTController {
     futureLoaded(future: any) {
         let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
 
-        $(".devices_column").removeClass("hidden");
-        $("#connection_error").remove();
-        $("#reload").removeClass("disabled");
-        $(".timeline_wrapper").removeClass("hidden");
-
         if(this.timeline != null) {
-            this.timeline.redraw(allStates, future.executions, future.conflicts, false);
+            this.timeline.loadingCompleted();
+            this.timeline.redraw(allStates, future.executions, future.conflicts, false, this.getSelectedActionExecution());
         }
     }
 
@@ -151,7 +164,135 @@ class IoTController {
         this.timeline.updateDevices(data);
     }
 
+    actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
+        //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
+
+        // Get trigger entity ID and execution time by using the actionExecutionID
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+
+        if(ruleExecution != null) {
+            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+
+            if(newEnabled) {
+                // Now enabled -> remove snooze
+                this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
+            } else {
+                // // Now snoozed -> add snooze
+                let snoozedAction = {};
+                snoozedAction["action_id"] = actionID;
+                snoozedAction["conflict_time_window"] = 20000;
+                snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
+                snoozedAction["conflict_time"] = ruleExecution["datetime"];
+
+                this.ruleClient.commitNewSnoozedAction(snoozedAction);
+            }
+        }
+    }
+
+    previewActionExecutionChange(actionExecutionID: string, newEnabled: boolean) {
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+
+        if(ruleExecution != null) {
+            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+
+            if(newEnabled) {
+                // Now enabled -> remove snooze
+                let reEnabledActions = [];
+                reEnabledActions.push(actionExecution["snoozed_by"]);
+
+                //  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
+            } else {
+                // // Now snoozed -> add snooze
+                let snoozedActions = [];
+
+                snoozedActions.push({
+                    action_id: actionExecution["action_id"],
+                    conflict_time_window: 20000,
+                    trigger_entity_id: ruleExecution["trigger_entity"],
+                    conflict_time: ruleExecution["datetime"]
+                });
+
+                // this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
+            }
+        }
+    }
+
     alternativeFutureSimulationReady(alternativeFuture) {
-        this.timeline.alternativeFutureSimulationReady(alternativeFuture);
+        let originalFuture = this.futureClient.future;
+
+        let originalStates = this.stateClient.combineStateHistoryAndFuture(originalFuture.states);
+        let alternativeStates = this.stateClient.combineStateHistoryAndFuture(alternativeFuture.states);
+
+        this.timeline.showFeedforward(originalStates, alternativeStates, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts, this.getSelectedActionExecution());
+    }
+
+    cancelPreviewActionExecutionChange() {
+        let future = this.futureClient.future;
+        let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
+
+        this.timeline.redraw(allStates, future.executions, future.conflicts, false, this.getSelectedActionExecution());
+    }
+
+    selectState(stateContextID: string) {
+        let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID);
+
+        if(causedByActionExecution == null) {
+            console.log("No explanation available for this state");
+            this.clearSelection(false);
+        } else {
+            this.selectActionExecution(causedByActionExecution["action_execution_id"]);
+        }
+    }
+
+    selectActionExecution(actionExecutionID: string) {
+        this.clearSelection(true);
+
+        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
+        let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+
+        if (actionExecution["resulting_contexts"].length > 0) {
+            let relatedConflict = this.futureClient.getRelatedConflict(actionExecution["resulting_contexts"][0]["id"]);
+
+            if (relatedConflict != null) {
+                this.timeline.drawConflict(relatedConflict);
+            }
+        }
+
+        this.timeline.highlightActionExecution(actionExecutionID);
+        this.timeline.drawCustomTime(ruleExecution["datetime"]);
+        this.timeline.highlightTrigger(ruleExecution["trigger_context"]["id"]);
+        this.timeline.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(ruleExecution));
+        this.timeline.highlightActions(actionExecution["resulting_contexts"]);
+
+        this.selectedTriggerEntity = ruleExecution["trigger_entity"];
+        this.selectedActionID = actionExecution["action_id"];
+        this.selectedTime = new Date(ruleExecution["datetime"]);
+    }
+
+    clearSelection(nextSelectionExpected: boolean) {
+        this.selectedTriggerEntity = null;
+        this.selectedActionID = null;
+        this.selectedTime = null;
+
+        this.timeline.clearSelection(nextSelectionExpected);
+    }
+
+    /**
+     * Return the selected action exeuction, if any. Null otherwise
+     */
+    getSelectedActionExecution() {
+        if(this.selectedTriggerEntity != null ) {
+            return this.futureClient.findActionExecution(this.selectedTriggerEntity, this.selectedActionID, this.selectedTime);
+        }
+
+        return null;
+    }
+
+    getConfigClient() {
+        return this.configClient;
+    }
+
+    hasEffects(actionExecution: any): boolean {
+        return this.timeline.hasEffects(actionExecution);
     }
 }

@@ -1,6 +1,6 @@
 class SunStateComponent extends StateComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
-        super(parentDevice, parentElement, label, "state", "sun.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
+        super(mainController, parentDevice, parentElement, label, "state", "sun.png");
     }
 
     jsonToLabel(json) {

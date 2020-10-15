@@ -1,6 +1,6 @@
 class CalendarComponent extends StateComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
-        super(parentDevice, parentElement, label, "appointments", "cal.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
+        super(mainController, parentDevice, parentElement, label, "appointments", "cal.png");
     }
 
     redraw(deviceChanges: any) {

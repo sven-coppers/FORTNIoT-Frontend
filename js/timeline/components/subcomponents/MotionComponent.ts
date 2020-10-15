@@ -1,6 +1,6 @@
 class MotionComponent extends StateComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
-        super(parentDevice, parentElement, label, "motion", "motion.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
+        super(mainController, parentDevice, parentElement, label, "motion", "motion.png");
     }
 
     jsonToLabel(json) {

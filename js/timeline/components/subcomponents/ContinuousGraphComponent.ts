@@ -1,6 +1,6 @@
 class ContinuousGraphComponent extends GraphComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
-        super(parentDevice, parentElement, label, property, icon);
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+        super(mainController, parentDevice, parentElement, label, property, icon);
     }
 
 

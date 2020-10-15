@@ -1,8 +1,8 @@
 class GenericDeviceTimeline extends DeviceTimeline {
-    constructor(identifier: string, friendlyName: string, icon: string, containerTimeline: Timeline) {
+    constructor(mainController: IoTController, identifier: string, friendlyName: string, icon: string, containerTimeline: Timeline) {
         super(containerTimeline, identifier);
 
         this.components = [];
-        this.components.push(new StateComponent(this, this.getMainAttributeContainer(), friendlyName, null, icon));
+        this.components.push(new StateComponent(mainController, this, this.getMainAttributeContainer(), friendlyName, null, icon));
     }
 }

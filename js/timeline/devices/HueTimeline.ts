@@ -3,11 +3,11 @@ class HueTimeline extends DeviceTimeline {
     private brightnessGraph: any;
     private colorTimeline: any;
 
-    constructor(identifier: string, deviceName: string, containerTimeline: Timeline) {
+    constructor(mainController: IoTController, identifier: string, deviceName: string, containerTimeline: Timeline) {
         super(containerTimeline, identifier);
 
         this.components = [];
-        this.components.push(new StateComponent(this, this.getMainAttributeContainer(), deviceName, "state", "hue.png"));
+        this.components.push(new StateComponent(mainController, this, this.getMainAttributeContainer(), deviceName, "state", "hue.png"));
        // this.components.push(new DiscreteGraphComponent(this.device.getHTMLID() + '_brightness_graph', this,"Brightness"));
      //   this.components.push(new ColorComponent(this.device.getHTMLID() + '_color_timeline', this));
     }

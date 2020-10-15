@@ -3,8 +3,8 @@ class RulesComponent extends EventComponent {
     futureClient: FutureClient;
     redrawing: boolean;
 
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, futureClient: FutureClient) {
-        super(parentDevice, parentElement, null, null);
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, rules: any, futureClient: FutureClient) {
+        super(mainController, parentDevice, parentElement, null, null);
 
         this.highlightedConflict = null;
         this.futureClient = futureClient;
@@ -76,7 +76,7 @@ class RulesComponent extends EventComponent {
 
             for(let actionExecutionIndex in ruleExecution["action_executions"]) {
                 let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
-                let hasEffects = this.parentDevice.containerTimeline.hasEffects(actionExecution);
+                let hasEffects = this.mainController.hasEffects(actionExecution);
 
                 let actionEvent = {
                     id: actionExecution["action_execution_id"],
@@ -119,7 +119,7 @@ class RulesComponent extends EventComponent {
                     $(this).addClass("feedforward_checked");
                 }
 
-                oThis.parentDevice.containerTimeline.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
+                oThis.mainController.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
             });
 
             $(".action_execution").mouseleave(function () {
@@ -135,9 +135,9 @@ class RulesComponent extends EventComponent {
             let checkbox = $("#" + properties["item"]);
 
             if(checkbox.hasClass("highlighted")) {
-                this.parentDevice.containerTimeline.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
+                this.mainController.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
             } else {
-                this.parentDevice.containerTimeline.selectActionExecution(properties["item"]);
+                this.mainController.selectActionExecution(properties["item"]);
             }
 
           //  this.parentDevice.containerTimeline.clearSelection(false);
@@ -157,12 +157,12 @@ class RulesComponent extends EventComponent {
                     end: new Date(conflictRange.end.getTime() + conflictLength / 2)
                 }
 
-                this.parentDevice.containerTimeline.setWindow(newWindow);
+                this.mainController.setWindow(newWindow);
             } else {
-                this.parentDevice.containerTimeline.clearSelection(false);
+                this.mainController.clearSelection(false);
             }
         } else {
-            this.parentDevice.containerTimeline.clearSelection(false);
+            this.mainController.clearSelection(false);
         }
 
         return false;

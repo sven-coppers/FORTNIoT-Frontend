@@ -1,5 +1,6 @@
 abstract class TimelineComponent {
     protected parentDevice: DeviceTimeline;
+    protected mainController: IoTController;
 
     protected visualisation: any; // Could be a timeline or a graph
     protected groups: any;
@@ -13,7 +14,8 @@ abstract class TimelineComponent {
     protected visibleRange: any;
     protected hasCustomTime: boolean;
 
-    protected constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+    protected constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+        this.mainController = mainController;
         this.parentDevice = parentDevice;
         this.parentElement = parentElement;
         this.label = label;
@@ -63,7 +65,7 @@ abstract class TimelineComponent {
 
         this.visualisation.on('rangechange', function(range) {
             if(range.byUser) {
-                oThis.parentDevice.propagateReAlign(range);
+                oThis.mainController.reAlign(range);
             }
         });
 

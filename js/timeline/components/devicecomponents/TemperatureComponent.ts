@@ -1,6 +1,6 @@
 class TemperatureComponent extends ContinuousGraphComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
-        super(parentDevice, parentElement, label, null, "temperature.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string) {
+        super(mainController, parentDevice, parentElement, label, null, "temperature.png");
     }
 
     getDefaultOptions() {

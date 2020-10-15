@@ -1,6 +1,6 @@
 class BusPassageComponent extends StateComponent {
-    constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string) {
-        super(parentDevice, parentElement, label, property, "bus.png");
+    constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string) {
+        super(mainController, parentDevice, parentElement, label, property, "bus.png");
     }
 
     jsonToItem(json, id, startTime, endTime): any {

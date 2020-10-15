@@ -1,6 +1,6 @@
 abstract class GraphComponent extends TimelineComponent {
-    protected constructor(parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
-        super(parentDevice, parentElement, label, property, icon);
+    protected constructor(mainController: IoTController, parentDevice: DeviceTimeline, parentElement: JQuery, label: string, property: string, icon: string) {
+        super(mainController, parentDevice, parentElement, label, property, icon);
 
         this.visibleRange = this.getDefaultOptions();
     }
@@ -67,9 +67,9 @@ abstract class GraphComponent extends TimelineComponent {
         let stateContextID = this.getClosestItemID(date);
 
         if(stateContextID != null) {
-            this.parentDevice.containerTimeline.selectState(stateContextID);
+            this.mainController.selectState(stateContextID);
         } else {
-            this.parentDevice.containerTimeline.clearSelection(false);
+            this.mainController.clearSelection(false);
         }
     }
 

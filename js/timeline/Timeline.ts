@@ -12,13 +12,8 @@ class Timeline {
 
     private hasCustomTime: boolean;
 
-    //private selectedExecutionID: string;
     private showingOnlyContext: boolean;
     private redrawing: boolean;
-
-    private selectedTime: Date;
-    private selectedTriggerEntity: string;
-    private selectedActionID: string;
 
     constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient, futureClient: FutureClient) {
         this.mainController = mainController;
@@ -29,9 +24,6 @@ class Timeline {
         this.conflictsClient = conflictsClient;
         this.futureClient = futureClient;
         this.hasCustomTime = false;
-        this.selectedTriggerEntity = null;
-        this.selectedActionID = null;
-        this.selectedTime = null;
         this.showingOnlyContext = true;
         this.deviceAdapters = {};
         this.rulesAdapter = null;
@@ -59,7 +51,7 @@ class Timeline {
      * @param devices
      */
     public initializeRules(rules) {
-        this.rulesAdapter = new RulesTimeline(this, rules, this.futureClient);
+        this.rulesAdapter = new RulesTimeline(this.mainController, this, rules, this.futureClient);
         this.mainController.refreshContext();
     }
 
@@ -83,67 +75,67 @@ class Timeline {
             if(!device["available"]) continue;
 
             if(deviceName.indexOf("light.") == 0) {
-                this.deviceAdapters[deviceName] = new HueTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new HueTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("lock.") == 0) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "lock.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "lock.png", this);
             } else if(deviceName.indexOf("sirene.") == 0) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "sirene.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "sirene.png", this);
             } else if(deviceName.indexOf("sun.") == 0) {
-                this.deviceAdapters[deviceName] = new SunTimeline(deviceName, this);
+                this.deviceAdapters[deviceName] = new SunTimeline(this.mainController, deviceName, this);
             } else if(deviceName.indexOf("switch.outlet") == 0) {
-                this.deviceAdapters[deviceName] = new OutletTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new OutletTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("screen.") == 0) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "screen.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "screen.png", this);
             } else if(deviceName.indexOf("weather.dark_sky") == 0) {
-                this.deviceAdapters[deviceName] = new WeatherTimeline(deviceName, this);
+                this.deviceAdapters[deviceName] = new WeatherTimeline(this.mainController, deviceName, this);
             } else if(deviceName.indexOf("calendar.") == 0) {
-                this.deviceAdapters[deviceName] = new CalendarTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new CalendarTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("agoralaan_diepenbeek") != -1) {
-                this.deviceAdapters[deviceName] = new BusStopTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new BusStopTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("sensor.moon") != -1) {
-                this.deviceAdapters[deviceName] = new MoonTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new MoonTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("sensor.people_home_counter") != -1) {
-                this.deviceAdapters[deviceName] = new PersonCounterTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new PersonCounterTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("routine.") != -1) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "routine.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "routine.png", this);
             } else if(deviceName.indexOf("binary_sensor.") != -1) {
                 if(deviceName.indexOf("_contact") != -1) {
-                    this.deviceAdapters[deviceName] = new ContactTimeline(deviceName, device["friendly_name"], this);
+                    this.deviceAdapters[deviceName] = new ContactTimeline(this.mainController, deviceName, device["friendly_name"], this);
                 } else if(deviceName.indexOf("_acceleration") != -1) {
-                    this.deviceAdapters[deviceName] = new AccelerationTimeline(deviceName, device["friendly_name"], this);
+                    this.deviceAdapters[deviceName] = new AccelerationTimeline(this.mainController, deviceName, device["friendly_name"], this);
                 } else if(deviceName.indexOf("sensor_motion") != -1) {
-                    this.deviceAdapters[deviceName] = new MotionTimeline(deviceName, device["friendly_name"], this);
+                    this.deviceAdapters[deviceName] = new MotionTimeline(this.mainController, deviceName, device["friendly_name"], this);
                 } else if(deviceName.indexOf(".remote_ui") != -1) {
                     // Ignore
                 } else {
                     console.log("TODO: show timeline for " + deviceName);
                 }
             } else if(deviceName.indexOf("battery") != -1) {
-                this.deviceAdapters[deviceName] = new BatteryTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new BatteryTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("smoke") != -1) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "smoke.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "smoke.png", this);
             } else if(deviceName.indexOf("thermostat.") != -1) {
-                    this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "thermostat.png", this);
+                    this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "thermostat.png", this);
                 //    this.deviceAdapters[deviceName] = new ThermostatTimeline(deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("_temperature") != -1) {
-                this.deviceAdapters[deviceName] = new TemperatureTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new TemperatureTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("wind_speed") != -1) {
-                this.deviceAdapters[deviceName] = new WindTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new WindTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("_coordinate") != -1) {
                 // Decreases performance a lot
-                this.deviceAdapters[deviceName] = new CoordinateTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new CoordinateTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("device_tracker.") != -1) {
-                this.deviceAdapters[deviceName] = new DeviceTrackerTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new DeviceTrackerTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("heater.") != -1) {
-                this.deviceAdapters[deviceName] = new HeaterTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new HeaterTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf("cooler.") != -1) {
-                this.deviceAdapters[deviceName] = new AircoTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new AircoTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else if(deviceName.indexOf(".roomba") != -1) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"],"roomba.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"],"roomba.png", this);
             } else if(deviceName.indexOf("blinds.") != -1) {
-                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(deviceName, device["friendly_name"], "blinds.png", this);
+                this.deviceAdapters[deviceName] = new GenericDeviceTimeline(this.mainController, deviceName, device["friendly_name"], "blinds.png", this);
             } else if(deviceName.indexOf("person.") != -1) {
-                this.deviceAdapters[deviceName] = new PersonTimeline(deviceName, device["friendly_name"], this);
+                this.deviceAdapters[deviceName] = new PersonTimeline(this.mainController, deviceName, device["friendly_name"], this);
             } else {
                 console.log("TODO: show timeline for " + deviceName);
             }
@@ -158,7 +150,7 @@ class Timeline {
         this.ruleClient.loadRules(this);
     }
 
-    public reAlign(range, deviceName) {
+    public reAlign(range) {
         if(typeof range.event === "undefined") return; // This is caused by myself
 
         $.each(this.deviceAdapters, function(identifier: string, adapter: DeviceTimeline) {
@@ -184,7 +176,7 @@ class Timeline {
         }
     }
 
-    public redraw(states: any, executions, conflicts, feedforward: boolean) {
+    public redraw(states: any, executions, conflicts, feedforward: boolean, selectedActionExecution: any) {
         if(this.redrawing) return;
 
         this.redrawing = true;
@@ -193,15 +185,13 @@ class Timeline {
         this.redrawRules(executions, feedforward);
         this.highlightConflictingStates(conflicts);
 
-        if(this.selectedTriggerEntity != null && !feedforward) {
-            let selectedActionExecution = this.futureClient.findActionExecution(this.selectedTriggerEntity, this.selectedActionID, this.selectedTime);
 
-            if(selectedActionExecution != null) {
-                this.selectActionExecution(selectedActionExecution["action_execution_id"]);
-            } else {
-                this.clearSelection(false);
-            }
+        if(selectedActionExecution != null) {
+            this.mainController.selectActionExecution(selectedActionExecution["action_execution_id"]);
+        } else {
+            this.mainController.clearSelection(false);
         }
+
 
         this.redrawing = false;
     }
@@ -236,115 +226,6 @@ class Timeline {
 
         this.rulesAdapter.drawCustomTime(date);
         this.hasCustomTime = true;
-    }
-
-    actionExecutionChanged(actionExecutionID: string, actionID: string, newEnabled: boolean) {
-      //  console.log(actionID + " - " + actionExecutionID + ": " + newEnabled);
-
-        // Get trigger entity ID and execution time by using the actionExecutionID
-        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-
-        if(ruleExecution != null) {
-            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-
-            if(newEnabled) {
-                // Now enabled -> remove snooze
-                this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
-            } else {
-                // // Now snoozed -> add snooze
-                let snoozedAction = {};
-                snoozedAction["action_id"] = actionID;
-                snoozedAction["conflict_time_window"] = 20000;
-                snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
-                snoozedAction["conflict_time"] = ruleExecution["datetime"];
-
-                this.ruleClient.commitNewSnoozedAction(snoozedAction);
-            }
-        }
-    }
-
-    previewActionExecutionChange(actionExecutionID: string, newEnabled: boolean) {
-        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-
-        if(ruleExecution != null) {
-            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-
-            if(newEnabled) {
-                // Now enabled -> remove snooze
-                let reEnabledActions = [];
-                reEnabledActions.push(actionExecution["snoozed_by"]);
-
-              //  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
-            } else {
-                // // Now snoozed -> add snooze
-                let snoozedActions = [];
-
-                snoozedActions.push({
-                    action_id: actionExecution["action_id"],
-                    conflict_time_window: 20000,
-                    trigger_entity_id: ruleExecution["trigger_entity"],
-                    conflict_time: ruleExecution["datetime"]
-                });
-
-               // this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
-            }
-        }
-    }
-
-    alternativeFutureSimulationReady(alternativeFuture) {
-        let originalFuture = this.futureClient.future;
-
-        let originalStates = this.stateClient.combineStateHistoryAndFuture(originalFuture.states);
-        let alternativeStates = this.stateClient.combineStateHistoryAndFuture(alternativeFuture.states);
-
-        this.showFeedforward(originalStates, alternativeStates, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts)
-    }
-
-    cancelPreviewActionExecutionChange() {
-        let future = this.futureClient.future;
-        let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
-
-        this.redraw(allStates, future.executions, future.conflicts, false);
-    }
-
-    selectState(stateContextID: string) {
-        let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID);
-
-        if(causedByActionExecution == null) {
-            console.log("No explanation available for this state");
-            this.clearSelection(false);
-        } else {
-            this.selectActionExecution(causedByActionExecution["action_execution_id"]);
-        }
-    }
-
-    selectActionExecution(actionExecutionID: string) {
-        this.clearSelection(true);
-
-        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-        let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-
-        if(actionExecution["resulting_contexts"].length > 0) {
-            let relatedConflict = this.futureClient.getRelatedConflict(actionExecution["resulting_contexts"][0]["id"]);
-
-            if(relatedConflict != null) {
-                this.rulesAdapter.redrawConflict(relatedConflict);
-
-                for(let conflictedState of relatedConflict["conflicting_states"]) {
-                    $("#" + conflictedState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict_related");
-                }
-            }
-        }
-
-        this.highlightActionExecution(actionExecutionID);
-        this.drawCustomTime(ruleExecution["datetime"]);
-        this.highlightTrigger(ruleExecution["trigger_context"]["id"]);
-        this.highlightConditions(this.futureClient.getTriggerContextIDsByExecution(ruleExecution));
-        this.highlightActions(actionExecution["resulting_contexts"]);
-
-        this.selectedTriggerEntity = ruleExecution["trigger_entity"];
-        this.selectedActionID = actionExecution["action_id"];
-        this.selectedTime = new Date(ruleExecution["datetime"]);
     }
 
     hasEffects(actionExecution: any) : boolean {
@@ -384,9 +265,6 @@ class Timeline {
             this.setAllRulesVisible(true);
         }
 
-        this.selectedTriggerEntity = null;
-        this.selectedActionID = null;
-        this.selectedTime = null;
         this.clearCustomTime();
         this.rulesAdapter.clearConflict();
     }
@@ -400,14 +278,6 @@ class Timeline {
         this.rulesAdapter.clearCustomTime();
     }
 
-    getRuleClient(): RuleClient {
-        return this.ruleClient;
-    }
-
-    getStateClient(): StateClient {
-        return this.stateClient;
-    }
-
     getMainController(): IoTController {
         return this.mainController;
     }
@@ -419,7 +289,7 @@ class Timeline {
      * @param originalExecutions
      * @param alternativeExecutions
      */
-    showFeedforward(originalStates: any, alternativeStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[]) {
+    showFeedforward(originalStates: any, alternativeStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[], selectedActionExecution: any) {
         let mergedStates = this.mergeStates(originalStates, alternativeStates);
         let mergedExecutions = this.mergeExecutions(originalExecutions, alternativeExecutions);
         // TODO: merge conflicts
@@ -430,7 +300,7 @@ class Timeline {
         // console.log("ALTERNATIVE FUTURE: " + alternativeStates.length);
         //this.showMergeStateStats(mergedStates);
 
-        this.redraw(mergedStates, mergedExecutions, mergedConflicts, true);
+        this.redraw(mergedStates, mergedExecutions, mergedConflicts, true, selectedActionExecution);
     }
 
     mergeExecutions(originalExecutions: any[], alternativeExecutions: any[]) {
@@ -518,8 +388,12 @@ class Timeline {
         return mergedStates;
     }
 
-    public getConfigClient(): ConfigClient {
-        return this.configClient;
+    drawConflict(relatedConflict) {
+        this.rulesAdapter.redrawConflict(relatedConflict);
+
+        for (let conflictedState of relatedConflict["conflicting_states"]) {
+            $("#" + conflictedState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict_related");
+        }
     }
 
     showMergeStateStats(mergedStates) {
@@ -577,5 +451,12 @@ class Timeline {
 
     highlightActionExecution(actionExecutionID: string) {
         $("#" + actionExecutionID).addClass("highlighted");
+    }
+
+    loadingCompleted() {
+        $(".devices_column").removeClass("hidden");
+        $("#connection_error").remove();
+        $("#reload").removeClass("disabled");
+        $(".timeline_wrapper").removeClass("hidden");
     }
 }

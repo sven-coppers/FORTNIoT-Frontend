@@ -1,9 +1,8 @@
 class CalendarTimeline extends DeviceTimeline {
-
-    constructor(identifier: string, friendlyName: string, containerTimeline: Timeline) {
+    constructor(mainController: IoTController, identifier: string, friendlyName: string, containerTimeline: Timeline) {
         super(containerTimeline, identifier);
 
         this.components = [];
-        this.components.push(new CalendarComponent(this, this.getMainAttributeContainer(), friendlyName));
+        this.components.push(new CalendarComponent(mainController, this, this.getMainAttributeContainer(), friendlyName));
     }
 }
