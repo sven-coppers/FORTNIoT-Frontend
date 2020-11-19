@@ -18,6 +18,7 @@ class IoTController {
     private selectedTime: Date;
     private selectedTriggerEntity: string;
     private selectedActionID: string;
+    private feedforwardStillRelevant: boolean;
 
     public API_URL: string;
 
@@ -26,9 +27,11 @@ class IoTController {
     public devices: any = {};
 
     constructor() {
+        this.feedforwardStillRelevant = false;
         this.selectedTriggerEntity = null;
         this.selectedActionID = null;
         this.selectedTime = null;
+
 
         let oThis = this;
         this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1;
@@ -142,7 +145,7 @@ class IoTController {
     }
 
     showFeedforward(alternativeFutureStates, alternativeFutureExecutions) {
-      //  let originalStates = this.stateClient.getAllStates(); // TODO
+        let originalStates = this.stateClient.combineStateHistoryAndFuture(this.futureClient.getFuture().states);
         let originalExecutions = this.futureClient.getFuture().executions();
         let originalConflicts = this.conflictClient.getConflicts();
 
@@ -157,7 +160,7 @@ class IoTController {
         let alternativeConflicts = [];
         // TODO find alternative conflicts
 
-     //   this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions, originalConflicts, alternativeConflicts);
+        this.timeline.showFeedforward(originalStates, alternativeStates, originalExecutions, alternativeExecutions, originalConflicts, alternativeConflicts, null);
     }
 
     updateDevices(data) {
@@ -190,6 +193,7 @@ class IoTController {
     }
 
     previewActionExecutionChange(actionExecutionID: string, newEnabled: boolean) {
+        this.feedforwardStillRelevant = true;
         let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
 
         if(ruleExecution != null) {
@@ -200,7 +204,7 @@ class IoTController {
                 let reEnabledActions = [];
                 reEnabledActions.push(actionExecution["snoozed_by"]);
 
-                //  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
+                  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
             } else {
                 // // Now snoozed -> add snooze
                 let snoozedActions = [];
@@ -212,21 +216,21 @@ class IoTController {
                     conflict_time: ruleExecution["datetime"]
                 });
 
-                // this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
+                 this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
             }
         }
     }
 
     alternativeFutureSimulationReady(alternativeFuture) {
+        if(!this.feedforwardStillRelevant) return;
+
         let originalFuture = this.futureClient.future;
 
-        let originalStates = this.stateClient.combineStateHistoryAndFuture(originalFuture.states);
-        let alternativeStates = this.stateClient.combineStateHistoryAndFuture(alternativeFuture.states);
-
-        this.timeline.showFeedforward(originalStates, alternativeStates, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts, this.getSelectedActionExecution());
+        this.timeline.showFeedforward(originalFuture.states, alternativeFuture.states, originalFuture.executions, alternativeFuture.executions, originalFuture.conflicts, alternativeFuture.conflicts, this.getSelectedActionExecution());
     }
 
     cancelPreviewActionExecutionChange() {
+        this.feedforwardStillRelevant = false;
         let future = this.futureClient.future;
         let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
 

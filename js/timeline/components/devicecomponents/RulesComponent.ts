@@ -123,9 +123,11 @@ class RulesComponent extends EventComponent {
             });
 
             $(".action_execution").mouseleave(function () {
+                //if (!$(this).hasClass("feedforward_checked") && !$(this).hasClass("feedforward_unchecked")) return;
+
                 $(this).removeClass("feedforward_checked");
                 $(this).removeClass("feedforward_unchecked");
-               // oThis.parentDevice.containerTimeline.cancelPreviewActionExecutionChange();
+                oThis.mainController.cancelPreviewActionExecutionChange();
             });
         }, 10);
     }
@@ -139,12 +141,8 @@ class RulesComponent extends EventComponent {
             } else {
                 this.mainController.selectActionExecution(properties["item"]);
             }
-
-          //  this.parentDevice.containerTimeline.clearSelection(false);
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
-
-            //if(properties.time.getTime() > conflictRange.start && properties.time.getTime() < conflictRange.end) {
 
             if(properties.event.target.closest(".vis-item.vis-background") != null) {
                 // The conflict
@@ -167,19 +165,6 @@ class RulesComponent extends EventComponent {
 
         return false;
     }
-
-   /* createCheckbox(actionExecutionID: string, snoozed: boolean) : string {
-        let result : string = "";
-        let classNames: string = "checkbox";
-
-        if(!snoozed) {
-            classNames += " checked";
-        }
-
-        result += '<div class="' + classNames + '" id="' + actionExecutionID + '">&#10004</div>';
-
-        return result;
-    } */
 
     createActionExecutionVisualisation(actionExecutionID: string, snoozed: boolean, hasEffects: boolean) {
         let result : string = "";

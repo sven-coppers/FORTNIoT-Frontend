@@ -176,12 +176,12 @@ class Timeline {
         }
     }
 
-    public redraw(states: any, executions, conflicts, feedforward: boolean, selectedActionExecution: any) {
+    public redraw(deviceChangesMap: any, executions, conflicts, feedforward: boolean, selectedActionExecution: any) {
         if(this.redrawing) return;
 
         this.redrawing = true;
 
-        this.redrawStates(states, feedforward);
+        this.redrawStates(deviceChangesMap, feedforward);
         this.redrawRules(executions, feedforward);
         this.highlightConflictingStates(conflicts);
 
@@ -289,16 +289,15 @@ class Timeline {
      * @param originalExecutions
      * @param alternativeExecutions
      */
-    showFeedforward(originalStates: any, alternativeStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[], selectedActionExecution: any) {
-        let mergedStates = this.mergeStates(originalStates, alternativeStates);
+    showFeedforward(originalFutureStates: any, alternativeFutureStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[], selectedActionExecution: any) {
+        let mergedFutureStates = this.mergeStates(originalFutureStates, alternativeFutureStates, originalExecutions, alternativeExecutions);
+        let mergedStates = this.stateClient.combineStateHistoryAndFuture(mergedFutureStates);
+
         let mergedExecutions = this.mergeExecutions(originalExecutions, alternativeExecutions);
         // TODO: merge conflicts
         let mergedConflicts = [];
 
-        // Show stats:
-        //console.log("ORIGINAL FUTURE: " + originalStates.length);
-        // console.log("ALTERNATIVE FUTURE: " + alternativeStates.length);
-        //this.showMergeStateStats(mergedStates);
+        mergedConflicts = newConflicts;
 
         this.redraw(mergedStates, mergedExecutions, mergedConflicts, true, selectedActionExecution);
     }
@@ -309,81 +308,101 @@ class Timeline {
         return mergedExecutions;
     }
 
-    mergeStates(originalStates: any[], alternativeStates: any[]): any {
-        let mergedStates = [];
-        let alternativeCounter = 0;
+    /**
+     * Find out the differences between the two stateMaps
+     * @param originalStatesMap
+     * @param alternativeStatesMap
+     */
+    mergeStates(originalStatesMap: any, alternativeStatesMap: any, originalExecutions: any[], alternativeExecutions: any[]): any {
+        let mergedStates = {};
 
-        // All objects from the originalStates should be in there: unchanged/changed/deprecated
-        for(let originalCounter = 0; originalCounter < originalStates.length; ++originalCounter) {
-            let originalString = JSON.stringify(originalStates[originalCounter]);
-            let originalContext = originalStates[originalCounter]["context"]["id"];
-            let originalDate = originalStates[originalCounter]["last_changed"];
-            let originalState = originalStates[originalCounter]["state"];
+        for(let deviceID in originalStatesMap) {
+           // if(deviceID != "light.living_spots") continue;
+
+            let originalStates = originalStatesMap[deviceID];
+            let alternativeStates = alternativeStatesMap[deviceID];
+            let originalStatesCounter = 0;
+            let alternativeStatesCounter = 0;
+            mergedStates[deviceID] = [];
+
+            while(originalStatesCounter < originalStates.length || alternativeStatesCounter < alternativeStates.length) {
+                let originalStatesTick = [];
+                let alternativeStatesTick = [];
+                let tickTime;
+
+                if(originalStatesCounter >= originalStates.length) {
+                    tickTime = new Date(alternativeStates[alternativeStatesCounter]["last_changed"]);
+                } else if(alternativeStatesCounter >= alternativeStates.length) {
+                    tickTime = new Date(originalStates[originalStatesCounter]["last_changed"]);
+                } else {
+                    tickTime = new Date(Math.min(new Date(alternativeStates[alternativeStatesCounter]["last_changed"]).getTime(), new Date(originalStates[originalStatesCounter]["last_changed"]).getTime()));
+                }
+
+                // Push all original states that happen at this time
+                while(originalStatesCounter < originalStates.length && tickTime.getTime() == new Date(originalStates[originalStatesCounter]["last_changed"]).getTime()) {
+                    originalStatesTick.push(originalStates[originalStatesCounter]);
+                    originalStatesCounter++;
+                }
+
+                // Push all original states that happen at this time
+                while(alternativeStatesCounter < alternativeStates.length && tickTime.getTime() == new Date(alternativeStates[alternativeStatesCounter]["last_changed"]).getTime()) {
+                    alternativeStatesTick.push(alternativeStates[alternativeStatesCounter]);
+                    alternativeStatesCounter++;
+                }
+
+                mergedStates[deviceID] = mergedStates[deviceID].concat(this.mergeStatesTick(originalStatesTick, alternativeStatesTick, originalExecutions, alternativeExecutions));
+            }
+        }
+
+        return mergedStates;
+    }
+
+    /**
+     * Merge all states that happen at the same tick.
+     * Use the originalExecutions and alternativeExecutions to more accurately decide which states are new
+     * @param originalStates
+     * @param alternativeStates
+     */
+    mergeStatesTick(originalStates: any [], alternativeStates: any [], originalExecutions: any[], alternativeExecutions: any[]) {
+        let mergedStates = [];
+
+        //console.log("Comparing tick...");
+        //console.log(originalStates);
+        //console.log(alternativeStates);
+
+        for(let originalStatesCounter = 0; originalStatesCounter < originalStates.length; originalStatesCounter++) {
+            let originalState = originalStates[originalStatesCounter];
+            let originalRuleExecution = this.futureClient.getRuleExecutionByActionContextID(originalState["context"]["id"], originalExecutions);
+            originalState["future"] = "unchanged";
             let found = false;
 
-            //  console.log("Original " + originalCounter + " " + originalContext + " " + originalDate + " " + originalState);
+            // Try to check if there is state matching in the alternatives
+            for(let alternativeCounter = 0; alternativeCounter < alternativeStates.length; alternativeCounter++) {
+                let alternativeState = alternativeStates[alternativeCounter];
+                let alternativeRuleExecution = this.futureClient.getRuleExecutionByActionContextID(alternativeState["context"]["id"], alternativeExecutions);
 
-            // ADD ELEMENTS UNTIL THE ALTERNATIVE STATES CATCH UP WITH THE ORIGINAL STATES
-            for(; alternativeCounter < alternativeStates.length; alternativeCounter++) {
-                let alternativeString = JSON.stringify(alternativeStates[alternativeCounter]);
-                let alternativeContext = alternativeStates[alternativeCounter]["context"]["id"];
-                let alternativeDate = alternativeStates[alternativeCounter]["last_changed"];
-                let alternativeState = alternativeStates[alternativeCounter]["state"];
-
-                if(alternativeDate > originalDate) break;
-
-                // IF THE STATES ARE IDENTICAL
-                if(originalString == alternativeString) {
-                    //      console.log("\tAlternative " + alternativeCounter + " " + alternativeContext + " " + alternativeDate + " " + alternativeState + "[UNCHANGED]");
-                    alternativeStates[alternativeCounter]["future"] = "UNCHANGED";
-                    mergedStates.push(alternativeStates[alternativeCounter]);
+                if(this.isSamePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
                     found = true;
-                    alternativeCounter++;
+                    alternativeStates.splice(alternativeCounter, 1); // remove from alternative states
                     break;
-                } else if(Date.parse(alternativeDate) == Date.parse(originalDate)) {
-                    let originalWithoutContext = originalString.replace(originalContext, "");
-                    let alternativeWithoutContext = alternativeString.replace(alternativeContext, "");
-
-                    // Counter the fact that future contexts are randomly generated
-                    if(originalWithoutContext == alternativeWithoutContext) {
-                        alternativeStates[alternativeCounter]["future"] = "UNCHANGED";
-                    } else {
-                        alternativeStates[alternativeCounter]["future"] = "CHANGED";
-                    }
-
-                    //     console.log("\tAlternative " + alternativeCounter + " " + alternativeContext + " " + alternativeDate + " " + alternativeState + "[CHANGED]");
-                    // IF THE STATES HAVE THE SAME TIMESTAMP, BUT DIFFERENT VALUES
-                    mergedStates.push(alternativeStates[alternativeCounter]);
-                    found = true;
-                    alternativeCounter++;
-                    break;
-                } else {
-                    //     console.log("\tAlternative " + alternativeCounter + " " + alternativeContext + " " + alternativeDate + " " + alternativeState + "[NEW]");
-                    // THE ALTERNATIVE STATE DID NOT EXIST YET
-                    alternativeStates[alternativeCounter]["future"] = "NEW";
-                    mergedStates.push(alternativeStates[alternativeCounter]);
                 }
             }
 
-            // If the original state nog longer occurs in the alternative future
             if(!found) {
-                originalStates[originalCounter]["future"] = "DEPRECATED";
-                mergedStates.push(originalStates[originalCounter]);
-                //   console.log("[DEPRECATED]");
+                originalState["future"] = "deprecated";
             }
+
+            mergedStates.push(originalState);
         }
 
-        // Remaining items
-        for(; alternativeCounter < alternativeStates.length; alternativeCounter++) {
-            let alternativeContext = alternativeStates[alternativeCounter]["context"]["id"];
-            let alternativeDate = alternativeStates[alternativeCounter]["last_changed"];
-            let alternativeState = alternativeStates[alternativeCounter]["state"];
-
-            // console.log("\tAlternative " + alternativeCounter + " " + alternativeContext + " " + alternativeDate + " " + alternativeState + "[NEW]");
-            // THE ALTERNATIVE STATE DID NOT EXIST YET
-            alternativeStates[alternativeCounter]["future"] = "NEW";
+        // the remaining alternative states are new
+        for(let alternativeCounter = 0; alternativeCounter < alternativeStates.length; alternativeCounter++) {
+            alternativeStates[alternativeCounter]["future"] = "new";
             mergedStates.push(alternativeStates[alternativeCounter]);
         }
+
+        //console.log("=>");
+        //console.log(mergedStates);
 
         return mergedStates;
     }
@@ -396,21 +415,23 @@ class Timeline {
         }
     }
 
-    showMergeStateStats(mergedStates) {
+    showMergeStateStats(mergedStatesMap) {
         let unchangedCounter = 0;
         let changedCounter = 0;
         let deprecatedCounter = 0;
         let newCounter = 0;
 
-        for(let mergedState of mergedStates) {
-            if(mergedState["future"] === "NEW") {
-                newCounter++;
-            } else if(mergedState["future"] === "DEPRECATED") {
-                deprecatedCounter++;
-            } else if(mergedState["future"] === "CHANGED") {
-                changedCounter++;
-            } else if(mergedState["future"] === "UNCHANGED") {
-                unchangedCounter++;
+        for(let deviceID in mergedStatesMap) {
+            for(let mergedState in mergedStatesMap[deviceID]) {
+                if(mergedState["future"] === "NEW") {
+                    newCounter++;
+                } else if(mergedState["future"] === "DEPRECATED") {
+                    deprecatedCounter++;
+                } else if(mergedState["future"] === "CHANGED") {
+                    changedCounter++;
+                } else if(mergedState["future"] === "UNCHANGED") {
+                    unchangedCounter++;
+                }
             }
         }
 
@@ -418,7 +439,7 @@ class Timeline {
         console.log("DEPRECATED: -" + deprecatedCounter);
         console.log("CHANGED: ~" + changedCounter);
         console.log("UNCHANGED: =" + unchangedCounter);
-        console.log(mergedStates);
+        console.log(mergedStatesMap);
     }
 
     highlightActions(actionContexts: string[]) {
@@ -458,5 +479,45 @@ class Timeline {
         $("#connection_error").remove();
         $("#reload").removeClass("disabled");
         $(".timeline_wrapper").removeClass("hidden");
+    }
+
+    compareStateTimes(stateA, stateB) {
+        let timestampA = new Date(stateA.last_changed).getTime();
+        let timestampB = new Date(stateB.last_changed).getTime();
+
+        if (timestampA < timestampB ){
+            return -1;
+        }
+        if (timestampA > timestampB ){
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Check if two states correspond to each other
+     * @param originalState
+     * @param alternativeState
+     * @param originalRuleExecution
+     * @param alternativeRuleExecution
+     * @Pre the states happen at the sametime, on the same device
+     * @pre the causes for the states have been lookedUp already (but might be null)
+     */
+    isSamePrediction(originalState: any, alternativeState: any, originalRuleExecution: any, alternativeRuleExecution : any) {
+        if(originalState["context"]["id"] == alternativeState["context"]["id"]) {
+            // Dezelfde contextID -> hetzelfde
+            return true;
+        } else {
+            // Verschillende contextID
+            if(originalRuleExecution != null && alternativeRuleExecution != null) {
+                // Geen oorzaak bekend -> return IF dezelfde staat
+                return originalState["state"] == alternativeState["state"];
+            } else {
+                // Normaal zouden ze dan alletwee wel een cause moeten hebben.
+
+                // Wel oorzaak bekend? -> return dezelfde oorzaak?
+                return originalRuleExecution["trigger_entity"] == alternativeRuleExecution["trigger_entity"] && originalRuleExecution["rule_id"] == alternativeRuleExecution["rule_id"];
+            }
+        }
     }
 }

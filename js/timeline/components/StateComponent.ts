@@ -49,19 +49,27 @@ class StateComponent extends TimelineComponent {
     }
 
     redraw(deviceChanges: any, feedforward: boolean) {
+        if(!feedforward) {
+            for(let deviceChange of deviceChanges) {
+                deviceChange["future"] = "unchanged";
+            }
+        }
+
+        if(deviceChanges[0]["entity_id"] == "light.living_spots") {
+            for(let deviceChange of deviceChanges) {
+                console.log((feedforward? "feedforward: " : "normal: ") + deviceChange["entity_id"] + " - " + deviceChange["state"] + " (" + deviceChange["future"] + ")");
+            }
+        }
+
         let config: ConfigClient = this.mainController.getConfigClient();
 
         this.items.clear();
         if(deviceChanges.length == 0) return;
 
-        if(config.isPredictionEngineEnabled()) {
-            let endDate: Date = new Date();
-            endDate.setTime(new Date().getTime() + (config.getPredictionWindow() * 60 * 1000)); // Convert minutes to milliseconds
+        let endDate: Date = new Date();
+        endDate.setTime(new Date().getTime() + (config.getPredictionWindow() * 60 * 1000)); // Convert minutes to milliseconds
 
-            this.redrawWithPredictions(deviceChanges, feedforward, endDate)
-        } else {
-            this.redrawWithoutPredictions(deviceChanges, feedforward);
-        }
+        this.redrawWithPredictions(deviceChanges, feedforward, endDate);
     }
 
     private redrawWithPredictions(deviceChanges: any, feedforward: boolean, predictionEnd: Date) {
@@ -102,35 +110,6 @@ class StateComponent extends TimelineComponent {
         }
     }
 
-    private redrawWithoutPredictions(deviceChanges: any, feedforward: boolean) {
-        let beginIndex = 0;
-        let idSuffix = "";
-
-        for(let i = 1; i < deviceChanges.length; i++) {
-            if(this.areDifferent(deviceChanges[beginIndex], deviceChanges[i]) || i == deviceChanges.length - 2) {
-                while(this.items.get(deviceChanges[beginIndex]["context"]["id"] + idSuffix) != null) { // THIS IS A SHITTY HACK TO PREVENT CRASHES ON DUPLICATE IDs
-                  //  idSuffix += "a";
-                }
-
-                this.items.add(this.jsonToItem(deviceChanges[beginIndex], deviceChanges[beginIndex]["context"]["id"] + idSuffix, deviceChanges[beginIndex]["last_changed"], deviceChanges[i]["last_changed"]));
-                beginIndex = i;
-            }
-        }
-
-        let lastState = deviceChanges[deviceChanges.length - 1];
-
-        // If the last state started in the past, the device still has that state,
-        if(Date.parse(lastState["last_changed"]) < new Date().getTime()) {
-            this.items.add(this.jsonToItem(lastState, lastState["context"]["id"], lastState["last_changed"], new Date()));
-
-            // And we don't know when it will end
-            // this.items.add(this.jsonToItem(lastState, lastState["context"]["id"] + "b", new Date(), null));
-        } else {
-            // If the last state started in the future, we don not know when it will end
-            this.items.add(this.jsonToItem(deviceChanges[beginIndex], deviceChanges[beginIndex]["context"]["id"], deviceChanges[beginIndex]["last_changed"], null));
-        }
-    }
-
     selectExecution(identifier: string) {
         // Not supported for states
     }
@@ -142,14 +121,15 @@ class StateComponent extends TimelineComponent {
     mergedJsonToItem(jsonObjects, endTime): any {
         let ids = [];
         let labels = [];
+        let futures = [];
 
         for(let index in jsonObjects) {
             let jsonObject = jsonObjects[index];
 
             ids.push(jsonObject["context"]["id"]);
             labels.push(this.jsonToLabel(jsonObject));
+            futures.push(jsonObject["future"]);
         }
-
 
         let item = {
             id: jsonObjects[0]["context"]["id"],
@@ -160,10 +140,10 @@ class StateComponent extends TimelineComponent {
         if(endTime != null) {
             item["end"] = endTime;
             item["type"] = 'range';
-            item["content"] = this.createMergedHTML(ids, labels,true);
+            item["content"] = this.createMergedHTML(ids, labels, futures,true);
         } else {
             item["type"] = 'point';
-            item["content"] = this.createMergedHTML(ids, labels,false);
+            item["content"] = this.createMergedHTML(ids, labels, futures,false);
         }
 
         return item;
@@ -194,16 +174,27 @@ class StateComponent extends TimelineComponent {
         return capitalizeFirstLetter(json["state"].replace("_", " "));
     }
 
-    createMergedHTML(ids: string [], contents: string [], hasEnd: boolean): string {
+    createMergedHTML(ids: string [], contents: string [], futures: string [], hasEnd: boolean): string {
         let mergedIds = ids[0];
-        let mergedContents = '<span class="state_option" id="' + ids[0] + '">' + contents[0] + '</span>';
+        let mergedContents = '<span class="state_option ' +  futures[0] + '" id="' + ids[0] + '">' + contents[0] + '</span>';
+        let hasNewOptions = false;
+        let hasDeprecatedOptions = false;
 
         for(let i = 1; i < ids.length; ++i) {
             mergedIds += " " + ids[i];
-            mergedContents += ' / <span class="state_option" id="' + ids[i] + '">' + contents[i] + '</span>';
+            mergedContents += ' / <span class="state_option ' +  futures[i] + '" id="' + ids[i] + '">' + contents[i] + '</span>';
         }
 
-        return this.createHTML(mergedIds, mergedContents, hasEnd, "");
+        for(let i = 0; i < ids.length; ++i) {
+            if(futures[i] == "new") hasNewOptions = true;
+            if(futures[i] == "deprecated") hasDeprecatedOptions = true;
+        }
+
+        let future = "unchanged";
+        if(hasDeprecatedOptions) future = "deprecated";
+        if(hasNewOptions) future = "new"; // krijgt voorrang
+
+        return this.createHTML(mergedIds, mergedContents, hasEnd, future);
     }
 
     createHTML(id: string, content: string, hasEnd: boolean, future: string) : string {

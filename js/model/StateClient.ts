@@ -36,30 +36,16 @@ class StateClient {
         return this.stateHistory;
     }
 
-  /*  public simulateFuture(deviceID: string, futureEnabled: boolean) {
-        let oThis = this;
-
-        let ruleSettings = {};
-        ruleSettings[deviceID] = futureEnabled;
-
-        $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/states/future/simulate",
-            type:           "POST",
-            data: JSON.stringify({ states: [], rules: ruleSettings }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-        }).done(function (data) {
-            oThis.mainController.showFeedforward(data["states"], data["executions"]);
-        });
-    } */
-
     combineStateHistoryAndFuture(stateFuture): {} {
         let combinedStates: any = {};
 
         for(let deviceID in this.stateHistory) {
             combinedStates[deviceID] = [];
             combinedStates[deviceID] = combinedStates[deviceID].concat(this.stateHistory[deviceID]);
-            combinedStates[deviceID] = combinedStates[deviceID].concat(stateFuture[deviceID]);
+
+            if(typeof stateFuture[deviceID] !== "undefined") {
+                combinedStates[deviceID] = combinedStates[deviceID].concat(stateFuture[deviceID]);
+            }
         }
 
         return combinedStates;

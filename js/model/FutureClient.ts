@@ -89,8 +89,12 @@ class FutureClient {
      * Get the execution that resulted in this state
      * @param actionContextID
      */
-    public getRuleExecutionByActionContextID(actionContextID: string) {
-        for(let execution of this.future.executions) {
+    public getRuleExecutionByActionContextID(actionContextID: string, executions: any []) {
+        if(executions == null) {
+            executions = this.future.executions;
+        }
+
+        for(let execution of executions) {
             for(let actionExecution of execution["action_executions"]) {
                 for(let actionContext of actionExecution["resulting_contexts"]) {
                     if(actionContext["id"] === actionContextID) {
