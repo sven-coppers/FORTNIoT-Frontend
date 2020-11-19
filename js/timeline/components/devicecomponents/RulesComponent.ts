@@ -68,20 +68,26 @@ class RulesComponent extends EventComponent {
      *
      * @param ruleExecutions
      */
-    redraw(ruleExecutions: any) {
-        this.items.clear();
+    redraw(ruleExecutions: any, feedforward: boolean) {
+        if(feedforward) {
+            this.addFeedforward(ruleExecutions);
+        } else {
+            this.items.clear();
+            this.drawExecutions(ruleExecutions);
+        }
+    }
 
+    drawExecutions(ruleExecutions) {
         for(let i = 0; i < ruleExecutions.length; i++) {
             let ruleExecution = ruleExecutions[i];
 
             for(let actionExecutionIndex in ruleExecution["action_executions"]) {
                 let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
-                let hasEffects = this.mainController.hasEffects(actionExecution);
 
                 let actionEvent = {
                     id: actionExecution["action_execution_id"],
                     group: actionExecution["action_id"],
-                    content: this.createActionExecutionVisualisation(actionExecution["action_execution_id"], actionExecution["snoozed"], hasEffects),
+                    content: this.createActionExecutionVisualisation(actionExecution["action_execution_id"], actionExecution["snoozed"], actionExecution["has_effects"]),
                     start: ruleExecution["datetime"],
                     type: 'point'
                 };
@@ -96,7 +102,7 @@ class RulesComponent extends EventComponent {
                 type: 'point'
             };
 
-          //  this.items.add(RuleEvent);
+            //  this.items.add(RuleEvent);
         }
 
         let oThis = this;
@@ -130,6 +136,12 @@ class RulesComponent extends EventComponent {
                 oThis.mainController.cancelPreviewActionExecutionChange();
             });
         }, 10);
+    }
+
+    addFeedforward(mergedRuleExecutions : any []) {
+        for(let mergedRuleExecution of mergedRuleExecutions) {
+            console.log(mergedRuleExecution);
+        }
     }
 
     itemClicked(properties) {
@@ -195,7 +207,7 @@ class RulesComponent extends EventComponent {
         for(let conflictingStateIndex in conflict["conflicting_states"]) {
             // find the responsible action execution for this state
             let conflictingState = conflict["conflicting_states"][conflictingStateIndex];
-            let conflictingAction = this.futureClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"]);
+            let conflictingAction = this.futureClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"], null);
             let conflictingRuleExecution = this.futureClient.getRuleExecutionByActionExecutionID(conflictingAction["action_execution_id"]);
 
             if(conflictingAction != null) {

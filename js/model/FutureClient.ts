@@ -19,9 +19,30 @@ class FutureClient {
             url:            this.mainController.API_URL +  "future",
             type:           "GET",
         }).done(function (future) {
+            oThis.checkRuleEffects(future);
             oThis.future = future;
             oThis.mainController.futureLoaded(future);
         });
+    }
+
+    private checkRuleEffects(future) {
+        let states = future["states"];
+        let ruleExecutions = future["executions"];
+
+        for(let entityID in states) {
+            let entityStates = states[entityID];
+
+            for(let entityState of entityStates) {
+                if(entityState["is_new"]) {
+                    // This state was an effect, look for its cause.
+                    let actionExecution = this.getActionExecutionByResultingContextID(entityState["context"]["id"], ruleExecutions);
+
+                    if(actionExecution != null) {
+                        actionExecution["has_effects"] = true;
+                    }
+                }
+            }
+        }
     }
 
     public simulateAlternativeFuture(extraStates: any [], suppressedStateContexts: any [], snoozedActions: any [], reEnabledActions: any []) {
@@ -41,6 +62,7 @@ class FutureClient {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
         }).done(function (alternativeFuture) {
+            oThis.checkRuleEffects(alternativeFuture);
             oThis.mainController.alternativeFutureSimulationReady(alternativeFuture);
         });
     }
@@ -191,8 +213,17 @@ class FutureClient {
         return null;
     }
 
-    getActionExecutionByResultingContextID(conflictedStateContextID: any) {
-        for(let ruleExecution of this.future.executions) {
+    /**
+     * Which future executions to look for (null -> default, actual value for alternative future)
+     * @param conflictedStateContextID
+     * @param futureExecutions
+     */
+    getActionExecutionByResultingContextID(conflictedStateContextID: any, futureExecutions: any) {
+        if(futureExecutions == null) {
+            futureExecutions = this.future.executions;
+        }
+
+        for(let ruleExecution of futureExecutions) {
             for(let actionExecution of ruleExecution["action_executions"]) {
                 for (let resultingContext of actionExecution["resulting_contexts"]) {
                     if (resultingContext["id"] == conflictedStateContextID) {

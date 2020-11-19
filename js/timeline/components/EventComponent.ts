@@ -25,7 +25,7 @@ class EventComponent extends StateComponent {
         //this.parentDevice.containerTimeline.executionClicked(executionID);
     }
 
-    redraw(deviceChanges: any) {
+    redraw(deviceChanges: any, feedforward: boolean) {
         this.items.clear();
 
         for(let i = 0; i < deviceChanges.length; i++) {

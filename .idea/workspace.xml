@@ -31,11 +31,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/EventComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style/visualisation.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/visualisation.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -314,7 +314,7 @@
       <workItem from="1602672955995" duration="21361000" />
       <workItem from="1604407702300" duration="11194000" />
       <workItem from="1604491265740" duration="1800000" />
-      <workItem from="1605529110073" duration="17499000" />
+      <workItem from="1605529110073" duration="24776000" />
     </task>
     <servers />
   </component>
@@ -550,10 +550,10 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="667" y="-1141" width="585" height="801" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1604477156223" />
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1602749927389">
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1605792193222">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1602749927389" />
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1605792193222" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

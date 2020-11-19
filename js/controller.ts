@@ -238,7 +238,7 @@ class IoTController {
     }
 
     selectState(stateContextID: string) {
-        let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID);
+        let causedByActionExecution = this.futureClient.getActionExecutionByResultingContextID(stateContextID, null);
 
         if(causedByActionExecution == null) {
             console.log("No explanation available for this state");
@@ -294,9 +294,5 @@ class IoTController {
 
     getConfigClient() {
         return this.configClient;
-    }
-
-    hasEffects(actionExecution: any): boolean {
-        return this.timeline.hasEffects(actionExecution);
     }
 }

@@ -1,13 +1,13 @@
 class Timeline {
-    private mainController: IoTController;
+    private readonly mainController: IoTController;
     private ruleClient: RuleClient;
     private stateClient: StateClient;
     private deviceClient: DeviceClient;
     private configClient: ConfigClient;
     private conflictsClient: ConflictClient;
-    private futureClient: FutureClient;
+    private readonly futureClient: FutureClient;
 
-    private deviceAdapters: {};
+    private readonly deviceAdapters: {};
     private rulesAdapter: RulesTimeline;
 
     private hasCustomTime: boolean;
@@ -228,13 +228,7 @@ class Timeline {
         this.hasCustomTime = true;
     }
 
-    hasEffects(actionExecution: any) : boolean {
-        for(let resultingContext of actionExecution["resulting_contexts"]) {
-            if($("#" + resultingContext["id"]).length > 0) return true;
-        }
 
-        return false;
-    }
 
     setAllRulesVisible(visible: boolean) {
         // Can eventueel nog iets anders doen
@@ -317,7 +311,7 @@ class Timeline {
         let mergedStates = {};
 
         for(let deviceID in originalStatesMap) {
-           // if(deviceID != "light.living_spots") continue;
+            //if(deviceID != "light.living_spots") continue;
 
             let originalStates = originalStatesMap[deviceID];
             let alternativeStates = alternativeStatesMap[deviceID];
@@ -366,9 +360,9 @@ class Timeline {
     mergeStatesTick(originalStates: any [], alternativeStates: any [], originalExecutions: any[], alternativeExecutions: any[]) {
         let mergedStates = [];
 
-        //console.log("Comparing tick...");
+       // console.log("Comparing tick...");
         //console.log(originalStates);
-        //console.log(alternativeStates);
+       // console.log(alternativeStates);
 
         for(let originalStatesCounter = 0; originalStatesCounter < originalStates.length; originalStatesCounter++) {
             let originalState = originalStates[originalStatesCounter];
@@ -381,7 +375,7 @@ class Timeline {
                 let alternativeState = alternativeStates[alternativeCounter];
                 let alternativeRuleExecution = this.futureClient.getRuleExecutionByActionContextID(alternativeState["context"]["id"], alternativeExecutions);
 
-                if(this.isSamePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
+                if(this.isSameStatePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
                     found = true;
                     alternativeStates.splice(alternativeCounter, 1); // remove from alternative states
                     break;
@@ -503,7 +497,7 @@ class Timeline {
      * @Pre the states happen at the sametime, on the same device
      * @pre the causes for the states have been lookedUp already (but might be null)
      */
-    isSamePrediction(originalState: any, alternativeState: any, originalRuleExecution: any, alternativeRuleExecution : any) {
+    isSameStatePrediction(originalState: any, alternativeState: any, originalRuleExecution: any, alternativeRuleExecution : any) {
         if(originalState["context"]["id"] == alternativeState["context"]["id"]) {
             // Dezelfde contextID -> hetzelfde
             return true;
@@ -519,5 +513,9 @@ class Timeline {
                 return originalRuleExecution["trigger_entity"] == alternativeRuleExecution["trigger_entity"] && originalRuleExecution["rule_id"] == alternativeRuleExecution["rule_id"];
             }
         }
+    }
+
+    isSameActionPrediction(originalActionExecution: any, alternativeActionExecution: any, originalRuleExecution: any, alternativeRuleExecution : any) {
+        return originalRuleExecution["trigger_entity"] == alternativeRuleExecution["trigger_entity"] && originalActionExecution["action_id"] == alternativeActionExecution["action_id"];
     }
 }
