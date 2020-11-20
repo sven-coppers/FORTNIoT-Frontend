@@ -29,6 +29,13 @@ class FutureClient {
         let states = future["states"];
         let ruleExecutions = future["executions"];
 
+        // Init
+        for(let ruleExecution of ruleExecutions) {
+            for(let actionExecution of ruleExecution["action_executions"]) {
+                actionExecution["has_effects"] = false;
+            }
+        }
+
         for(let entityID in states) {
             let entityStates = states[entityID];
 

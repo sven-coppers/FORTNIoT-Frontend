@@ -8,8 +8,9 @@
         <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
         <link type="text/css" rel="stylesheet" href="style/reset.css">
        <link type="text/css" rel="stylesheet" href="style/frame.css">
-           <link type="text/css" rel="stylesheet" href="style/general.css">
-          <link type="text/css" rel="stylesheet" href="style/visualisation.css">
+        <link type="text/css" rel="stylesheet" href="style/general.css">
+        <link type="text/css" rel="stylesheet" href="style/visualisation.css">
+        <link type="text/css" rel="stylesheet" href="style/rules.css">
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     </head>
     <body>

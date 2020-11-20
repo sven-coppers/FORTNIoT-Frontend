@@ -81,17 +81,8 @@ class RulesComponent extends EventComponent {
         for(let i = 0; i < ruleExecutions.length; i++) {
             let ruleExecution = ruleExecutions[i];
 
-            for(let actionExecutionIndex in ruleExecution["action_executions"]) {
-                let actionExecution = ruleExecution["action_executions"][actionExecutionIndex];
-
-                let actionEvent = {
-                    id: actionExecution["action_execution_id"],
-                    group: actionExecution["action_id"],
-                    content: this.createActionExecutionVisualisation(actionExecution["action_execution_id"], actionExecution["snoozed"], actionExecution["has_effects"]),
-                    start: ruleExecution["datetime"],
-                    type: 'point'
-                };
-                this.items.add(actionEvent);
+            for(let actionExecution of ruleExecution["action_executions"]) {
+                this.items.add(this.createActionExecutionItem(actionExecution, ruleExecution));
             }
 
             let RuleEvent = {
@@ -110,12 +101,6 @@ class RulesComponent extends EventComponent {
 
         // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
         setTimeout(function() {
-            $(".action_execution.highlighted").on("click", function () {
-                $(this).toggleClass("checked");
-                $(this).removeClass("feedforward_checked");
-                $(this).removeClass("feedforward_unchecked");
-            })
-
             $(".action_execution").mouseenter(function (event) {
                 if (!$(this).hasClass("highlighted")) return;
 
@@ -129,10 +114,8 @@ class RulesComponent extends EventComponent {
             });
 
             $(".action_execution").mouseleave(function () {
-                //if (!$(this).hasClass("feedforward_checked") && !$(this).hasClass("feedforward_unchecked")) return;
+                if (!$(this).hasClass("highlighted")) return;
 
-                $(this).removeClass("feedforward_checked");
-                $(this).removeClass("feedforward_unchecked");
                 oThis.mainController.cancelPreviewActionExecutionChange();
             });
         }, 10);
@@ -140,7 +123,13 @@ class RulesComponent extends EventComponent {
 
     addFeedforward(mergedRuleExecutions : any []) {
         for(let mergedRuleExecution of mergedRuleExecutions) {
-            console.log(mergedRuleExecution);
+            for(let actionExecution of mergedRuleExecution["action_executions"]) {
+                if(actionExecution["future"] == "new") {
+                    this.items.add(this.createActionExecutionItem(actionExecution, mergedRuleExecution));
+                }
+
+                $("#" + actionExecution["action_execution_id"]).addClass(actionExecution["future"]);
+            }
         }
     }
 
@@ -178,6 +167,16 @@ class RulesComponent extends EventComponent {
         return false;
     }
 
+    createActionExecutionItem(actionExecution: any, ruleExecution) {
+        return {
+            id: actionExecution["action_execution_id"],
+            group: actionExecution["action_id"],
+            content: this.createActionExecutionVisualisation(actionExecution["action_execution_id"], actionExecution["snoozed"], actionExecution["has_effects"]),
+            start: ruleExecution["datetime"],
+            type: 'point'
+        };
+    }
+
     createActionExecutionVisualisation(actionExecutionID: string, snoozed: boolean, hasEffects: boolean) {
         let result : string = "";
         let classNames: string = "action_execution";
@@ -187,11 +186,11 @@ class RulesComponent extends EventComponent {
             classNames += " checked";
 
             if(hasEffects) {
-                classNames += " has_effects";
+                classNames += " effective";
                 title = "This action has one or more effects";
                 title = ""
             } else {
-                classNames += " no_effects";
+                classNames += " ineffective";
                 title = "This action has no effects";
             }
         }

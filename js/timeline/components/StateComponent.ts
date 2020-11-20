@@ -57,7 +57,7 @@ class StateComponent extends TimelineComponent {
 
         if(deviceChanges[0]["entity_id"] == "light.living_spots") {
             for(let deviceChange of deviceChanges) {
-             //   console.log((feedforward? "feedforward: " : "normal: ") + deviceChange["entity_id"] + " - " + deviceChange["state"] + " (" + deviceChange["future"] + ")");
+                console.log((feedforward? "feedforward: " : "normal: ") + deviceChange["entity_id"] + " - " + deviceChange["state"] + " (" + deviceChange["future"] + ")");
             }
         }
 
@@ -90,10 +90,11 @@ class StateComponent extends TimelineComponent {
 
             let found = false;
 
+            // Try to group states
             for(let endIndex = similarIndex; endIndex < deviceChanges.length; endIndex++) {
                 let laterStateInConflict = endIndex + 1 < deviceChanges.length && deviceChanges[endIndex]["last_changed"] == deviceChanges[endIndex + 1]["last_changed"];
 
-                if(jsonObjects.length > 1 || laterStateInConflict || this.areDifferent(deviceChanges[startIndex], deviceChanges[endIndex])) {
+                if(jsonObjects.length > 1 || laterStateInConflict || deviceChanges[endIndex]["is_new"]) {
                     this.items.add(this.mergedJsonToItem(jsonObjects, deviceChanges[endIndex]["last_changed"]));
                     startIndex = endIndex;
                     found = true;
@@ -112,10 +113,6 @@ class StateComponent extends TimelineComponent {
 
     selectExecution(identifier: string) {
         // Not supported for states
-    }
-
-    areDifferent(firstJson, secondJson): boolean {
-        return firstJson["state"] !== secondJson["state"];// || firstJson["future"] !== secondJson["future"];
     }
 
     mergedJsonToItem(jsonObjects, endTime): any {
@@ -174,6 +171,13 @@ class StateComponent extends TimelineComponent {
         return capitalizeFirstLetter(json["state"].replace("_", " "));
     }
 
+    /**
+     * Multiple states that happen at the same time
+     * @param ids
+     * @param contents
+     * @param futures
+     * @param hasEnd
+     */
     createMergedHTML(ids: string [], contents: string [], futures: string [], hasEnd: boolean): string {
         let mergedIds = ids[0];
         let mergedContents = '<span class="state_option ' +  futures[0] + '" id="' + ids[0] + '">' + contents[0] + '</span>';

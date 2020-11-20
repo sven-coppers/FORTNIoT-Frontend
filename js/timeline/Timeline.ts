@@ -287,7 +287,7 @@ class Timeline {
         let mergedFutureStates = this.mergeStates(originalFutureStates, alternativeFutureStates, originalExecutions, alternativeExecutions);
         let mergedStates = this.stateClient.combineStateHistoryAndFuture(mergedFutureStates);
 
-        let mergedExecutions = this.mergeExecutions(originalExecutions, alternativeExecutions);
+        let mergedExecutions = this.mergeAllExecutions(originalExecutions, alternativeExecutions);
         // TODO: merge conflicts
         let mergedConflicts = [];
 
@@ -296,10 +296,92 @@ class Timeline {
         this.redraw(mergedStates, mergedExecutions, mergedConflicts, true, selectedActionExecution);
     }
 
-    mergeExecutions(originalExecutions: any[], alternativeExecutions: any[]) {
-        let mergedExecutions = alternativeExecutions;
+    /**
+     * Check which rule executions will be new, which ones will be deprecated
+     * @param originalExecutions
+     * @param alternativeExecutions
+     */
+    mergeAllExecutions(originalExecutions: any[], alternativeExecutions: any[]) {
+        let mergedExecutions = [];
+
+        for(let originalExecution of originalExecutions) {
+            let matchingAlternativeExecution = null;
+            let alternativeCounter;
+
+            for(alternativeCounter = 0; alternativeCounter < alternativeExecutions.length; alternativeCounter++) {
+                let alternativeExecution = alternativeExecutions[alternativeCounter];
+
+                if(originalExecution["datetime"] == alternativeExecution["datetime"] && originalExecution["datetime"] == alternativeExecution["datetime"] && originalExecution["datetime"] == alternativeExecution["datetime"]) {
+                    matchingAlternativeExecution = alternativeExecution;
+                    break;
+                }
+            }
+
+            mergedExecutions.push(this.mergeRuleExecutions(originalExecution, matchingAlternativeExecution));
+
+            // Remove from list
+            if(matchingAlternativeExecution != null) {
+                alternativeExecutions.splice(alternativeCounter, 1); // remove from alternative states
+            }
+        }
+
+        // Add all alternativeExecutions
+        for(let alternativeExecution of alternativeExecutions) {
+            mergedExecutions.push(this.mergeRuleExecutions(null, alternativeExecution));
+        }
 
         return mergedExecutions;
+    }
+
+    /**
+     * IF original = null -> new
+     * IF alternative = null -> deprecated
+     * both not null -> check the differences (becomes effective, no longer effective, the same)
+     * Altijd dezelfde rule
+     * @param originalRuleExecution
+     * @param alternativeRuleExecution
+     */
+    mergeRuleExecutions(originalRuleExecution, alternativeRuleExecution) {
+        // IF original = null -> new
+        if(originalRuleExecution == null) {
+            for(let actionExecution of alternativeRuleExecution["action_executions"]) {
+                actionExecution["future"] = "new";
+            }
+
+            return alternativeRuleExecution;
+        }
+
+        // IF alternative = null -> deprecated
+        if(alternativeRuleExecution == null) {
+            for (let actionExecution of originalRuleExecution["action_executions"]) {
+                actionExecution["future"] = "deprecated";
+            }
+
+            return originalRuleExecution;
+        }
+
+        // Both not null -> check the differences (becomes effective, no longer effective, the same)
+        for(let actionExecutionCounter = 0; actionExecutionCounter < originalRuleExecution["action_executions"].length; actionExecutionCounter++) {
+            let originalActionExecution = originalRuleExecution["action_executions"][actionExecutionCounter];
+            let alternativeActionExecution = alternativeRuleExecution["action_executions"][actionExecutionCounter];
+
+            if(originalActionExecution["snoozed"] && alternativeActionExecution["snoozed"]) {
+                originalActionExecution["future"] = "unchanged";
+            } else if(alternativeActionExecution["snoozed"]) {
+                originalActionExecution["future"] = "becomes_snoozed";
+            } else {
+                // Will (still not / no longer) be snoozed
+                if(originalActionExecution["has_effects"] == alternativeActionExecution["has_effects"]) {
+                    originalActionExecution["future"] = "unchanged";
+                } else if(originalActionExecution["has_effects"] && !alternativeActionExecution["snoozed"]) {
+                    originalActionExecution["future"] = "becomes_ineffective";
+                } else {
+                    originalActionExecution["future"] = "becomes_effective";
+                }
+            }
+        }
+
+        return originalRuleExecution;
     }
 
     /**
@@ -311,7 +393,7 @@ class Timeline {
         let mergedStates = {};
 
         for(let deviceID in originalStatesMap) {
-            //if(deviceID != "light.living_spots") continue;
+           // if(deviceID != "light.living_spots") continue;
 
             let originalStates = originalStatesMap[deviceID];
             let alternativeStates = alternativeStatesMap[deviceID];
@@ -360,9 +442,9 @@ class Timeline {
     mergeStatesTick(originalStates: any [], alternativeStates: any [], originalExecutions: any[], alternativeExecutions: any[]) {
         let mergedStates = [];
 
-       // console.log("Comparing tick...");
-        //console.log(originalStates);
-       // console.log(alternativeStates);
+     //   console.log("Comparing tick...");
+     //   console.log(originalStates);
+      //  console.log(alternativeStates);
 
         for(let originalStatesCounter = 0; originalStatesCounter < originalStates.length; originalStatesCounter++) {
             let originalState = originalStates[originalStatesCounter];
@@ -377,6 +459,11 @@ class Timeline {
 
                 if(this.isSameStatePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
                     found = true;
+
+                    if(!originalState["is_new"] && alternativeState["is_new"]) {
+                        originalState["future"] = "new";
+                    }
+
                     alternativeStates.splice(alternativeCounter, 1); // remove from alternative states
                     break;
                 }
@@ -395,8 +482,8 @@ class Timeline {
             mergedStates.push(alternativeStates[alternativeCounter]);
         }
 
-        //console.log("=>");
-        //console.log(mergedStates);
+     //   console.log("=>");
+     //   console.log(mergedStates);
 
         return mergedStates;
     }
@@ -489,7 +576,7 @@ class Timeline {
     }
 
     /**
-     * Check if two states correspond to each other
+     * Check if two states correspond to each other (but might be different)
      * @param originalState
      * @param alternativeState
      * @param originalRuleExecution
@@ -503,10 +590,10 @@ class Timeline {
             return true;
         } else {
             // Verschillende contextID
-            if(originalRuleExecution != null && alternativeRuleExecution != null) {
+            if(originalRuleExecution == null && alternativeRuleExecution == null) {
                 // Geen oorzaak bekend -> return IF dezelfde staat
                 return originalState["state"] == alternativeState["state"];
-            } else {
+            } else  {
                 // Normaal zouden ze dan alletwee wel een cause moeten hebben.
 
                 // Wel oorzaak bekend? -> return dezelfde oorzaak?
