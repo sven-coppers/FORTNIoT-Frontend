@@ -49,6 +49,8 @@ class StateComponent extends TimelineComponent {
     }
 
     redraw(deviceChanges: any, feedforward: boolean) {
+        if(deviceChanges.length == 0) return;
+
         if(!feedforward) {
             for(let deviceChange of deviceChanges) {
                 deviceChange["future"] = "unchanged";
@@ -64,7 +66,6 @@ class StateComponent extends TimelineComponent {
         let config: ConfigClient = this.mainController.getConfigClient();
 
         this.items.clear();
-        if(deviceChanges.length == 0) return;
 
         let endDate: Date = new Date();
         endDate.setTime(new Date().getTime() + (config.getPredictionWindow() * 60 * 1000)); // Convert minutes to milliseconds

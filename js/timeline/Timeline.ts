@@ -447,7 +447,7 @@ class Timeline {
       //  console.log(alternativeStates);
 
         for(let originalStatesCounter = 0; originalStatesCounter < originalStates.length; originalStatesCounter++) {
-            let originalState = originalStates[originalStatesCounter];
+            let originalState = JSON.parse(JSON.stringify(originalStates[originalStatesCounter]));
             let originalRuleExecution = this.futureClient.getRuleExecutionByActionContextID(originalState["context"]["id"], originalExecutions);
             originalState["future"] = "unchanged";
             let found = false;
@@ -461,8 +461,12 @@ class Timeline {
                     found = true;
 
                     if(!originalState["is_new"] && alternativeState["is_new"]) {
+                        originalState["is_new"] = true;
                         originalState["future"] = "new";
-                    }
+                    } /*else if(originalState["is_new"] && !alternativeState["is_new"]) {
+                        originalState["is_new"] = true;
+                        originalState["future"] = "deprecated";
+                    } */
 
                     alternativeStates.splice(alternativeCounter, 1); // remove from alternative states
                     break;
