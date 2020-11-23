@@ -209,6 +209,8 @@ class Timeline {
 
     /** Add exclemation marks to all conflicted states */
     private highlightConflictingStates(conflicts: any) {
+        $(".state_item_wrapper.conflict").removeClass("conflict");
+
         for(let conflict of conflicts) {
             for(let conflictingState of conflict["conflicting_states"]) {
                 $("#" + conflictingState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict");
@@ -282,15 +284,11 @@ class Timeline {
      * @param originalExecutions
      * @param alternativeExecutions
      */
-    showFeedforward(originalFutureStates: any, alternativeFutureStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], newConflicts: any[], selectedActionExecution: any) {
-        let mergedFutureStates = this.mergeStates(originalFutureStates, alternativeFutureStates, originalExecutions, alternativeExecutions);
+    showFeedforward(originalFutureStates: any, alternativeFutureStates: any, originalExecutions: any[], alternativeExecutions: any[], originalConflicts: any[], alternativeConflicts: any[], selectedActionExecution: any) {
+        let mergedFutureStates = this.mergeStates(originalFutureStates, alternativeFutureStates, originalExecutions, alternativeExecutions, alternativeConflicts);
         let mergedStates = this.stateClient.combineStateHistoryAndFuture(mergedFutureStates);
-
         let mergedExecutions = this.mergeAllExecutions(originalExecutions, alternativeExecutions);
-        // TODO: merge conflicts
-        let mergedConflicts = [];
-
-        mergedConflicts = newConflicts;
+        let mergedConflicts = this.mergeConflicts(originalConflicts, alternativeConflicts);
 
         this.redraw(mergedStates, mergedExecutions, mergedConflicts, true, selectedActionExecution);
     }
@@ -330,6 +328,15 @@ class Timeline {
         }
 
         return mergedExecutions;
+    }
+
+    private mergeConflicts(originalConflicts: any[], alternativeConflicts: any[]) {
+        let mergedConflicts = [];
+
+        console.log(originalConflicts);
+        console.log(alternativeConflicts);
+
+        return alternativeConflicts;
     }
 
     /**
@@ -388,7 +395,7 @@ class Timeline {
      * @param originalStatesMap
      * @param alternativeStatesMap
      */
-    mergeStates(originalStatesMap: any, alternativeStatesMap: any, originalExecutions: any[], alternativeExecutions: any[]): any {
+    mergeStates(originalStatesMap: any, alternativeStatesMap: any, originalExecutions: any[], alternativeExecutions: any[], alternativeConflicts: any[]): any {
         let mergedStates = {};
 
         for(let deviceID in originalStatesMap) {
@@ -425,7 +432,7 @@ class Timeline {
                     alternativeStatesCounter++;
                 }
 
-                mergedStates[deviceID] = mergedStates[deviceID].concat(this.mergeStatesTick(originalStatesTick, alternativeStatesTick, originalExecutions, alternativeExecutions));
+                mergedStates[deviceID] = mergedStates[deviceID].concat(this.mergeStatesTick(originalStatesTick, alternativeStatesTick, originalExecutions, alternativeExecutions, alternativeConflicts));
             }
         }
 
@@ -438,12 +445,8 @@ class Timeline {
      * @param originalStates
      * @param alternativeStates
      */
-    mergeStatesTick(originalStates: any [], alternativeStates: any [], originalExecutions: any[], alternativeExecutions: any[]) {
+    mergeStatesTick(originalStates: any [], alternativeStates: any [], originalExecutions: any[], alternativeExecutions: any[], alternativeConflicts: any[]) {
         let mergedStates = [];
-
-     //   console.log("Comparing tick...");
-     //   console.log(originalStates);
-      //  console.log(alternativeStates);
 
         for(let originalStatesCounter = 0; originalStatesCounter < originalStates.length; originalStatesCounter++) {
             let originalState = JSON.parse(JSON.stringify(originalStates[originalStatesCounter]));
@@ -459,13 +462,13 @@ class Timeline {
                 if(this.isSameStatePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
                     found = true;
 
+                    // TODO: Change context id in conflict from alternativeState to originalState
+                    this.updateAlternativeConflicts(originalState["context"]["id"], alternativeState["context"]["id"], alternativeConflicts);
+
                     if(!originalState["is_new"] && alternativeState["is_new"]) {
                         originalState["is_new"] = true;
                         originalState["future"] = "new";
-                    } /*else if(originalState["is_new"] && !alternativeState["is_new"]) {
-                        originalState["is_new"] = true;
-                        originalState["future"] = "deprecated";
-                    } */
+                    }
 
                     alternativeStates.splice(alternativeCounter, 1); // remove from alternative states
                     break;
@@ -485,9 +488,6 @@ class Timeline {
             mergedStates.push(alternativeStates[alternativeCounter]);
         }
 
-     //   console.log("=>");
-     //   console.log(mergedStates);
-
         return mergedStates;
     }
 
@@ -497,33 +497,6 @@ class Timeline {
         for (let conflictedState of relatedConflict["conflicting_states"]) {
             $("#" + conflictedState["context"]["id"]).closest(".state_item_wrapper").addClass("conflict_related");
         }
-    }
-
-    showMergeStateStats(mergedStatesMap) {
-        let unchangedCounter = 0;
-        let changedCounter = 0;
-        let deprecatedCounter = 0;
-        let newCounter = 0;
-
-        for(let deviceID in mergedStatesMap) {
-            for(let mergedState in mergedStatesMap[deviceID]) {
-                if(mergedState["future"] === "NEW") {
-                    newCounter++;
-                } else if(mergedState["future"] === "DEPRECATED") {
-                    deprecatedCounter++;
-                } else if(mergedState["future"] === "CHANGED") {
-                    changedCounter++;
-                } else if(mergedState["future"] === "UNCHANGED") {
-                    unchangedCounter++;
-                }
-            }
-        }
-
-        console.log("NEW: +" + newCounter);
-        console.log("DEPRECATED: -" + deprecatedCounter);
-        console.log("CHANGED: ~" + changedCounter);
-        console.log("UNCHANGED: =" + unchangedCounter);
-        console.log(mergedStatesMap);
     }
 
     highlightActions(actionContexts: string[]) {
@@ -607,5 +580,24 @@ class Timeline {
 
     isSameActionPrediction(originalActionExecution: any, alternativeActionExecution: any, originalRuleExecution: any, alternativeRuleExecution : any) {
         return originalRuleExecution["trigger_entity"] == alternativeRuleExecution["trigger_entity"] && originalActionExecution["action_id"] == alternativeActionExecution["action_id"];
+    }
+
+    /**
+     * Map alternative conflicts to the original states
+     * @param originalContextID
+     * @param alternativeContextID
+     * @param alternativeConflicts
+     * @private
+     */
+    private updateAlternativeConflicts(originalContextID: any, alternativeContextID: any, alternativeConflicts: any[]) {
+        for(let alternativeConflict of alternativeConflicts) {
+            for(let conflictingStateIndex in alternativeConflict["conflicting_states"]) {
+                let conflictingState = alternativeConflict["conflicting_states"][conflictingStateIndex];
+
+                if(conflictingState["context"]["id"] == alternativeContextID) {
+                    conflictingState["context"]["id"] = originalContextID;
+                }
+            }
+        }
     }
 }

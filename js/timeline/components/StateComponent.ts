@@ -59,7 +59,7 @@ class StateComponent extends TimelineComponent {
 
         if(deviceChanges[0]["entity_id"] == "light.living_spots") {
             for(let deviceChange of deviceChanges) {
-                console.log((feedforward? "feedforward: " : "normal: ") + deviceChange["entity_id"] + " - " + deviceChange["state"] + " (" + deviceChange["future"] + ")");
+         //       console.log((feedforward? "feedforward: " : "normal: ") + deviceChange["entity_id"] + " - " + deviceChange["state"] + " (" + deviceChange["future"] + ")");
             }
         }
 

@@ -642,8 +642,8 @@ body {
 }
 
 #iot .state_item_wrapper.new:not(.unfinished) {
-    background-color: #d4f0d6;
-    border-color: #00a000;
+    background-color: #9ce8ff;
+    border-color: #0A8ED5;
 }
 
 #iot .state_item_wrapper.deprecated:not(.unfinished),
@@ -654,8 +654,8 @@ body {
 }
 
 #iot .state_item_wrapper.unfinished.new .state_item_mask {
-    border-color: #00a000;
-    background-image: linear-gradient(to right, rgb(223, 242, 223), rgba(255,255,255,1));
+    border-color: #0A8ED5;
+    background-image: linear-gradient(to right, rgb(156, 232, 223), rgba(255,255,255,1));
 }
 
 #iot .state_item_wrapper.unfinished.deprecated .state_item_mask {
@@ -746,5 +746,5 @@ body {
 }
 
 #iot span.state_option.new {
-    color: #00a000;
+    color: #0A8ED5;
 }
