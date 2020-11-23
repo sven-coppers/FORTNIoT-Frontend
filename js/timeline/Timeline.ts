@@ -192,7 +192,6 @@ class Timeline {
             this.mainController.clearSelection(false);
         }
 
-
         this.redrawing = false;
     }
 
@@ -371,10 +370,10 @@ class Timeline {
                 originalActionExecution["future"] = "becomes_snoozed";
             } else {
                 // Will (still not / no longer) be snoozed
-                if(originalActionExecution["has_effects"] == alternativeActionExecution["has_effects"]) {
-                    originalActionExecution["future"] = "unchanged";
-                } else if(originalActionExecution["has_effects"] && !alternativeActionExecution["snoozed"]) {
+                if((originalActionExecution["snoozed"] || originalActionExecution["has_effects"]) && (!alternativeActionExecution["snoozed"] && !alternativeActionExecution["has_effects"])) {
                     originalActionExecution["future"] = "becomes_ineffective";
+                } else if(originalActionExecution["has_effects"] == alternativeActionExecution["has_effects"]) {
+                    originalActionExecution["future"] = "unchanged";
                 } else {
                     originalActionExecution["future"] = "becomes_effective";
                 }

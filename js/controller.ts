@@ -230,11 +230,13 @@ class IoTController {
     }
 
     cancelPreviewActionExecutionChange() {
+      //  this.clearSelection(false);
         this.feedforwardStillRelevant = false;
         let future = this.futureClient.future;
         let allStates = this.stateClient.combineStateHistoryAndFuture(future.states);
 
         this.timeline.redraw(allStates, future.executions, future.conflicts, false, this.getSelectedActionExecution());
+
     }
 
     selectState(stateContextID: string) {

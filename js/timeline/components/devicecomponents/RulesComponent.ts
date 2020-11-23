@@ -85,37 +85,26 @@ class RulesComponent extends EventComponent {
                 this.items.add(this.createActionExecutionItem(actionExecution, ruleExecution));
             }
 
-            let RuleEvent = {
+          /*  let RuleEvent = {
                 id: ruleExecution["execution_id"],
                 group: ruleExecution["rule_id"],
                 content: this.createHTML(ruleExecution["execution_id"]),
                 start: ruleExecution["datetime"],
                 type: 'point'
-            };
+            }; */
 
             //  this.items.add(RuleEvent);
         }
 
         let oThis = this;
 
-
         // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
         setTimeout(function() {
             $(".action_execution").mouseenter(function (event) {
-                if (!$(this).hasClass("highlighted")) return;
-
-                if ($(this).hasClass("checked")) {
-                    $(this).addClass("feedforward_unchecked");
-                } else {
-                    $(this).addClass("feedforward_checked");
-                }
-
                 oThis.mainController.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
             });
 
             $(".action_execution").mouseleave(function () {
-                if (!$(this).hasClass("highlighted")) return;
-
                 oThis.mainController.cancelPreviewActionExecutionChange();
             });
         }, 10);
@@ -137,11 +126,11 @@ class RulesComponent extends EventComponent {
         if(properties["item"] != null && properties["item"].indexOf('action_execution') !== -1) {
             let checkbox = $("#" + properties["item"]);
 
-            if(checkbox.hasClass("highlighted")) {
+           // if(checkbox.hasClass("highlighted")) {
                 this.mainController.actionExecutionChanged(properties["item"], properties["group"], !checkbox.hasClass("checked"));
-            } else {
+          /*  } else {
                 this.mainController.selectActionExecution(properties["item"]);
-            }
+            } */
         } else if(properties["what"] === "background" && this.highlightedConflict != null) {
             let conflictRange = this.findConflictRange(this.highlightedConflict);
 
