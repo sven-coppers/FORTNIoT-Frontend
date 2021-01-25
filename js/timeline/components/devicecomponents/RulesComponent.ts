@@ -70,7 +70,9 @@ class RulesComponent extends EventComponent {
      */
     redraw(ruleExecutions: any, feedforward: boolean) {
         if(feedforward) {
+            this.removeFeedforwardBehavior();
             this.addFeedforward(ruleExecutions);
+            this.addFeedforwardBehavior();
         } else {
             this.items.clear();
             this.drawExecutions(ruleExecutions);
@@ -98,21 +100,37 @@ class RulesComponent extends EventComponent {
 
         let oThis = this;
 
-        // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
         setTimeout(function() {
             $(".action_execution").mouseenter(function (event) {
+
                 oThis.mainController.previewActionExecutionChange($(this).attr("id"), !$(this).hasClass("checked"));
             });
+        }, 10);
 
+
+        this.addFeedforwardBehavior();
+    }
+
+    addFeedforwardBehavior() {
+        let oThis = this;
+
+        // The tiny timeout makes sure mouseenter is not triggered when the user is hovering a checkbox that is redrawn
+        setTimeout(function() {
             $(".action_execution").mouseleave(function () {
                 oThis.mainController.cancelPreviewActionExecutionChange();
             });
         }, 10);
     }
 
+    removeFeedforwardBehavior() {
+        $(".action_execution").unbind();
+    }
+
     addFeedforward(mergedRuleExecutions : any []) {
         for(let mergedRuleExecution of mergedRuleExecutions) {
             for(let actionExecution of mergedRuleExecution["action_executions"]) {
+                console.log("action_id: " + actionExecution["action_id"] + ", action_execution_id: " + actionExecution["action_execution_id"] + ", future: " + actionExecution["future"]);
+
                 if(actionExecution["future"] == "new") {
                     this.items.add(this.createActionExecutionItem(actionExecution, mergedRuleExecution));
                 }
@@ -151,6 +169,7 @@ class RulesComponent extends EventComponent {
             }
         } else {
             this.mainController.clearSelection(false);
+            this.mainController.cancelPreviewActionExecutionChange();
         }
 
         return false;
@@ -196,14 +215,15 @@ class RulesComponent extends EventComponent {
             // find the responsible action execution for this state
             let conflictingState = conflict["conflicting_states"][conflictingStateIndex];
             let conflictingAction = this.futureClient.getActionExecutionByResultingContextID(conflictingState["context"]["id"], null);
-            let conflictingRuleExecution = this.futureClient.getRuleExecutionByActionExecutionID(conflictingAction["action_execution_id"]);
 
             if(conflictingAction != null) {
                 $("#" + conflictingAction["action_execution_id"]).addClass("conflict_related");
-            }
 
-            if(conflictingRuleExecution != null) {
-                $("#" + conflictingRuleExecution["execution_id"]).addClass("conflict");
+                let conflictingRuleExecution = this.futureClient.getRuleExecutionByActionExecutionID(conflictingAction["action_execution_id"]);
+
+                if(conflictingRuleExecution != null) {
+                    $("#" + conflictingRuleExecution["execution_id"]).addClass("conflict");
+                }
             }
         }
 

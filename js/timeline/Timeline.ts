@@ -229,8 +229,6 @@ class Timeline {
         this.hasCustomTime = true;
     }
 
-
-
     setAllRulesVisible(visible: boolean) {
         // Can eventueel nog iets anders doen
     }
@@ -248,11 +246,10 @@ class Timeline {
     clearSelection(nextSelectionExpected: boolean) {
         $("span.highlighted_state").removeClass("highlighted_state");
         $(".state_item_wrapper .trigger img").attr("src", "img/warning.png").attr("title", "This state will be involved in conflict");
-        $(".state_item_wrapper").removeClass("trigger action condition conflict_related");
+        $(".state_item_wrapper").removeClass("trigger action condition conflict_related").attr("title", "");
         $(".vis-point").removeClass("vis-selected");
         $(".event_item").removeClass("selected");
         $(".action_execution").removeClass("highlighted conflict_related");
-        $(".state_item_wrapper").attr("title", "");
        // $("#back_button").addClass("hidden");
 
         if(!nextSelectionExpected) {
@@ -333,8 +330,8 @@ class Timeline {
     private mergeConflicts(originalConflicts: any[], alternativeConflicts: any[]) {
         let mergedConflicts = [];
 
-        console.log(originalConflicts);
-        console.log(alternativeConflicts);
+        //console.log(originalConflicts);
+        //console.log(alternativeConflicts);
 
         return alternativeConflicts;
     }
@@ -462,7 +459,7 @@ class Timeline {
                 if(this.isSameStatePrediction(originalState, alternativeState, originalRuleExecution, alternativeRuleExecution)) {
                     found = true;
 
-                    // TODO: Change context id in conflict from alternativeState to originalState
+                    // Change context id in conflict from alternativeState to originalState
                     this.updateAlternativeConflicts(originalState["context"]["id"], alternativeState["context"]["id"], alternativeConflicts);
 
                     if(!originalState["is_new"] && alternativeState["is_new"]) {

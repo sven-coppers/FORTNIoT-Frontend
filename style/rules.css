@@ -43,10 +43,15 @@
 #iot .action_execution.ineffective.conflict_related.highlighted.becomes_effective {
     background-color: #0A8ED5;
     color: #ffffff;
-    border-color: #0A8ED5;
+    border-color: #0a8ed5;
 }
 
-#iot .action_execution.deprecated {
+#iot .action_execution.deprecated,
+#iot .action_execution.highlighted.deprecated,
+#iot .action_execution.conflict_related.deprecated,
+#iot .action_execution.ineffective.deprecated,
+#iot .action_execution.ineffective.highlighted.deprecated,
+#iot .action_execution.ineffective.conflict_related.deprecated {
     background-color: #ffffff;
     border-style: dashed;
     border-color: #333333;

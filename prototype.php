@@ -5,7 +5,7 @@
         <title>Fortune IoT</title>
 
         <!-- General Styling -->
-        <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+        <link href="//unpkg.com/vis-timeline@7.4.0/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
         <link type="text/css" rel="stylesheet" href="style/reset.css">
        <link type="text/css" rel="stylesheet" href="style/frame.css">
         <link type="text/css" rel="stylesheet" href="style/general.css">
@@ -46,7 +46,7 @@
     </div> -->
     </body>
     <!-- Libraries -->
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@7.4.0/standalone/umd/vis-timeline-graph2d.min.js"></script>
     <!--  <script type="text/javascript" src="https://unpkg.com/moment@2.29.0/min/moment.min.js"></script>-->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
