@@ -1,8 +1,14 @@
+<?php
+$scenarios = array("training", "television", "temperature", "weather", "security", "conflicts");
+$predictionsOn = (!empty($_GET) && isset($_GET["predictions"]));
+$selectedScenario = (!empty($_GET) && isset($_GET["scenario"]) && in_array($_GET["scenario"], $scenarios)) ? $_GET["scenario"] : $scenarios[0];
+$forceRemote = (!empty($_GET) && isset($_GET["remote"]));
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Fortune IoT</title>
+        <title>FORTNIoT</title>
 
         <!-- General Styling -->
         <link href="//unpkg.com/vis-timeline@7.4.0/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
@@ -14,43 +20,71 @@
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     </head>
     <body>
-    <div id="iot">
-        <h1>Internet-of-Things -
-            <span id="version">Version B</span>
-            <span id="question"></span>
-            <!-- <a href="" id="reload">&#x21bb;</a>-->
-        </h1>
-        <p id="connection_error">Connecting to the IoT Server.</p>
-      <!--  <div class="devices_column hidden">
-            <img src="img/back.png" id="back_button" class="hidden" alt="Go back"/>
-            <div class="filters">
-                Show:
-                <label><input type="checkbox" name="show" value="rules" id="rules_checkbox" checked> Rules</label>
-                <label><input type="checkbox" name="show" value="states" id="devices_checkbox" checked> Devices</label>
-                <label><input type="checkbox" name="show" value="events_without_changes" id="events_without_changes" checked> Executions without changes</label>
-                <label><input type="checkbox" name="show" value="adaptive" id="adaptive_checkbox" checked> Only Relevant</label>
+    <div class="header">
+        <div class="header_content">
+            <h1>FORTNIoT - FortClash</h1>
+            <p>To make additional predictions about the future of a smart home, FORTNIoT collects information about the future and simulates trigger-condition-action rules. These predictions help inhabitants understand how their smart home will behave and give them more appropriate trust.
+                FortClash is able to detect conflicts in future predictions, and gives inhabitants the unique opportunity to resolve them before they occur.</p>
+            <p class="contact">
+                <a href="mailto:sven.coppers@uhasselt.be">Sven Coppers</a><sup>1,2</sup>,
+                <a href="mailto:davy.vanacken@uhasselt.be">Davy Vanacken</a><sup>1,2</sup>,
+                <a href="mailto:kris.luyten@uhasselt.be">Kris Luyten</a><sup>1,2</sup>
+            </p>
+            <p class="contact">
+                Publications:
+                <a href="https://dl.acm.org/doi/10.1145/3432225"><img class="icon" src="img/pdf.png" /> IMWUT 2020</a>
+                <!-- <a href="http://researcharchive.wintec.ac.nz/7211/1/FMIS%202019%20informal%20v2.pdf#page=57"><img class="icon" src="test/img/pdf.png" /> FMIS '19</a> -->
+            </p>
+            <div class="logos">
+                <sup>1</sup><a href="https://www.uhasselt.be/edm"><img class="logo" src="img/uhasselt-edm.png" /></a>
+                <sup>2</sup><a href="https://www.uhasselt.be/edm"><img class="logo" src="img/fm.png" /></a>
             </div>
-            <div class="clearfix"></div>
-        </div> -->
+
+        </div>
+        <div class="controls">
+            <form method="get" action="">
+                <label for="scenario">Choose a scenario:</label>
+                <select name="scenario" id="scenario" onChange="this.form.submit()">
+                    <?php
+                        foreach ($scenarios as $scenario) {
+                            $selected = $selectedScenario == $scenario ? "selected" : "";
+                            echo '<option ' .  $selected . ' >' . $scenario . '</option>';
+                        }
+                    ?>
+                </select>
+
+             <label for="predictions">Make additional predictions:</label>
+                <input onChange="this.form.submit()" type="checkbox" name="predictions" id="predictions" <?php echo  $predictionsOn ? 'checked=\"checked\"' : ""  ?> />
+                <label id="remote_label" for="remote">Remote:</label>
+                <input onChange="this.form.submit()" type="checkbox" name="remote" id="remote" <?php echo  $forceRemote ? 'checked=\"checked\"' : ""  ?> />
+            </form>
+            <!-- <span id="version">Version B</span>
+            <span id="question"></span>
+            <a href="" id="reload">&#x21bb;</a>-->
+        </div>
+    </div>
+    <div id="iot">
+
+
+        <p id="connection_error">Connecting to the IoT Server.</p>
         <div class="clearfix"></div>
         <div class="timeline_wrapper hidden">
         </div>
         <div class="clearfix"></div>
-        <!--    <div class="devices_column hidden">
-                <div class="device"><h2>Sven SSE <span class="copy">Copy</span></h2><textarea class="code" rows="50" id="hassio_events"></textarea></div>
-            </div> -->
+
         <div class="clearfix"></div>
     </div>
-  <!--  <div class="rule_tooltip">
-        <label><input type="checkbox" name="rule_enabled" value="rule_enabled" id="rule_enabled" checked> Rule name</label>
-    </div> -->
+
     </body>
     <!-- Libraries -->
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@7.4.0/standalone/umd/vis-timeline-graph2d.min.js"></script>
     <!--  <script type="text/javascript" src="https://unpkg.com/moment@2.29.0/min/moment.min.js"></script>-->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-      <!-- Helpers -->
+
+    <script src="js/demo.js"></script>
+
+    <!-- Helpers -->
     <script src="js/helpers/array.js"></script>
     <script src="js/helpers/string.js"></script>
     <script src="js/helpers/logger.js"></script>

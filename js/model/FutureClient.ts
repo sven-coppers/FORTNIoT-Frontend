@@ -15,11 +15,22 @@ class FutureClient {
         let oThis = this;
         $("#reload").addClass("disabled");
 
+        let fileURL = "future"; // Default
+
+        if(this.mainController.isRemote()) {
+            if(this.mainController.isPredicting()) {
+                fileURL = "future.json";
+            } else {
+                fileURL = "future_baseline.json";
+            }
+        }
+
         $.ajax({
-            url:            this.mainController.API_URL +  "future",
+            url:            this.mainController.API_URL + fileURL,
             type:           "GET",
         }).done(function (future) {
             oThis.checkRuleEffects(future);
+            oThis.addAnchorTime(future);
             oThis.future = future;
             oThis.mainController.futureLoaded(future);
         });
@@ -52,26 +63,88 @@ class FutureClient {
         }
     }
 
-    public simulateAlternativeFuture(extraStates: any [], suppressedStateContexts: any [], snoozedActions: any [], reEnabledActions: any []) {
+    public simulateAlternativeFuture(actionExecutionID: string, newEnabled: boolean) {
         let oThis = this;
 
-        let simulationRequest = {
-            extra_states: extraStates,
-            suppressed_state_contexts: suppressedStateContexts,
-            snoozed_actions: snoozedActions,
-            re_enabled_actions: reEnabledActions
-        };
+        if(this.mainController.isRemote()) {
+            let expectedFile = this.deduceFileName(actionExecutionID, newEnabled);
 
-        $.ajax({
-            url:            "http://localhost:8080/intelligibleIoT/api/future/simulate",
-            type:           "POST",
-            data: JSON.stringify(simulationRequest),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-        }).done(function (alternativeFuture) {
-            oThis.checkRuleEffects(alternativeFuture);
-            oThis.mainController.alternativeFutureSimulationReady(alternativeFuture);
-        });
+            //console.log(expectedFile);
+
+            $.ajax({
+                url:            this.mainController.API_URL + expectedFile,
+                type:           "GET"
+            }).done(function (alternativeFuture) {
+                oThis.checkRuleEffects(alternativeFuture);
+                oThis.addAnchorTime(alternativeFuture);
+                oThis.mainController.alternativeFutureSimulationReady(alternativeFuture);
+            });
+        } else {
+            let reEnabledActions = [];
+            let snoozedActions = [];
+            let ruleExecution = this.getRuleExecutionByActionExecutionID(actionExecutionID);
+
+            if(ruleExecution != null) {
+                let actionExecution = this.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
+
+                if(newEnabled) {
+                    // Now enabled -> remove snooze
+                    reEnabledActions.push(actionExecution["snoozed_by"]);
+                } else {
+                    snoozedActions.push({
+                        action_id: actionExecution["action_id"],
+                        conflict_time_window: 20000,
+                        trigger_entity_id: ruleExecution["trigger_entity"],
+                        conflict_time: ruleExecution["datetime"]
+                    });
+                }
+            }
+
+            let simulationRequest = {
+                extra_states: [],
+                suppressed_state_contexts: [],
+                snoozed_actions: snoozedActions,
+                re_enabled_actions: reEnabledActions
+            };
+
+            $.ajax({
+                url:            this.mainController.API_URL + "future/simulate",
+                type:           "POST",
+                data: JSON.stringify(simulationRequest),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+            }).done(function (alternativeFuture) {
+                oThis.checkRuleEffects(alternativeFuture);
+                oThis.addAnchorTime(alternativeFuture);
+                oThis.mainController.alternativeFutureSimulationReady(alternativeFuture);
+            });
+        }
+    }
+
+    private deduceFileName(newActionExecutionID: string, newEnabled: boolean): string {
+        let expectedFile = "future_";
+        let start = true;
+
+        for(let ruleExecution of this.future.executions) {
+            for(let actionExecution of ruleExecution["action_executions"]) {
+                let actionExecutionID = actionExecution["action_execution_id"];
+                let snoozed = actionExecution["snoozed"];
+
+                if(actionExecutionID == newActionExecutionID) {
+                    snoozed = !newEnabled;
+                }
+
+                if(!start) {
+                    expectedFile += ";"
+                }
+
+                expectedFile += actionExecutionID.replace("action_execution_id_", "") + (snoozed ? "t" : "f");
+                start = false;
+            }
+
+        }
+
+        return expectedFile + ".json";
     }
 
     public findState(deviceID: string, date: Date) {
@@ -261,5 +334,24 @@ class FutureClient {
 
     getFuture() {
         return this.future;
+    }
+
+    private addAnchorTime(future) {
+        for(let entity in future.states) {
+            for(let entityState of future.states[entity]) {
+                entityState["last_changed"] = new Date(new Date(entityState["last_changed"]).getTime() + this.mainController.getAnchorDate().getTime());
+                entityState["last_updated"] = new Date(new Date(entityState["last_updated"]).getTime() + this.mainController.getAnchorDate().getTime());
+            }
+        }
+
+        for(let ruleExecution of future.executions) {
+            ruleExecution["datetime"] = new Date(new Date(ruleExecution["datetime"]).getTime() + this.mainController.getAnchorDate().getTime());
+
+            for(let actionExecution of ruleExecution["action_executions"]) {
+                actionExecution["datetime"] = new Date(new Date(actionExecution["datetime"]).getTime() + this.mainController.getAnchorDate().getTime());
+            }
+        }
+
+        // TODO: conflicts
     }
 }

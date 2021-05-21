@@ -16,9 +16,20 @@ class StateClient {
             type:           "GET",
         }).done(function (data) {
             oThis.stateHistory = data;
+            oThis.addAnchorTime(data);
             oThis.mainController.pastStatesLoaded();
         });
     }
+
+    private addAnchorTime(data) {
+        for(let entity in data) {
+            for(let entityState of data[entity]) {
+                entityState["last_changed"] = new Date(new Date(entityState["last_changed"]).getTime() + this.mainController.getAnchorDate().getTime());
+                entityState["last_updated"] = new Date(new Date(entityState["last_updated"]).getTime() + this.mainController.getAnchorDate().getTime());
+            }
+        }
+    }
+
 
     drawStateChangeHistory(changes) {
         for(let i = changes.length - 1; i >= 0; i--) {

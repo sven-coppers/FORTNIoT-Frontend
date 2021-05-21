@@ -29,10 +29,15 @@
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style/rules.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/rules.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style/general.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/general.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +53,7 @@
         <option value="Class" />
         <option value="TypeScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -320,7 +326,9 @@
       <workItem from="1609759032577" duration="22000" />
       <workItem from="1610524794404" duration="1188000" />
       <workItem from="1611238505243" duration="962000" />
-      <workItem from="1611562963880" duration="4408000" />
+      <workItem from="1611562963880" duration="11328000" />
+      <workItem from="1613557863586" duration="75000" />
+      <workItem from="1621407941768" duration="20194000" />
     </task>
     <servers />
   </component>
@@ -346,28 +354,18 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="762" y="-888" key="#Configure_Path_Variables" timestamp="1604407738884">
+    <state x="740" y="-999" key="FileChooserDialogImpl" timestamp="1621407955753">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="762" y="-888" key="#Configure_Path_Variables/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1604407738884" />
-    <state x="739" y="287" key="FileChooserDialogImpl" timestamp="1611563943005">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="665" y="-1053" key="FileChooserDialogImpl/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1611238516277" />
-    <state x="739" y="287" key="FileChooserDialogImpl/0.0.1920.1040/-320.-1440.2560.1400@0.0.1920.1040" timestamp="1611563943005" />
-    <state x="440" y="138" key="SettingsEditor" timestamp="1611563943686">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="267" y="-1254" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1611238518579" />
-    <state x="440" y="138" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@0.0.1920.1040" timestamp="1611563943686" />
-    <state x="667" y="-1141" width="585" height="801" key="find.popup" timestamp="1604477156223">
+    <state x="740" y="-999" key="FileChooserDialogImpl/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621407955753" />
+    <state x="461" y="-1095" key="SettingsEditor" timestamp="1621407957363">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="667" y="-1141" width="585" height="801" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1604477156223" />
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1611580267867">
+    <state x="461" y="-1095" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621407957363" />
+    <state x="667" y="-1007" width="585" height="534" key="find.popup" timestamp="1621514193905">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1611580267867" />
+    <state x="667" y="-1007" width="585" height="534" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621514193905" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

@@ -48,3 +48,76 @@ body {
 .use_case table td {
     padding: 5px;
 }
+
+.header {
+    width: 100%;
+    font-family: Verdana;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+    position: fixed;
+    top: 0px;
+    z-index: 2;
+    transition: 750ms;
+}
+
+.header h1 {
+    font-size: 24px;
+}
+
+.controls {
+    font-size: 18px;
+    background-color: #1ea9f4;
+    padding: 8px;
+    color: white;
+    padding-left: 20px;
+}
+
+.header a {
+    text-decoration: none;
+    color: #0A8ED5;
+}
+
+.logos {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.logos img {
+    height: 20px;
+}
+
+.logos sup {
+    margin-left: 10px;
+    vertical-align: top;
+    margin-right: 2px;
+}
+
+.icon {
+    height: 13px;
+}
+
+.header p {
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.header p.contact {
+    font-size: 15px;
+}
+
+.header_content {
+    margin: 20px;
+}
+
+sup {
+    vertical-align: super;
+    font-size: smaller;
+}
+
+#iot {
+    transition: 250ms;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}

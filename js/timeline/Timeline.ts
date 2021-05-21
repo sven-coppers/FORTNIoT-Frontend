@@ -3,7 +3,7 @@ class Timeline {
     private ruleClient: RuleClient;
     private stateClient: StateClient;
     private deviceClient: DeviceClient;
-    private configClient: ConfigClient;
+   // private configClient: ConfigClient;
     private conflictsClient: ConflictClient;
     private readonly futureClient: FutureClient;
 
@@ -15,12 +15,12 @@ class Timeline {
     private showingOnlyContext: boolean;
     private redrawing: boolean;
 
-    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, configClient: ConfigClient, conflictsClient: ConflictClient, futureClient: FutureClient) {
+    constructor(mainController: IoTController, ruleClient: RuleClient, stateClient: StateClient, deviceClient: DeviceClient, conflictsClient: ConflictClient, futureClient: FutureClient) {
         this.mainController = mainController;
         this.ruleClient = ruleClient;
         this.stateClient = stateClient;
         this.deviceClient = deviceClient;
-        this.configClient = configClient;
+        //this.configClient = configClient;
         this.conflictsClient = conflictsClient;
         this.futureClient = futureClient;
         this.hasCustomTime = false;

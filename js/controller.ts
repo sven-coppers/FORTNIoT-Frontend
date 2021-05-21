@@ -11,7 +11,7 @@ class IoTController {
     stateClient: StateClient;
     ruleClient: RuleClient;
     deviceClient: DeviceClient;
-    configClient: ConfigClient;
+    //configClient: ConfigClient;
     conflictClient: ConflictClient;
     futureClient: FutureClient;
 
@@ -23,6 +23,8 @@ class IoTController {
     public API_URL: string;
 
     private remote: boolean;
+    private anchorDate: Date;
+    private predicting: boolean;
 
     public devices: any = {};
 
@@ -33,23 +35,30 @@ class IoTController {
         this.selectedTime = null;
 
 
+        let url = new URL(window.location.href);
+        let forceRemote: boolean = url.searchParams.get("remote") != null;
+
         let oThis = this;
-        this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1;
+        this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1 || forceRemote;
+
+        let useCase = url.searchParams.get("scenario");
+        this.predicting = url.searchParams.get("predictions") != null;
+        this.anchorDate = new Date();
+
+        if(useCase == null) {
+            useCase = "training";
+        }
 
         if(this.remote) {
-            this.API_URL = "https://research.edm.uhasselt.be/~scoppers/iot/cache/";
+            this.API_URL = "cache/" + useCase + "/";
+            $("#remote").addClass("hidden");
+            $("#remote_label").addClass("hidden");
         } else {
             this.API_URL = "http://localhost:8080/intelligibleIoT/api/";
         }
 
-        let url = new URL(window.location.href);
-        let useCase = url.searchParams.get("c");
-
-        if(useCase != null) {
-        }
-
         this.initClients();
-        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.configClient,this.conflictClient,this.futureClient);
+        this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.conflictClient,this.futureClient);
 
         $("#reload").click(function() {
             oThis.refreshContext();
@@ -67,14 +76,16 @@ class IoTController {
             document.execCommand("copy");
         });
 
-        let source = new EventSource("http://localhost:8080/intelligibleIoT/api/states/stream");
-        source.onmessage = function(event) {
-            if(event.data == "Scenario Changed") {
-                oThis.timeline.refreshSetup();
-            } else {
-                oThis.refreshContext();
-            }
-        };
+        if(!this.isRemote()) {
+            let source = new EventSource("http://localhost:8080/intelligibleIoT/api/states/stream");
+            source.onmessage = function(event) {
+                if(event.data == "Scenario Changed") {
+                    oThis.timeline.refreshSetup();
+                } else {
+                    oThis.refreshContext();
+                }
+            };
+        }
 
         $("#rules_checkbox").click(function() {
             oThis.timeline.setAllRulesVisible($(this).is(":checked"));
@@ -104,7 +115,7 @@ class IoTController {
         this.stateClient = new StateClient(this);
         this.ruleClient = new RuleClient(this);
         this.deviceClient = new DeviceClient(this);
-        this.configClient = new ConfigClient(this);
+      //  this.configClient = new ConfigClient(this);
         this.conflictClient = new ConflictClient(this);
         this.futureClient = new FutureClient(this);
 
@@ -116,7 +127,8 @@ class IoTController {
         $("#reload").addClass("disabled");
         $(".history").empty();
         $(".future").empty();
-        this.configClient.refresh(); // The callback will start the next request
+        this.stateClient.loadStateHistory(); // The callback will start the next request
+        //this.configClient.refresh(); // The callback will start the next request
     }
 
     public reAlign(range) {
@@ -128,7 +140,7 @@ class IoTController {
     }
 
     configLoaded() {
-        this.stateClient.loadStateHistory(); // The callback will start the next request
+
     }
 
     pastStatesLoaded() {
@@ -194,31 +206,7 @@ class IoTController {
 
     previewActionExecutionChange(actionExecutionID: string, newEnabled: boolean) {
         this.feedforwardStillRelevant = true;
-        let ruleExecution = this.futureClient.getRuleExecutionByActionExecutionID(actionExecutionID);
-
-        if(ruleExecution != null) {
-            let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
-
-            if(newEnabled) {
-                // Now enabled -> remove snooze
-                let reEnabledActions = [];
-                reEnabledActions.push(actionExecution["snoozed_by"]);
-
-                  this.futureClient.simulateAlternativeFuture([], [], [], reEnabledActions);
-            } else {
-                // // Now snoozed -> add snooze
-                let snoozedActions = [];
-
-                snoozedActions.push({
-                    action_id: actionExecution["action_id"],
-                    conflict_time_window: 20000,
-                    trigger_entity_id: ruleExecution["trigger_entity"],
-                    conflict_time: ruleExecution["datetime"]
-                });
-
-                 this.futureClient.simulateAlternativeFuture([], [], snoozedActions, []);
-            }
-        }
+        this.futureClient.simulateAlternativeFuture(actionExecutionID, newEnabled);
     }
 
     alternativeFutureSimulationReady(alternativeFuture) {
@@ -294,7 +282,15 @@ class IoTController {
         return null;
     }
 
-    getConfigClient() {
+    /*getConfigClient() {
         return this.configClient;
+    } */
+
+    public getAnchorDate(): Date {
+        return this.anchorDate;
+    }
+
+    public isPredicting(): boolean {
+        return this.predicting;
     }
 }
