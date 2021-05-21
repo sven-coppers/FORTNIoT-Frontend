@@ -29,15 +29,11 @@
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/landing.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/StateClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/StateClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/Timeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/Timeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/StateComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/devices/SunTimeline.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/prototype.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style/general.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/general.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prototype.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,7 +324,7 @@
       <workItem from="1611238505243" duration="962000" />
       <workItem from="1611562963880" duration="11328000" />
       <workItem from="1613557863586" duration="75000" />
-      <workItem from="1621407941768" duration="20194000" />
+      <workItem from="1621407941768" duration="24042000" />
     </task>
     <servers />
   </component>
@@ -362,10 +358,14 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="461" y="-1095" key="SettingsEditor/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621407957363" />
-    <state x="667" y="-1007" width="585" height="534" key="find.popup" timestamp="1621514193905">
+    <state x="667" y="-1007" width="585" height="534" key="find.popup" timestamp="1621590967371">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
-    <state x="667" y="-1007" width="585" height="534" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621514193905" />
+    <state x="667" y="-1007" width="585" height="534" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621590967371" />
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1621590292356">
+      <screen x="-320" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1621590292356" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

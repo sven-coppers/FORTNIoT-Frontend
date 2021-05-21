@@ -1,14 +1,8 @@
-<?php
-$scenarios = array("training", "television", "temperature", "weather", "security", "conflicts");
-$predictionsOn = (!empty($_GET) && isset($_GET["predictions"]));
-$selectedScenario = (!empty($_GET) && isset($_GET["scenario"]) && in_array($_GET["scenario"], $scenarios)) ? $_GET["scenario"] : $scenarios[0];
-$forceRemote = (!empty($_GET) && isset($_GET["remote"]));
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>FORTNIoT</title>
+        <title>FORTNIoT & FortClash</title>
 
         <!-- General Styling -->
         <link href="//unpkg.com/vis-timeline@7.4.0/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
@@ -22,7 +16,7 @@ $forceRemote = (!empty($_GET) && isset($_GET["remote"]));
     <body>
     <div class="header">
         <div class="header_content">
-            <h1>FORTNIoT - FortClash</h1>
+            <h1>FORTNIoT & FortClash</h1>
             <p>To make additional predictions about the future of a smart home, FORTNIoT collects information about the future and simulates trigger-condition-action rules. These predictions help inhabitants understand how their smart home will behave and give them more appropriate trust.
                 FortClash is able to detect conflicts in future predictions, and gives inhabitants the unique opportunity to resolve them before they occur.</p>
             <p class="contact">
@@ -44,19 +38,12 @@ $forceRemote = (!empty($_GET) && isset($_GET["remote"]));
         <div class="controls">
             <form method="get" action="">
                 <label for="scenario">Choose a scenario:</label>
-                <select name="scenario" id="scenario" onChange="this.form.submit()">
-                    <?php
-                        foreach ($scenarios as $scenario) {
-                            $selected = $selectedScenario == $scenario ? "selected" : "";
-                            echo '<option ' .  $selected . ' >' . $scenario . '</option>';
-                        }
-                    ?>
+                <select name="scenario" id="scenario">
                 </select>
-
              <label for="predictions">Make additional predictions:</label>
-                <input onChange="this.form.submit()" type="checkbox" name="predictions" id="predictions" <?php echo  $predictionsOn ? 'checked=\"checked\"' : ""  ?> />
+                <input type="checkbox" name="predictions" id="predictions" checked="checked" />
                 <label id="remote_label" for="remote">Remote:</label>
-                <input onChange="this.form.submit()" type="checkbox" name="remote" id="remote" <?php echo  $forceRemote ? 'checked=\"checked\"' : ""  ?> />
+                <input type="checkbox" name="remote" id="remote" checked="checked" />
             </form>
             <!-- <span id="version">Version B</span>
             <span id="question"></span>

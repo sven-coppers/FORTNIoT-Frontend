@@ -19,6 +19,7 @@ class IoTController {
     private selectedTriggerEntity: string;
     private selectedActionID: string;
     private feedforwardStillRelevant: boolean;
+    private scenarios: string [];
 
     public API_URL: string;
 
@@ -34,31 +35,12 @@ class IoTController {
         this.selectedActionID = null;
         this.selectedTime = null;
 
-
-        let url = new URL(window.location.href);
-        let forceRemote: boolean = url.searchParams.get("remote") != null;
-
-        let oThis = this;
-        this.remote = window.location.href.indexOf("research.edm.uhasselt.be") != -1 || forceRemote;
-
-        let useCase = url.searchParams.get("scenario");
-        this.predicting = url.searchParams.get("predictions") != null;
-        this.anchorDate = new Date();
-
-        if(useCase == null) {
-            useCase = "training";
-        }
-
-        if(this.remote) {
-            this.API_URL = "cache/" + useCase + "/";
-            $("#remote").addClass("hidden");
-            $("#remote_label").addClass("hidden");
-        } else {
-            this.API_URL = "http://localhost:8080/intelligibleIoT/api/";
-        }
-
+        this.initDemonstrator();
+        this.updateDemonstrator();
         this.initClients();
         this.timeline = new Timeline(this, this.ruleClient, this.stateClient, this.deviceClient, this.conflictClient,this.futureClient);
+
+        let oThis = this;
 
         $("#reload").click(function() {
             oThis.refreshContext();
@@ -104,10 +86,6 @@ class IoTController {
         $("#events_without_changes").click(function() {
             $(".event_item.without_changes").toggleClass("hidden", !$(this).is(":checked"));
         });
-    }
-
-    isRemote(): boolean {
-        return this.remote;
     }
 
     initClients() {
@@ -292,5 +270,54 @@ class IoTController {
 
     public isPredicting(): boolean {
         return this.predicting;
+    }
+
+    public isRemote(): boolean {
+        return this.remote;
+    }
+
+    private initDemonstrator() {
+        this.scenarios = ["training", "television", "temperature", "weather", "security", "conflicts"];
+        for(let scenario of this.scenarios) {
+            $("#scenario").append("<option>" + scenario + "</option>");
+        }
+
+        let oThis = this;
+
+        $("#predictions").click(function() {
+            oThis.updateDemonstrator();
+            oThis.refreshContext();
+        });
+
+        $("#remote").click(function() {
+            oThis.updateDemonstrator();
+            oThis.refreshContext();
+        });
+
+        $("#scenario").change(function() {
+            oThis.updateDemonstrator();
+            oThis.timeline.refreshSetup();
+        });
+    }
+
+    private updateDemonstrator() {
+        let selectedScenarioElement = $("#scenario").find(':selected');
+        let selectedScenario =  selectedScenarioElement.length > 0 ? selectedScenarioElement.text() : "training";
+        let detectedRemote = window.location.href.indexOf("research.edm.uhasselt.be") != -1;
+
+        if(detectedRemote) {
+            $("#remote").addClass("hidden");
+            $("#remote_label").addClass("hidden");
+        }
+
+        this.remote = detectedRemote || $("#remote").is(":checked");
+        this.predicting = $("#predictions").is(":checked");
+        this.anchorDate = new Date();
+
+        if(this.remote) {
+            this.API_URL = "cache/" + selectedScenario + "/";
+        } else {
+            this.API_URL = "http://localhost:8080/intelligibleIoT/api/";
+        }
     }
 }

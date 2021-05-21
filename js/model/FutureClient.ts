@@ -95,7 +95,8 @@ class FutureClient {
                         action_id: actionExecution["action_id"],
                         conflict_time_window: 20000,
                         trigger_entity_id: ruleExecution["trigger_entity"],
-                        conflict_time: ruleExecution["datetime"]
+                        conflict_time: new Date(new Date(ruleExecution["datetime"]).getTime() - this.mainController.getAnchorDate().getTime())
+                       // conflict_time: new Date(new Date(ruleExecution["datetime"]).getTime() - this.mainController.getAnchorDate().getTime())
                     });
                 }
             }
