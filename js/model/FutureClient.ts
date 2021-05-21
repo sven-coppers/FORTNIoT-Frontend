@@ -354,5 +354,14 @@ class FutureClient {
         }
 
         // TODO: conflicts
+
+        for(let conflict of future.conflicts) {
+            for(let conflictingState of conflict.conflicting_states) {
+                conflictingState["last_changed"] = new Date(new Date(conflictingState["last_changed"]).getTime() + this.mainController.getAnchorDate().getTime());
+                conflictingState["last_updated"] = new Date(new Date(conflictingState["last_updated"]).getTime() + this.mainController.getAnchorDate().getTime());
+            }
+
+            conflict["conflict_time"] = new Date(new Date(conflict["conflict_time"]).getTime() + this.mainController.getAnchorDate().getTime());
+        }
     }
 }

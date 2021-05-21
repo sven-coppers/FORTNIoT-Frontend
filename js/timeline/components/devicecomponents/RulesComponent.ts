@@ -129,7 +129,7 @@ class RulesComponent extends EventComponent {
     addFeedforward(mergedRuleExecutions : any []) {
         for(let mergedRuleExecution of mergedRuleExecutions) {
             for(let actionExecution of mergedRuleExecution["action_executions"]) {
-                console.log("action_id: " + actionExecution["action_id"] + ", action_execution_id: " + actionExecution["action_execution_id"] + ", future: " + actionExecution["future"]);
+                //console.log("action_id: " + actionExecution["action_id"] + ", action_execution_id: " + actionExecution["action_execution_id"] + ", future: " + actionExecution["future"]);
 
                 if(actionExecution["future"] == "new") {
                     this.items.add(this.createActionExecutionItem(actionExecution, mergedRuleExecution));

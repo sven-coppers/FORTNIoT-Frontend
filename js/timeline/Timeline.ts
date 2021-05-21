@@ -305,7 +305,7 @@ class Timeline {
             for(alternativeCounter = 0; alternativeCounter < alternativeExecutions.length; alternativeCounter++) {
                 let alternativeExecution = alternativeExecutions[alternativeCounter];
 
-                if(originalExecution["datetime"] == alternativeExecution["datetime"] && originalExecution["datetime"] == alternativeExecution["datetime"] && originalExecution["datetime"] == alternativeExecution["datetime"]) {
+                if(new Date(originalExecution["datetime"]).getTime() == new Date(alternativeExecution["datetime"]).getTime() && originalExecution["rule_id"] == alternativeExecution["rule_id"] && originalExecution["trigger_entity"] == alternativeExecution["trigger_entity"]) {
                     matchingAlternativeExecution = alternativeExecution;
                     break;
                 }
