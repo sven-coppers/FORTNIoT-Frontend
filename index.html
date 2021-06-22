@@ -18,7 +18,8 @@
         <div class="header_content">
             <h1>FORTNIoT & FortClash</h1>
             <p>To make additional predictions about the future of a smart home, FORTNIoT collects information about the future and simulates trigger-condition-action rules. These predictions help inhabitants understand how their smart home will behave and give them more appropriate trust.
-                FortClash is able to detect conflicts in future predictions, and gives inhabitants the unique opportunity to resolve them before they occur.</p>
+                FortClash detects conflicts in these predictions, and gives inhabitants the unique opportunity to mediate them before they occur.</p>
+            <p>FORTNIoT & FortClash have been adapted to use virtual entities and cached predictions for demonstration purposes. Hence some features, such as previews for how the smart home is affected by forcing an action to trigger, are not available in this demonstrator.</p>
             <p class="contact">
                 <a href="mailto:sven.coppers@uhasselt.be">Sven Coppers</a><sup>1,2</sup>,
                 <a href="mailto:davy.vanacken@uhasselt.be">Davy Vanacken</a><sup>1,2</sup>,
@@ -27,13 +28,11 @@
             <p class="contact">
                 Publications:
                 <a href="https://dl.acm.org/doi/10.1145/3432225"><img class="icon" src="img/pdf.png" /> IMWUT 2020</a>
-                <!-- <a href="http://researcharchive.wintec.ac.nz/7211/1/FMIS%202019%20informal%20v2.pdf#page=57"><img class="icon" src="test/img/pdf.png" /> FMIS '19</a> -->
             </p>
             <div class="logos">
                 <sup>1</sup><a href="https://www.uhasselt.be/edm"><img class="logo" src="img/uhasselt-edm.png" /></a>
                 <sup>2</sup><a href="https://www.uhasselt.be/edm"><img class="logo" src="img/fm.png" /></a>
             </div>
-
         </div>
         <div class="controls">
             <form method="get" action="">
@@ -48,17 +47,15 @@
             <!-- <span id="version">Version B</span>
             <span id="question"></span>
             <a href="" id="reload">&#x21bb;</a>-->
+            <span id="explanation_toggle" onclick="toggle()" >&#8249;</span>
+            <div class="clearfix"></div>
         </div>
     </div>
     <div id="iot">
-
-
         <p id="connection_error">Connecting to the IoT Server.</p>
         <div class="clearfix"></div>
         <div class="timeline_wrapper hidden">
         </div>
-        <div class="clearfix"></div>
-
         <div class="clearfix"></div>
     </div>
 

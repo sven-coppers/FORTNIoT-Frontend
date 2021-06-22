@@ -32,8 +32,13 @@ class FutureClient {
             oThis.checkRuleEffects(future);
             oThis.addAnchorTime(future);
             oThis.future = future;
+            oThis.fillCache(future);
             oThis.mainController.futureLoaded(future);
         });
+    }
+
+    private fillCache(future) {
+
     }
 
     private checkRuleEffects(future) {
@@ -61,6 +66,26 @@ class FutureClient {
                 }
             }
         }
+    }
+
+    /**
+     * This function is only meant to be used when remote
+     * @param actionExecutionID
+     * @param newEnabled
+     */
+    public loadAlternativeFuture(actionExecutionID: string, newEnabled: boolean) {
+        let oThis = this;
+        let expectedFile = this.deduceFileName(actionExecutionID, newEnabled);
+
+        $.ajax({
+            url: this.mainController.API_URL + expectedFile,
+            type: "GET"
+        }).done(function (future) {
+            oThis.checkRuleEffects(future);
+            oThis.addAnchorTime(future);
+            oThis.future = future;
+            oThis.mainController.futureLoaded(future);
+        });
     }
 
     public simulateAlternativeFuture(actionExecutionID: string, newEnabled: boolean) {

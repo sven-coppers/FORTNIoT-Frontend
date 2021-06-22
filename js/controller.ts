@@ -167,17 +167,25 @@ class IoTController {
             let actionExecution = this.futureClient.getActionExecutionByActionExecutionID(ruleExecution, actionExecutionID);
 
             if(newEnabled) {
-                // Now enabled -> remove snooze
-                this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
+                if(this.isRemote()) {
+                    this.futureClient.loadAlternativeFuture(actionExecution["action_execution_id"], newEnabled);
+                } else{
+                    // Now enabled -> remove snooze
+                    this.ruleClient.commitRemoveSnoozedAction(actionExecution["snoozed_by"]);
+                }
             } else {
-                // // Now snoozed -> add snooze
-                let snoozedAction = {};
-                snoozedAction["action_id"] = actionID;
-                snoozedAction["conflict_time_window"] = 20000;
-                snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
-                snoozedAction["conflict_time"] = ruleExecution["datetime"];
+                if(this.isRemote()) {
+                    this.futureClient.loadAlternativeFuture(actionExecution["action_execution_id"], newEnabled);
+                } else{
+                    // // Now snoozed -> add snooze
+                    let snoozedAction = {};
+                    snoozedAction["action_id"] = actionID;
+                    snoozedAction["conflict_time_window"] = 20000;
+                    snoozedAction["trigger_entity_id"] = ruleExecution["trigger_entity"];
+                    snoozedAction["conflict_time"] = new Date(new Date(ruleExecution["datetime"]).getTime() - this.getAnchorDate().getTime());
 
-                this.ruleClient.commitNewSnoozedAction(snoozedAction);
+                    this.ruleClient.commitNewSnoozedAction(snoozedAction);
+                }
             }
         }
     }
@@ -277,7 +285,8 @@ class IoTController {
     }
 
     private initDemonstrator() {
-        this.scenarios = ["training", "television", "temperature", "weather", "security", "conflicts"];
+        //this.scenarios = ["training", "television", "temperature", "weather", "security", "conflicts"];
+        this.scenarios = ["basic", "conflicts"];
         for(let scenario of this.scenarios) {
             $("#scenario").append("<option>" + scenario + "</option>");
         }
