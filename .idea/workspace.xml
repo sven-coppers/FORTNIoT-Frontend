@@ -28,12 +28,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12f91452-6c2b-4b74-b8f2-a9506f9993ea" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/phd.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/style/phd.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/model/FutureClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/model/FutureClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/landing.php" beforeDir="false" afterPath="$PROJECT_DIR$/landing.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style/general.css" beforeDir="false" afterPath="$PROJECT_DIR$/style/general.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/js/timeline/components/devicecomponents/RulesComponent.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,8 +46,8 @@
       <list>
         <option value="Class" />
         <option value="TypeScript File" />
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -96,6 +94,11 @@
     <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
     <property name="ts.external.directory.path" value="C:\Users\scoppers\Repositories\iot_vis\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\scoppers\Repositories\iot_vis" />
+    </key>
   </component>
   <component name="RestClientSettings">
     <option name="REQUEST_HISTORY">
@@ -326,7 +329,7 @@
       <workItem from="1613557863586" duration="75000" />
       <workItem from="1621407941768" duration="31424000" />
       <workItem from="1622461086227" duration="718000" />
-      <workItem from="1624357117179" duration="3927000" />
+      <workItem from="1624357117179" duration="13099000" />
     </task>
     <servers />
   </component>
@@ -364,6 +367,10 @@
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>
     <state x="667" y="-1007" width="585" height="534" key="find.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1624367611906" />
+    <state x="616" y="-389" key="run.anything.popup" timestamp="1624874559803">
+      <screen x="-320" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="616" y="-389" key="run.anything.popup/0.0.1920.1040/-320.-1440.2560.1400@-320.-1440.2560.1400" timestamp="1624874559803" />
     <state x="623" y="-1125" width="672" height="678" key="search.everywhere.popup" timestamp="1621608916287">
       <screen x="-320" y="-1440" width="2560" height="1400" />
     </state>

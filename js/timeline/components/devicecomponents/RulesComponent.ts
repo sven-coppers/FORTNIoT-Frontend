@@ -168,6 +168,7 @@ class RulesComponent extends EventComponent {
                 this.mainController.clearSelection(false);
             }
         } else {
+            console.log("TODO DEFINE BEHAVIOR")
             this.mainController.clearSelection(false);
             this.mainController.cancelPreviewActionExecutionChange();
         }
