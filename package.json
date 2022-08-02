@@ -5,7 +5,7 @@
     "@egjs/hammerjs": "^2.0.17",
     "@types/jquery": "^3.3.33",
     "component-emitter": "^1.3.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "keycharm": "^0.3.1",
     "moment": "^2.29.4",
     "propagating-hammerjs": "^1.4.7",
